@@ -5,11 +5,11 @@ import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class HomeNavBarEntry extends StatelessWidget {
-  const HomeNavBarEntry({super.key, required this.title, required this.icon, required this.route});
+  const HomeNavBarEntry({super.key, required this.title, required this.icon, required this.pageIndex});
 
   final String title;
   final IconData icon;
-  final String route;
+  final int pageIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,8 @@ class HomeNavBarEntry extends StatelessWidget {
           return TweenAnimationBuilder(
             duration: const Duration(milliseconds: 130),
             tween: ColorTween(
-              begin: model.selectedRoute == route ? Colors.white : Color.fromRGBO(0, 122, 255, 1),
-              end: model.selectedRoute == route ? Color.fromRGBO(0, 122, 255, 1) : Colors.white,
+              begin: model.selectedPage == pageIndex ? Colors.white : Color.fromRGBO(0, 122, 255, 1),
+              end: model.selectedPage == pageIndex ? Color.fromRGBO(0, 122, 255, 1) : Colors.white,
             ),
             builder: (context, color, child){
               return ShadButton(
@@ -44,7 +44,7 @@ class HomeNavBarEntry extends StatelessWidget {
               
                   ),
                 onPressed: () {
-                  model.setSelectedPage(route);
+                  model.setSelectedPage(pageIndex);
                 },
               );
             },

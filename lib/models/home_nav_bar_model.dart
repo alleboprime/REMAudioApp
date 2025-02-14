@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class HomeNavBarModel extends ChangeNotifier{
 
-  String selectedRoute = "/";
+  int selectedPage = 0;
 
-  void setSelectedPage(String route){
-    selectedRoute = route;
+  void setSelectedPage(int index){
+    selectedPage = index;
     notifyListeners();
   }
 
