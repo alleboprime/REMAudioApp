@@ -1,58 +1,149 @@
 import 'package:flutter/material.dart';
 import 'package:rem_app/components/logScreen/log_screen_components.dart';
+import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/models/user_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class LoginPage extends Container {
-  LoginPage({super.key, required this.context});
-
-  final BuildContext context;
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  Widget? get child => Container(
-        color: Colors.black,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                  height: MediaQuery.of(context).size.height * 0.10,
-                  "assets/rem_logo.svg"),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.11,
+  // ignore: library_private_types_in_public_api
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final bool obscuredPassword = true;
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false;
+
+  bool failed = false;
+  String failingReason = "";
+
+  UserModel model = UserModel();
+
+  void login() async {
+    setState(() {
+      isLoading = true;
+      failed = false;
+    });
+
+    List<dynamic> response =
+        await model.login(emailController.text, passwordController.text);
+    if (response[0]) {
+      Navigator.pushReplacementNamed(context, "/home");
+    } else {
+      failingReason = response[1];
+      setState(() {
+        failed = true;
+        isLoading = false;
+      });
+    }
+    Future.delayed(Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          failed = false;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final dimensions = Dimensions();
+
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Stack(children: [
+          Container(
+            color: Colors.black,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: dimensions.loginPageLogoContainerHeight,
+                    child: SvgPicture.asset(
+                        colorFilter: ColorFilter.mode(
+                          Colors.black.withAlpha(40),
+                          BlendMode.srcATop,
+                        ),
+                        height: dimensions.loginPageLogoHeight,
+                        "assets/rem_logo.svg"),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: dimensions.logScreenFormTopMargin,
+                        bottom: dimensions.logScreenFormBottomMargin),
+                    height: dimensions.logScreenTextBoxSpacing +
+                        dimensions.logScreenTextBoxHeight * 4,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: dimensions.logScreenTextBoxWidht,
+                          height: dimensions.logScreenTextBoxHeight,
+                          child: LogScreenTextBox(
+                              placeholder_: "Email",
+                              controller_: emailController),
+                        ),
+                        SizedBox(
+                          height: dimensions.logScreenTextBoxSpacing,
+                        ),
+                        SizedBox(
+                          width: dimensions.logScreenTextBoxWidht,
+                          height: dimensions.logScreenTextBoxHeight,
+                          child: LogScreenTextBox(
+                              placeholder_: "Password",
+                              controller_: passwordController),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      LogScreenButton(
+                        text: "Accedi",
+                        height_: dimensions.logScreenButtonHeight,
+                        width_: dimensions.logScreenButtonWidht,
+                        action: login,
+                      ),
+                      SizedBox(
+                        height: dimensions.logScreenButtonSpacing,
+                      ),
+                      LogScreenText(text: "Registrati"),
+                    ],
+                  )
+                ],
               ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.height * 0.07,
-                child: ShadInput(
-                  style: TextStyle(fontSize: 17),
-                  placeholder: Text("Email"),
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.03,
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.height * 0.07,
-                child: ShadInput(
-                  style: TextStyle(fontSize: 17),
-                  placeholder: Text("Password"),
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.17,
-              ),
-              LogScreenButton(
-                  text: "Sign In",
-                  isPrimary: true,
-                  height_: MediaQuery.of(context).size.height * 0.07,
-                  width_: MediaQuery.of(context).size.height * 0.18),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.02,
-              ),
-              LogScreenText(text: "Register"),
-            ],
+            ),
           ),
-        ),
-      );
+          if (isLoading)
+            Container(
+              color: Colors.black.withAlpha(180),
+              child: Center(
+                child: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 5,
+                  ),
+                ),
+              ),
+            ),
+          if (failed)
+            Positioned(
+              bottom: 30,
+              left: 30,
+              right: 30,
+              child: ShadToast(
+                backgroundColor: Color.fromRGBO(255, 48, 48, 1),
+                description: Text(failingReason),
+              ),
+            ),
+        ]));
+  }
 }

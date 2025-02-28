@@ -33,9 +33,10 @@ class HomeNavBarEntry extends StatelessWidget {
             ),
             builder: (context, color, child){
               return ShadButton(
-                
                 backgroundColor: Colors.transparent,
                 foregroundColor: color,
+                hoverForegroundColor: Colors.white,
+                hoverBackgroundColor: Colors.transparent,
                 pressedForegroundColor: Colors.white,
                 pressedBackgroundColor: Colors.transparent,
                 icon: PhosphorIcon(

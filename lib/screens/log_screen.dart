@@ -12,6 +12,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
+
+  PageController loginScreenPageController = PageController(initialPage: 0);
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -19,12 +22,31 @@ class LoginScreenState extends State<LoginScreen> {
         create: (context) => UserModel(),
         child: Consumer<UserModel>(
           builder: (context, model, child) {
-            return IndexedStack(
-              index: model.isLogging ? 0 : 1,
+            
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (model.isLogging) {
+                loginScreenPageController.animateToPage(
+                  0,
+                  duration: Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                );
+              } else {
+                loginScreenPageController.animateToPage(
+                  1,
+                  duration: Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                );
+              }
+            });
+
+
+            return PageView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: loginScreenPageController,              
               children: [
-                LoginPage(context: context),
-                RegisterPage(context: context),
-              ],
+                LoginPage(),
+                RegisterPage(),
+              ]
             );
           },
         )

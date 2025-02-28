@@ -9,12 +9,16 @@ class LogScreenButton extends ShadButton {
       this.height_,
       this.width_,
       required this.text,
-      required this.isPrimary});
+      required this.action});
 
   final String text;
-  final bool isPrimary;
 
   final double? height_, width_;
+
+  final VoidCallback action;
+
+  @override
+  ValueChanged<TapUpDetails>? get onTapUp => (_) => action();
 
   @override
   Widget? get child => Text(
@@ -47,38 +51,66 @@ class LogScreenText extends Container {
 
   @override
   Widget? get child => Consumer<UserModel>(
-    builder: (context, model, child){
-      return GestureDetector(
-        onTap: () => model.isLogging = !model.isLogging,
-        child: Text(text,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 17,
-              fontFamily: "inter",
-              decoration: TextDecoration.none,
-            )),
+        builder: (context, model, child) {
+          return GestureDetector(
+            onTap: () => model.isLogging = !model.isLogging,
+            child: Text(text,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontFamily: "inter",
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.white,
+                  decorationStyle: TextDecorationStyle.solid,
+                  decorationThickness: 1,
+                )),
+          );
+        },
       );
-    },
-  );
 }
 
+class LogScreenTextBox extends StatefulWidget {
+  const LogScreenTextBox({super.key, required this.placeholder_, required this.controller_});
 
-class LogScreenTextBox extends SizedBox{
-  const LogScreenTextBox({super.key, required this.width_, required this.height_, required this.placeholder});
-
-  final String placeholder;
-
-  final double width_, height_;
+  final String placeholder_;
+  final TextEditingController controller_;
 
   @override
-  double? get width => width_ * 0.8;
+  // ignore: library_private_types_in_public_api
+  _LogScreenTextBoxState createState() => _LogScreenTextBoxState();
+}
+
+class _LogScreenTextBoxState extends State<LogScreenTextBox> {
+  bool obscured = true;
 
   @override
-  double? get height => height_ * 0.07;
-
-  @override
-  Widget? get child => ShadInput(
-              style: TextStyle(fontSize: 17),
-              placeholder: Text(placeholder),
-            );
+  Widget build(BuildContext context) {
+    return ShadInput(
+      controller: widget.controller_,
+      obscureText: (widget.placeholder_ == "Password" || widget.placeholder_ == "Confirm Password") ? obscured : false,
+      placeholder: Text(widget.placeholder_),
+      suffix: (widget.placeholder_ == "Password" || widget.placeholder_ == "Confirm Password")
+          ? ShadButton(
+              backgroundColor: Colors.transparent,
+              width: 24,
+              height: 24,
+              padding: EdgeInsets.zero,
+              decoration: const ShadDecoration(
+                secondaryBorder: ShadBorder.none,
+                secondaryFocusedBorder: ShadBorder.none,
+              ),
+              icon: Icon(obscured ? LucideIcons.eye : LucideIcons.eyeOff),
+              foregroundColor: Colors.white,
+              onPressed: () {
+                setState(() {
+                  obscured = !obscured;
+                });
+              },
+              hoverBackgroundColor: Colors.transparent,
+              hoverForegroundColor: Colors.white,
+            )
+          : null,
+    );
+  }
 }
