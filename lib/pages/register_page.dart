@@ -16,7 +16,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   bool isLoading = false;
 
@@ -25,49 +26,30 @@ class _RegisterPageState extends State<RegisterPage> {
 
   UserModel model = UserModel();
 
-  List<dynamic> checkData(){
-    if(usernameController.text == "" || emailController.text == "" || passwordController.text == "" || confirmPasswordController.text == ""){
-      return [false, "All fields must be filled"];
-    }
-    if(passwordController.text != confirmPasswordController.text){
-      return [false, "Passwords must be the same"];
-    }
-    return [true];
-  }
-
   void register() async {
-    var checkResults = checkData();
-    if (checkResults[0]) {
-      setState(() {
-        isLoading = true;
-        failed = false;
-      });
-      
-      List<dynamic> response =
-          await model.register(usernameController.text, emailController.text, passwordController.text);
-      if (response[0]) {
-        Navigator.pushReplacementNamed(context, "/home");
-      } else {
-        failingReason = response[1];
-        setState(() {
-          failed = true;
-          isLoading = false;
-        });
-      }
-      Future.delayed(Duration(seconds: 3), () {
-        if (mounted) {
-          setState(() {
-            failed = false;
-          });
-        }
-      });
-    }
-    else{
-      failingReason = checkResults[1];
+    setState(() {
+      isLoading = true;
+      failed = false;
+    });
+
+    List<dynamic> response = await model.register(
+        usernameController.text, emailController.text, passwordController.text, confirmPasswordController.text);
+    if (response[0]) {
+      Navigator.pushReplacementNamed(context, "/home");
+    } else {
+      failingReason = response[1];
       setState(() {
         failed = true;
+        isLoading = false;
       });
     }
+    Future.delayed(Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          failed = false;
+        });
+      }
+    });
   }
 
   @override

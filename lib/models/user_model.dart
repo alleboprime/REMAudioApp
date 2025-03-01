@@ -23,9 +23,45 @@ class UserModel extends ChangeNotifier {
 
   String jwtSecret = "";
 
-  //TODO error detection improvement
+  List<dynamic> checkPassword(String password){
+    if(password.length < 8){
+      return [false, "Password must be at least 8 character"];
+    }
+    if (!RegExp(r'[A-Z]').hasMatch(password)) {
+      return [false, "Password must contain a capital letter"];
+    }
+    if (!RegExp(r'\d').hasMatch(password)) {
+      return [false, "Password must contain a number"];
+    }
+    if (!RegExp(r'[\W_]').hasMatch(password)) {
+      return [false, "Password must contain a special character"];
+    }
+    return [true];
+  }
 
-  Future<List<dynamic>> register(String username, String email, String password) async {
+  List<dynamic> checkForms(List<dynamic> arguments, {bool checkPasswords = false}) {
+    for (String argument in arguments) {
+      if (argument.isEmpty) {
+        return [false, "All fields must be filled"];
+      }
+    }
+    if (checkPasswords && arguments[2] != arguments[3]) {
+      return [false, "Passwords must be the same"];
+    }
+    if (checkPasswords){
+      return checkPassword(arguments[2]);
+    }
+    return [true];
+  }
+
+  Future<List<dynamic>> register(String username, String email, String password, String confirmPassword) async {
+    List<dynamic> checkResults = checkForms(
+        [username, email, password, confirmPassword],
+        checkPasswords: true);
+    if (!checkResults[0]) {
+      return checkResults;
+    }
+
     Map<String, String> body = {
       'username': username,
       'email': email,
@@ -33,13 +69,15 @@ class UserModel extends ChangeNotifier {
       'session_type': 'native'
     };
 
-    var url = Uri.http('192.168.1.11:8000', '/api/auth/register');
+    var url = Uri.http('192.168.105.43:8000', '/api/auth/register');
 
     http.Response response;
 
     try {
       response = await http
-          .post(url, headers: {"Content-Type": "application/json"}, body: jsonEncode(body))
+          .post(url,
+              headers: {"Content-Type": "application/json"},
+              body: jsonEncode(body))
           .timeout(Duration(seconds: 5));
     } on TimeoutException catch (_) {
       jwtSecret = "";
@@ -58,19 +96,26 @@ class UserModel extends ChangeNotifier {
   }
 
   Future<List<dynamic>> login(String email, String password) async {
+    List<dynamic> checkResults = checkForms([email, password]);
+    if (!checkResults[0]) {
+      return checkResults;
+    }
+
     Map<String, String> body = {
       'email': email,
       'password': password,
       'session_type': 'native'
     };
 
-    var url = Uri.http('192.168.1.11:8000', '/api/auth/signin');
+    var url = Uri.http('192.168.105.43:8000', '/api/auth/signin');
 
     http.Response response;
 
     try {
       response = await http
-          .post(url, headers: {"Content-Type": "application/json"}, body: jsonEncode(body))
+          .post(url,
+              headers: {"Content-Type": "application/json"},
+              body: jsonEncode(body))
           .timeout(Duration(seconds: 5));
     } on TimeoutException catch (_) {
       jwtSecret = "";
