@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:rem_app/colors.dart';
 import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -13,6 +14,8 @@ class HomeNavBarEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = AppColors();
+
     return ShadTooltip(
       decoration: ShadDecoration(
         color: Colors.transparent,
@@ -28,8 +31,8 @@ class HomeNavBarEntry extends StatelessWidget {
           return TweenAnimationBuilder(
             duration: const Duration(milliseconds: 130),
             tween: ColorTween(
-              begin: model.selectedPage == pageIndex ? Colors.white : Color.fromRGBO(0, 122, 255, 1),
-              end: model.selectedPage == pageIndex ? Color.fromRGBO(0, 122, 255, 1) : Colors.white,
+              begin: model.selectedPage == pageIndex ? Colors.white : colors.selectionColor,
+              end: model.selectedPage == pageIndex ? colors.selectionColor : Colors.white,
             ),
             builder: (context, color, child){
               return ShadButton(

@@ -69,7 +69,7 @@ class UserModel extends ChangeNotifier {
       'session_type': 'native'
     };
 
-    var url = Uri.http('192.168.105.43:8000', '/api/auth/register');
+    var url = Uri.http('192.168.1.11:8000', '/api/auth/register');
 
     http.Response response;
 
@@ -107,7 +107,7 @@ class UserModel extends ChangeNotifier {
       'session_type': 'native'
     };
 
-    var url = Uri.http('192.168.105.43:8000', '/api/auth/signin');
+    var url = Uri.http('192.168.1.11:8000', '/api/auth/signin');
 
     http.Response response;
 

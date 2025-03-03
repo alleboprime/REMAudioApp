@@ -6,7 +6,7 @@ class VideoPage extends Container {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red,
+      color: Colors.black,
       child: Center(
         child: Text("Video"),
       ),

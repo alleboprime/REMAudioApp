@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rem_app/colors.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+
+final colors = AppColors();
 
 class LogScreenButton extends ShadButton {
   const LogScreenButton(
@@ -31,7 +34,7 @@ class LogScreenButton extends ShadButton {
       );
 
   @override
-  Color? get backgroundColor => Color.fromRGBO(250, 250, 250, 1);
+  Color? get backgroundColor => colors.logScreenButtonColor;
 
   @override
   double? get width => width_;

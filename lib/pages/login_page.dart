@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/logScreen/log_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/user_model.dart';
@@ -54,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final dimensions = Dimensions();
+    final colors = AppColors();
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -140,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
               left: 30,
               right: 30,
               child: ShadToast(
-                backgroundColor: Color.fromRGBO(255, 48, 48, 1),
+                backgroundColor: colors.logScreenToastColor,
                 description: Text(failingReason),
               ),
             ),

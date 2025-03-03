@@ -32,5 +32,8 @@ class Dimensions {
 
   double get logScreenFormTopMargin => screenHeight * 0.05;
   double get logScreenFormBottomMargin => screenHeight * 0.05;
+
+
+  double get homeScreenAppBarHeight => screenHeight * 0.08;
   
 }

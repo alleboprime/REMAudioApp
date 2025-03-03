@@ -15,7 +15,7 @@ class LandingScreenState extends State<LandingScreen>{
   }
 
   void wait(){
-    Future.delayed(Duration(seconds: 2), () => Navigator.pushReplacementNamed(context, "/login"),);
+    Future.delayed(Duration(seconds: 2), () => Navigator.pushReplacementNamed(context, "/home"),);
   }
 
   @override

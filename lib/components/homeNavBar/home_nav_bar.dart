@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/homeNavBar/home_nav_bar_entry.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -16,12 +17,14 @@ class HomeNavBar extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    final colors = AppColors();
+
     return Container(
-      height: MediaQuery.of(context).size.height * 0.09,
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      height: MediaQuery.of(context).size.height * 0.1,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color.fromRGBO(30, 30, 30, 1),
-        borderRadius: BorderRadius.circular(30),
+        color: colors.primaryColor,
+        borderRadius: BorderRadius.circular(40),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

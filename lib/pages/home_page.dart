@@ -1,37 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:rem_app/components/pageAppBar/app_bar_tile.dart';
+import 'package:rem_app/colors.dart';
+import 'package:rem_app/dimensions.dart';
 
-class HomePage extends Container {
-  HomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>{
+
+
 
   @override
   Widget build(BuildContext context) {
+    final dimensions = Dimensions();
+    final colors = AppColors();
+
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 90,
         backgroundColor: Colors.black,
+        toolbarHeight: dimensions.homeScreenAppBarHeight,
         title: Container(
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(30, 30, 30, 1),
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppBarTile(title: "Audio",),
-              SizedBox(width: 15,),
-              AppBarTile(title: "Video"),
-            ],
-          ),
-        )
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: colors.primaryColor,
+                ),
+                margin: EdgeInsets.all(10),
+                padding: EdgeInsets.all(10),
+                child: Center(child: Text("PANORAMICA")),
+              ),
       ),
       body: Container(
-        color: Colors.blue,
+        color: Colors.black,
         child: Center(
-          child: Text("Panoramica"),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: colors.primaryColor,
+                ),
+                margin: EdgeInsets.all(10),
+                padding: EdgeInsets.all(10),
+                child: Center(child: Text("PANORAMICA")),
+              )
+            ],
+          )
         ),
       ),
     );
   }
+
 }
