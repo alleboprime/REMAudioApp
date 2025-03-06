@@ -33,9 +33,12 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     List<dynamic> response = await model.register(
-        usernameController.text, emailController.text, passwordController.text, confirmPasswordController.text);
+        usernameController.text,
+        emailController.text,
+        passwordController.text,
+        confirmPasswordController.text);
     if (response[0]) {
-      Navigator.pushReplacementNamed(context, "/home");
+      Navigator.restorablePushNamed(context, "/home");
     } else {
       failingReason = response[1];
       setState(() {
@@ -66,17 +69,21 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ShadAvatar(
-                      "assets/default_avatar.svg",
-                      size: Size(
-                        dimensions.registerPageAvatarSize,
-                        dimensions.registerPageAvatarSize,
-                      ),
+                    SizedBox(
+                      height: dimensions.loginPageLogoContainerHeight,
+                      child: SvgPicture.asset(
+                          colorFilter: ColorFilter.mode(
+                            Colors.black.withAlpha(40),
+                            BlendMode.srcATop,
+                          ),
+                          height: dimensions.loginPageLogoHeight,
+                          "assets/rem_logo.svg"),
                     ),
                     Container(
                       margin: EdgeInsets.only(
                           top: dimensions.logScreenFormTopMargin,
                           bottom: dimensions.logScreenFormBottomMargin),
+                      height: dimensions.logScreenFormHeight,
                       child: Column(
                         children: [
                           SizedBox(
@@ -100,15 +107,30 @@ class _RegisterPageState extends State<RegisterPage> {
                             width: dimensions.logScreenTextBoxWidht,
                             height: dimensions.logScreenTextBoxHeight,
                             child: LogScreenTextBox(
-                                placeholder_: "Password",
-                                controller_: passwordController),
+                              placeholder_: "Password",
+                              controller_: passwordController,
+                              isPasswordBox: true,
+                            ),
                           ),
                           SizedBox(
                             width: dimensions.logScreenTextBoxWidht,
                             height: dimensions.logScreenTextBoxHeight,
                             child: LogScreenTextBox(
-                                placeholder_: "Confirm Password",
-                                controller_: confirmPasswordController),
+                              placeholder_: "Confirm Password",
+                              controller_: confirmPasswordController,
+                              isPasswordBox: true,
+                            ),
+                          ),
+                          SizedBox(
+                            width: dimensions.logScreenTextBoxWidht,
+                            height: dimensions.logScreenTextBoxSpacing,
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10),
+                              child: LogScreenText(
+                                text: "Password Requirements",
+                                isFormTooltip: true,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -116,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Column(
                       children: [
                         LogScreenButton(
-                          text: "Registrati",
+                          text: "Sign Up",
                           height_: dimensions.logScreenButtonHeight,
                           width_: dimensions.logScreenButtonWidht,
                           action: register,
@@ -124,7 +146,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         SizedBox(
                           height: dimensions.logScreenButtonSpacing,
                         ),
-                        LogScreenText(text: "Accedi"),
+                        LogScreenText(text: "Log In"),
                       ],
                     ),
                   ],

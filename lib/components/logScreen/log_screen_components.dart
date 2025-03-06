@@ -48,25 +48,23 @@ class LogScreenButton extends ShadButton {
 }
 
 class LogScreenText extends Container {
-  LogScreenText({super.key, required this.text});
+  LogScreenText({super.key, required this.text, this.isFormTooltip = false});
 
   final String text;
+  final bool isFormTooltip;
 
   @override
   Widget? get child => Consumer<UserModel>(
         builder: (context, model, child) {
           return GestureDetector(
-            onTap: () => model.isLogging = !model.isLogging,
+            onTap: () => isFormTooltip ? () : model.isLogging = !model.isLogging,
             child: Text(text,
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 17,
+                  color: isFormTooltip ? colors.logScreenFormTooltip : Colors.white,
+                  fontSize: isFormTooltip ? 14 : 17,
                   fontFamily: "inter",
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                  decorationColor: Colors.white,
-                  decorationStyle: TextDecorationStyle.solid,
-                  decorationThickness: 1,
+                  fontWeight: isFormTooltip ? FontWeight.normal : FontWeight.bold,
+                  decoration: TextDecoration.none
                 )),
           );
         },
@@ -74,10 +72,11 @@ class LogScreenText extends Container {
 }
 
 class LogScreenTextBox extends StatefulWidget {
-  const LogScreenTextBox({super.key, required this.placeholder_, required this.controller_});
+  const LogScreenTextBox({super.key, required this.placeholder_, required this.controller_, this.isPasswordBox = false});
 
   final String placeholder_;
   final TextEditingController controller_;
+  final bool isPasswordBox;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -91,9 +90,9 @@ class _LogScreenTextBoxState extends State<LogScreenTextBox> {
   Widget build(BuildContext context) {
     return ShadInput(
       controller: widget.controller_,
-      obscureText: (widget.placeholder_ == "Password" || widget.placeholder_ == "Confirm Password") ? obscured : false,
+      obscureText: (widget.isPasswordBox) ? obscured : false,
       placeholder: Text(widget.placeholder_),
-      suffix: (widget.placeholder_ == "Password" || widget.placeholder_ == "Confirm Password")
+      suffix: (widget.isPasswordBox)
           ? ShadButton(
               backgroundColor: Colors.transparent,
               width: 24,

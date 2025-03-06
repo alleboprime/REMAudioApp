@@ -35,7 +35,8 @@ class _LoginPageState extends State<LoginPage> {
     List<dynamic> response =
         await model.login(emailController.text, passwordController.text);
     if (response[0]) {
-      Navigator.pushReplacementNamed(context, "/home");
+      isLoading = false;
+      Navigator.restorablePushNamed(context, "/home");
     } else {
       failingReason = response[1];
       setState(() {
@@ -51,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -80,8 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                     margin: EdgeInsets.only(
                         top: dimensions.logScreenFormTopMargin,
                         bottom: dimensions.logScreenFormBottomMargin),
-                    height: dimensions.logScreenTextBoxSpacing +
-                        dimensions.logScreenTextBoxHeight * 4,
+                    height: dimensions.logScreenFormHeight,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -99,8 +100,21 @@ class _LoginPageState extends State<LoginPage> {
                           width: dimensions.logScreenTextBoxWidht,
                           height: dimensions.logScreenTextBoxHeight,
                           child: LogScreenTextBox(
-                              placeholder_: "Password",
-                              controller_: passwordController),
+                            placeholder_: "Password",
+                            controller_: passwordController,
+                            isPasswordBox: true,
+                          ),
+                        ),
+                        SizedBox(
+                          width: dimensions.logScreenTextBoxWidht,
+                          height: dimensions.logScreenTextBoxSpacing,
+                          child: Container(
+                            margin: EdgeInsets.only(left: 10),
+                            child: LogScreenText(
+                              text: "Forgot Password?",
+                              isFormTooltip: true,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -108,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                   Column(
                     children: [
                       LogScreenButton(
-                        text: "Accedi",
+                        text: "Log In",
                         height_: dimensions.logScreenButtonHeight,
                         width_: dimensions.logScreenButtonWidht,
                         action: login,
@@ -116,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(
                         height: dimensions.logScreenButtonSpacing,
                       ),
-                      LogScreenText(text: "Registrati"),
+                      LogScreenText(text: "Sign Up"),
                     ],
                   )
                 ],

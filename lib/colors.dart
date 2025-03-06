@@ -17,4 +17,6 @@ class AppColors {
 
   Color get logScreenToastColor => Color.fromRGBO(255, 48, 48, 1);
 
+  Color get logScreenFormTooltip => Color.fromRGBO(133, 147, 166, 1);
+
 }

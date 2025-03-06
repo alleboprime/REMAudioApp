@@ -17,6 +17,8 @@ class Dimensions {
     screenWidth = MediaQuery.of(context).size.width;
   }
 
+  double get logScreenFormHeight => 4 * logScreenTextBoxHeight + 2 * logScreenTextBoxSpacing;
+
   double get loginPageLogoContainerHeight => screenHeight * 0.16;
   double get loginPageLogoHeight => screenHeight * 0.1;
   double get registerPageAvatarSize => screenHeight * 0.16;

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/screens/home_screen.dart';
-import 'package:rem_app/screens/landing_screen.dart';
 import 'package:rem_app/screens/log_screen.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -15,10 +14,9 @@ class REMApp extends StatelessWidget {
     Dimensions().init(context);
     return ShadApp.material(
       debugShowCheckedModeBanner: false,
-      initialRoute: "/",
+      initialRoute: "/access",
       routes: {
-        "/" : (context) => LandingScreen(),
-        "/login" : (context) => LoginScreen(),
+        "/access" : (context) => LoginScreen(),
         "/home" : (context) => HomeScreen(),
       },
       //TODO implement check access, landing page / progress indicator for access.

@@ -3,14 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+final String remoteIp = "192.168.1.11";
+
 class UserModel extends ChangeNotifier {
-  static final UserModel _instance = UserModel._internal();
-
-  factory UserModel() {
-    return _instance;
-  }
-
-  UserModel._internal();
+  UserModel();
 
   bool _isLogging = true;
 
@@ -21,7 +17,7 @@ class UserModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String jwtSecret = "";
+  String accessToken = "";
 
   List<dynamic> checkPassword(String password){
     if(password.length < 8){
@@ -69,7 +65,7 @@ class UserModel extends ChangeNotifier {
       'session_type': 'native'
     };
 
-    var url = Uri.http('192.168.1.11:8000', '/api/auth/register');
+    var url = Uri.http('$remoteIp:8000', '/api/auth/register');
 
     http.Response response;
 
@@ -80,17 +76,17 @@ class UserModel extends ChangeNotifier {
               body: jsonEncode(body))
           .timeout(Duration(seconds: 5));
     } on TimeoutException catch (_) {
-      jwtSecret = "";
+      accessToken = "";
       return [false, "Request timed out"];
     } on Exception catch (e) {
-      jwtSecret = "";
+      accessToken = "";
       return [false, e.toString()];
     }
     if (response.statusCode == 200) {
-      jwtSecret = jsonDecode(response.body)["jwt_token"];
+      accessToken = jsonDecode(response.body)["access_token"];
       return [true];
     } else {
-      jwtSecret = "";
+      accessToken = "";
       return [false, jsonDecode(response.body)["reason"]];
     }
   }
@@ -107,8 +103,7 @@ class UserModel extends ChangeNotifier {
       'session_type': 'native'
     };
 
-    var url = Uri.http('192.168.1.11:8000', '/api/auth/signin');
-
+    var url = Uri.http('$remoteIp:8000', '/api/auth/signin');
     http.Response response;
 
     try {
@@ -118,18 +113,18 @@ class UserModel extends ChangeNotifier {
               body: jsonEncode(body))
           .timeout(Duration(seconds: 5));
     } on TimeoutException catch (_) {
-      jwtSecret = "";
+      accessToken = "";
       return [false, "Request timed out"];
     } on Exception catch (e) {
-      jwtSecret = "";
+      accessToken = "";
       return [false, e.toString()];
     }
 
     if (response.statusCode == 200) {
-      jwtSecret = jsonDecode(response.body)["jwt_token"];
+      accessToken = jsonDecode(response.body)["access_token"];
       return [true];
     } else {
-      jwtSecret = "";
+      accessToken = "";
       return [false, jsonDecode(response.body)["reason"]];
     }
   }
