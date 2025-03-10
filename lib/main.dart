@@ -1,10 +1,22 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/screens/home_screen.dart';
 import 'package:rem_app/screens/log_screen.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'dart:io';
 
-main() => runApp(REMApp());
+void main() {
+  runApp(REMApp());
+
+  if(Platform.isWindows || Platform.isLinux || Platform.isMacOS){
+    doWhenWindowReady(() {
+    final win = appWindow;
+    win.minSize = Size(400, 600);
+    win.show();
+    });
+  }
+}
 
 class REMApp extends StatelessWidget {
   const REMApp({super.key});
@@ -19,7 +31,7 @@ class REMApp extends StatelessWidget {
         "/access" : (context) => LoginScreen(),
         "/home" : (context) => HomeScreen(),
       },
-      //TODO implement check access, landing page / progress indicator for access.
+      //TODO implement landing page
     );
   }
 }

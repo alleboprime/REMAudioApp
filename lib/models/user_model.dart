@@ -9,11 +9,18 @@ class UserModel extends ChangeNotifier {
   UserModel();
 
   bool _isLogging = true;
+  bool _isLoading = false;
 
   bool get isLogging => _isLogging;
+  bool get isLoading => _isLoading;
 
   set isLogging(bool value) {
     _isLogging = value;
+    notifyListeners();
+  }
+
+  set isLoading(bool value) {
+    _isLoading = value;
     notifyListeners();
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum DeviceType { smartphone, tablet, pc }
+
 class Dimensions {
   static final Dimensions _instance = Dimensions._internal();
 
@@ -9,33 +11,48 @@ class Dimensions {
 
   Dimensions._internal();
 
-  late double screenHeight;
-  late double screenWidth;
+  double screenHeight = 0;
+  double screenWidth = 0;
+
+  bool hiddenLogo = false;
+
+  DeviceType deviceType = DeviceType.smartphone; 
 
   void init(BuildContext context) {
-    screenHeight = MediaQuery.of(context).size.height;
-    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.sizeOf(context).height;
+    screenWidth = MediaQuery.sizeOf(context).width;
+
+    print(screenWidth);
+    print(screenHeight);
+
+    double devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+    Orientation orientation = MediaQuery.of(context).orientation;
+
+    if(screenWidth / devicePixelRatio < 500){
+      deviceType = DeviceType.smartphone;
+      if (orientation == Orientation.landscape){
+        hiddenLogo = true;
+      }else{
+        hiddenLogo = false;
+      }
+    }else{
+      deviceType = DeviceType.pc;
+      hiddenLogo = false;
+    }
+
+    print(deviceType.name);
+
+    //TODO: remove print for debugging
+
   }
 
-  double get logScreenFormHeight => 4 * logScreenTextBoxHeight + 2 * logScreenTextBoxSpacing;
+  double get logScreenLogoHeight => screenHeight * 0.1;
 
-  double get loginPageLogoContainerHeight => screenHeight * 0.16;
-  double get loginPageLogoHeight => screenHeight * 0.1;
-  double get registerPageAvatarSize => screenHeight * 0.16;
-
-  double get logScreenTextBoxWidht => screenWidth * 0.8;
-  double get logScreenTextBoxHeight => screenHeight * 0.07;
-
-  double get logScreenButtonHeight => screenHeight * 0.07;
-  double get logScreenButtonWidht => screenWidth * 0.4;
-
-  double get logScreenTextBoxSpacing => screenHeight * 0.02;
-  double get logScreenButtonSpacing => screenHeight * 0.02;
-
-  double get logScreenFormTopMargin => screenHeight * 0.05;
-  double get logScreenFormBottomMargin => screenHeight * 0.05;
+  double get logScreenTextBoxWidht => (deviceType == DeviceType.pc) ? 500 : 300;
+  
+  double get logScreenButtonWidht => (deviceType == DeviceType.pc) ? 150 : 100;
+  double get logScreenButtonHeight => (deviceType == DeviceType.pc) ? 50 : 50;
 
 
   double get homeScreenAppBarHeight => screenHeight * 0.08;
-  
 }
