@@ -14,7 +14,6 @@ class Dimensions {
   double screenHeight = 0;
   double screenWidth = 0;
 
-  bool hiddenLogo = false;
 
   DeviceType deviceType = DeviceType.smartphone; 
 
@@ -30,14 +29,8 @@ class Dimensions {
 
     if(screenWidth / devicePixelRatio < 500){
       deviceType = DeviceType.smartphone;
-      if (orientation == Orientation.landscape){
-        hiddenLogo = true;
-      }else{
-        hiddenLogo = false;
-      }
     }else{
       deviceType = DeviceType.pc;
-      hiddenLogo = false;
     }
 
     print(deviceType.name);

@@ -26,7 +26,7 @@ class REMApp extends StatelessWidget {
     Dimensions().init(context);
     return ShadApp.material(
       debugShowCheckedModeBanner: false,
-      initialRoute: "/access",
+      initialRoute: "/home",
       routes: {
         "/access" : (context) => LoginScreen(),
         "/home" : (context) => HomeScreen(),

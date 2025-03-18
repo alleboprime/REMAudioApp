@@ -3,16 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-final String remoteIp = "192.168.1.11";
+final String remoteIp = "192.168.137.1";
 
 class UserModel extends ChangeNotifier {
   UserModel();
 
   bool _isLogging = true;
   bool _isLoading = false;
+  bool _showDialog = false;
 
   bool get isLogging => _isLogging;
   bool get isLoading => _isLoading;
+  bool get showDialog => _showDialog;
 
   set isLogging(bool value) {
     _isLogging = value;
@@ -21,6 +23,11 @@ class UserModel extends ChangeNotifier {
 
   set isLoading(bool value) {
     _isLoading = value;
+    notifyListeners();
+  }
+
+  set showDialog(bool value){
+    _showDialog = value;
     notifyListeners();
   }
 

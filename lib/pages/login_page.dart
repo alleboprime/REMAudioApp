@@ -19,26 +19,29 @@ class _LoginPageState extends State<LoginPage> {
 
     return Container(
       alignment: Alignment.center,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LogScreenTextBox(
-                placeholder_: "Email", controller_: widget.emailController),
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: LogScreenTextBox(
-                placeholder_: "Password",
-                controller_: widget.passwordController,
-                isPasswordBox: true,
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LogScreenTextBox(
+                  placeholder_: "Email", controller_: widget.emailController),
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: LogScreenTextBox(
+                  placeholder_: "Password",
+                  controller_: widget.passwordController,
+                  isPasswordBox: true,
+                ),
               ),
-            ),
-            LogScreenText(
-              text: "Forgot Password?",
-              isFormTooltip: true,
-            ),
-          ],
+              LogScreenText(
+                text: "Forgot Password?",
+                isFormTooltip: true,
+              ),
+            ],
+          ),
         ),
       ),
     );

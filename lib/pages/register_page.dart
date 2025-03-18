@@ -21,33 +21,36 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return Container(
       alignment: Alignment.center,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            LogScreenTextBox(
-                placeholder_: "Username", controller_: widget.usernameController),
-            LogScreenTextBox(
-                placeholder_: "Email", controller_: widget.emailController),
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: LogScreenTextBox(
-                placeholder_: "Password",
-                controller_: widget.passwordController,
-                isPasswordBox: true,
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LogScreenTextBox(
+                  placeholder_: "Username", controller_: widget.usernameController),
+              LogScreenTextBox(
+                  placeholder_: "Email", controller_: widget.emailController),
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: LogScreenTextBox(
+                  placeholder_: "Password",
+                  controller_: widget.passwordController,
+                  isPasswordBox: true,
+                ),
               ),
-            ),
-            LogScreenTextBox(
-                placeholder_: "Confirm Password",
-                controller_: widget.confirmPasswordController,
-                isPasswordBox: true,
+              LogScreenTextBox(
+                  placeholder_: "Confirm Password",
+                  controller_: widget.confirmPasswordController,
+                  isPasswordBox: true,
+                ),
+              LogScreenText(
+                text: "Password Requirements",
+                isFormTooltip: true,
               ),
-            LogScreenText(
-              text: "Password Requirements",
-              isFormTooltip: true,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

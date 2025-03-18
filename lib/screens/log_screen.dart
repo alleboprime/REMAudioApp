@@ -168,10 +168,13 @@ class LoginScreenState extends State<LoginScreen> {
                                 text: model.isLogging ? "Log In" : "Sign Up",
                                 action: model.isLogging ? login : register,
                               ),
-                              LogScreenText(
-                                text: model.isLogging
-                                  ? "Sign Up"
-                                  : "Log In"
+                              Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: LogScreenText(
+                                  text: model.isLogging
+                                    ? "Sign Up"
+                                    : "Log In"
+                                ),
                               ),
                             ],
                           ),

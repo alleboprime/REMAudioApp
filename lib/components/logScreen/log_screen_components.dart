@@ -47,28 +47,63 @@ class LogScreenButton extends ShadButton {
       ShadDecoration(border: ShadBorder(radius: BorderRadius.circular(30)));
 }
 
-class LogScreenText extends Container {
-  LogScreenText({super.key, required this.text, this.isFormTooltip = false});
+class LogScreenText extends StatefulWidget {
+  const LogScreenText({super.key, required this.text, this.isFormTooltip = false});
 
   final String text;
   final bool isFormTooltip;
 
   @override
-  Widget? get child => Consumer<UserModel>(
-        builder: (context, model, child) {
-          return GestureDetector(
-            onTap: () => isFormTooltip ? () : model.isLogging = !model.isLogging,
-            child: Text(text,
+  // ignore: library_private_types_in_public_api
+  _LogScreenTextState createState() => _LogScreenTextState();
+}
+
+class _LogScreenTextState extends State<LogScreenText> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<UserModel>(
+      builder: (context, model, child) {
+        return MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onEnter: (_) {
+            setState(() {
+              isHovered = true;
+            });
+          },
+          onExit: (_) {
+            setState(() {
+              isHovered = false;
+            });
+          },
+          child: GestureDetector(
+            onTap: () => widget.isFormTooltip ? model.showDialog = true : model.isLogging = !model.isLogging,
+            child: Container(
+              decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: isHovered ? widget.isFormTooltip ? colors.logScreenFormTooltip : Colors.white : Colors.transparent,
+                          width: 1,
+                        ),
+                      ),
+                    ),
+              padding: EdgeInsets.only(bottom: 1),
+              child: Text(
+                widget.text,
                 style: TextStyle(
-                  color: isFormTooltip ? colors.logScreenFormTooltip : Colors.white,
-                  fontSize: isFormTooltip ? 14 : 17,
+                  color: widget.isFormTooltip ? colors.logScreenFormTooltip : Colors.white,
+                  fontSize: widget.isFormTooltip ? 14 : 17,
                   fontFamily: "inter",
-                  fontWeight: isFormTooltip ? FontWeight.normal : FontWeight.bold,
-                  decoration: TextDecoration.none
-                )),
-          );
-        },
-      );
+                  fontWeight: widget.isFormTooltip ? FontWeight.normal : FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class LogScreenTextBox extends StatefulWidget {
