@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/logScreen/log_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/models/matrix_model.dart';
 import 'package:rem_app/models/user_model.dart';
-import 'package:rem_app/pages/login_page.dart';
-import 'package:rem_app/pages/register_page.dart';
+import 'package:rem_app/pages/logPages/login_page.dart';
+import 'package:rem_app/pages/logPages/register_page.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -33,62 +34,50 @@ class LoginScreenState extends State<LoginScreen> {
   bool failed = false;
   String failingReason = "";
 
-  void login() async {
+  void _authenticate(Future<List<dynamic>> Function() authMethod) async {
     setState(() {
       isLoading = true;
       failed = false;
     });
 
-    List<dynamic> response =
-        await model.login(logEmailController.text, logPasswordController.text);
+    List<dynamic> response = await authMethod();
+    
     if (response[0]) {
       isLoading = false;
       Navigator.restorablePushNamed(context, "/home");
+      final matrixModel = MatrixModel();
+      matrixModel.socketConnect();
     } else {
-      failingReason = response[1];
       setState(() {
+        failingReason = response[1];
         failed = true;
         isLoading = false;
       });
+
+      Future.delayed(Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() => failed = false);
+        }
+      });
     }
-    Future.delayed(Duration(seconds: 3), () {
-      if (mounted) {
-        setState(() {
-          failed = false;
-        });
-      }
-    });
   }
 
-  void register() async {
-    setState(() {
-      isLoading = true;
-      failed = false;
-    });
+  void login() {
+    _authenticate(
+      () => model.login(logEmailController.text, logPasswordController.text),
+    );
+  }
 
-    List<dynamic> response = await model.register(
+  void register() {
+    _authenticate(
+      () => model.register(
         usernameController.text,
         regEmailController.text,
         regPasswordController.text,
-        confirmPasswordController.text);
-    if (response[0]) {
-      Navigator.restorablePushNamed(context, "/home");
-    } else {
-      failingReason = response[1];
-      setState(() {
-        failed = true;
-        isLoading = false;
-      });
-    }
-    Future.delayed(Duration(seconds: 3), () {
-      if (mounted) {
-        setState(() {
-          failed = false;
-        });
-      }
-    });
+        confirmPasswordController.text,
+      ),
+    );
   }
-
 
   //TODO: fix overflow in landscape mode on phone
 

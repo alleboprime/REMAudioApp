@@ -6,9 +6,10 @@ class AudioPage extends Container {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.black,
-        child: Center(
-          child: Text("Audio"),
-        ));
+      color: Colors.black,
+      child: Center(
+        child: Text("Audio"),
+      )
+    );
   }
 }

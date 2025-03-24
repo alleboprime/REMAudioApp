@@ -38,13 +38,13 @@ class HomeNavBarEntry extends StatelessWidget {
               return ShadButton(
                 backgroundColor: Colors.transparent,
                 foregroundColor: color,
-                hoverForegroundColor: Colors.white,
+                hoverForegroundColor: model.selectedPage == pageIndex ? colors.selectionColor : Colors.white,
                 hoverBackgroundColor: Colors.transparent,
-                pressedForegroundColor: Colors.white,
+                pressedForegroundColor: model.selectedPage == pageIndex ? colors.selectionColor : Colors.white,
                 pressedBackgroundColor: Colors.transparent,
+                
                 icon: PhosphorIcon(
                   icon,
-                  size: MediaQuery.of(context).size.width * 0.065,
               
                   ),
                 onPressed: () {

@@ -9,6 +9,7 @@ import 'dart:io';
 void main() {
   runApp(REMApp());
 
+  //Setting the minimum window sizes only for PC istances
   if(Platform.isWindows || Platform.isLinux || Platform.isMacOS){
     doWhenWindowReady(() {
     final win = appWindow;
@@ -26,12 +27,16 @@ class REMApp extends StatelessWidget {
     Dimensions().init(context);
     return ShadApp.material(
       debugShowCheckedModeBanner: false,
-      initialRoute: "/home",
+      initialRoute: "/access",
       routes: {
+        //"/server_ip" : (context) => ,
         "/access" : (context) => LoginScreen(),
+        //"/matrix_connection" : (context) => ,
         "/home" : (context) => HomeScreen(),
       },
       //TODO implement landing page
+      //TODO implement server address form at beginning
+      //TODO implement matrix connection page
     );
   }
 }

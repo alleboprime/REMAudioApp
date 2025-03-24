@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-enum DeviceType { smartphone, tablet, pc }
-
 class Dimensions {
   static final Dimensions _instance = Dimensions._internal();
 
@@ -14,8 +12,7 @@ class Dimensions {
   double screenHeight = 0;
   double screenWidth = 0;
 
-
-  DeviceType deviceType = DeviceType.smartphone; 
+  bool isPc = false;
 
   void init(BuildContext context) {
     screenHeight = MediaQuery.sizeOf(context).height;
@@ -28,12 +25,12 @@ class Dimensions {
     Orientation orientation = MediaQuery.of(context).orientation;
 
     if(screenWidth / devicePixelRatio < 500){
-      deviceType = DeviceType.smartphone;
+      isPc = false;
     }else{
-      deviceType = DeviceType.pc;
+      isPc = true;
     }
 
-    print(deviceType.name);
+    print(isPc ? "PC" : "SM");
 
     //TODO: remove print for debugging
 
@@ -41,10 +38,10 @@ class Dimensions {
 
   double get logScreenLogoHeight => screenHeight * 0.1;
 
-  double get logScreenTextBoxWidht => (deviceType == DeviceType.pc) ? 500 : 300;
+  double get logScreenTextBoxWidht => isPc ? 500 : 300;
   
-  double get logScreenButtonWidht => (deviceType == DeviceType.pc) ? 150 : 100;
-  double get logScreenButtonHeight => (deviceType == DeviceType.pc) ? 50 : 50;
+  double get logScreenButtonWidht => isPc ? 150 : 100;
+  double get logScreenButtonHeight => isPc ? 50 : 50;
 
 
   double get homeScreenAppBarHeight => screenHeight * 0.08;

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:rem_app/components/homeNavBar/home_nav_bar.dart';
-import 'package:rem_app/pages/audio_page.dart';
-import 'package:rem_app/pages/video_page.dart';
-import 'package:rem_app/pages/settings_page.dart';
-import 'package:rem_app/pages/home_page.dart';
+import 'package:rem_app/pages/homePages/audio_page.dart';
+import 'package:rem_app/pages/homePages/video_page.dart';
+import 'package:rem_app/pages/homePages/settings_page.dart';
+import 'package:rem_app/pages/homePages/home_page.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-
+  final dimensions = Dimensions();
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -25,18 +26,24 @@ class HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.black,
         body: Consumer<HomeNavBarModel>(
           builder: (context, model, child) {
-            return IndexedStack(
-              index: model.selectedPage,
+            return Row(
               children: [
-                HomePage(),
-                AudioPage(),
-                VideoPage(),
-                SettingsPage(),
+                dimensions.isPc ? HomeNavBar() : Container(),
+                Expanded(flex: 3, child: IndexedStack(
+                  index: model.selectedPage,
+                  children: [
+                    HomePage(),
+                    AudioPage(),
+                    VideoPage(),
+                    SettingsPage(),
+                  ],
+                ))
               ],
             );
           }
         ),
-        bottomNavigationBar: HomeNavBar(),
+        bottomNavigationBar: !dimensions.isPc ? HomeNavBar() : null,
+        
       ),
     );
   }
