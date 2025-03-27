@@ -3,10 +3,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-const String remoteIp = "192.168.147.37";  
-
 class UserModel extends ChangeNotifier {
-  UserModel();
+  static final UserModel _instance = UserModel._internal();
+
+  factory UserModel() {
+    return _instance;
+  }
+
+  UserModel._internal();
+
+  final String remoteServerIp = "localhost";  
 
   bool _isLogging = true;
   bool _isLoading = false;
@@ -32,6 +38,13 @@ class UserModel extends ChangeNotifier {
   }
 
   String accessToken = "";
+
+  Future<bool> checkServer(String ip) async {
+    if(ip == "192"){
+      return true;
+    }
+    return false;
+  }
 
   List<dynamic> checkPassword(String password){
     if(password.length < 8){
@@ -79,7 +92,7 @@ class UserModel extends ChangeNotifier {
       'session_type': 'native'
     };
 
-    var url = Uri.http('$remoteIp:8000', '/api/auth/register');
+    var url = Uri.http('$remoteServerIp:8000', '/api/auth/register');
 
     http.Response response;
 
@@ -117,7 +130,7 @@ class UserModel extends ChangeNotifier {
       'session_type': 'native'
     };
 
-    var url = Uri.http('$remoteIp:8000', '/api/auth/signin');
+    var url = Uri.http('$remoteServerIp:8000', '/api/auth/signin');
     http.Response response;
 
     try {

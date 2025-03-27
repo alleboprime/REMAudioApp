@@ -1,6 +1,8 @@
-import 'dart:io';
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/io.dart';
+import 'package:http/http.dart' as http;
+import 'package:rem_app/models/user_model.dart';
 
 class MatrixModel extends ChangeNotifier{
   static final MatrixModel _instance = MatrixModel._internal();
@@ -11,12 +13,41 @@ class MatrixModel extends ChangeNotifier{
 
   MatrixModel._internal();
 
-  final String wsAuthToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJOYXRpdmUiOnsic3ViIjozOSwic2Vzc2lvbl90eXBlIjoibmF0aXZlIn19.HG40BXb_BsUplDUEgZkpmLZNcM-o0D9YHTBJ6dKhNxM";
-  final String wsUrl = "wss://1e9b-5-91-111-187.ngrok-free.app/ws/app"; 
+  final userModel = UserModel();
 
+  String uuid = "";
+
+  Future<String> getInitialToken() async {
+    var url = Uri.http('${userModel.remoteServerIp}:8000', '/ws/auth');
+    http.Response response;
+
+    try {
+      response = await http
+          .get(url,
+              headers: {"Authorization": userModel.accessToken},)
+          .timeout(Duration(seconds: 5));
+    }catch (e) {
+      print("errore");
+      return "";
+    }
+
+    if (response.statusCode == 200) {
+      print("body: ${jsonDecode(response.body)}");
+      return jsonDecode(response.body)["uuid"];
+    }else{
+      print(response.reasonPhrase);
+      return "";
+    }
+  }
 
   void socketConnect() async{
-    try {
+    if(uuid == ""){
+      uuid = await getInitialToken();
+    }
+    print("token: ${userModel.accessToken}");
+    print("uuid: $uuid");
+
+    /*try {
       final Map<String, dynamic> headers = {
         HttpHeaders.authorizationHeader: "Bearer $wsAuthToken",
       };
@@ -39,6 +70,6 @@ class MatrixModel extends ChangeNotifier{
       );
     } catch (e) {
       print("Errore nella connessione WebSocket: $e");
-    }
+    }*/
   }
 }

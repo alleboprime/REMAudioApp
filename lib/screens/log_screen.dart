@@ -90,9 +90,7 @@ class LoginScreenState extends State<LoginScreen> {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: ChangeNotifierProvider(
-          create: (context) => UserModel(),
-          child: Consumer<UserModel>(
+        child: Consumer<UserModel>(
             builder: (context, model, child) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (model.isLogging) {
@@ -199,7 +197,6 @@ class LoginScreenState extends State<LoginScreen> {
               },
           )
         )
-      )
     );
   }
 }
