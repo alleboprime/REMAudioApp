@@ -48,10 +48,9 @@ class LogScreenButton extends ShadButton {
 }
 
 class LogScreenText extends StatefulWidget {
-  const LogScreenText({super.key, required this.text, this.isFormTooltip = false});
+  const LogScreenText({super.key, required this.text});
 
   final String text;
-  final bool isFormTooltip;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -78,12 +77,12 @@ class _LogScreenTextState extends State<LogScreenText> {
             });
           },
           child: GestureDetector(
-            onTap: () => widget.isFormTooltip ? model.showDialog = true : model.isLogging = !model.isLogging,
+            onTap: () =>  model.isLogging = false,
             child: Container(
               decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                          color: isHovered ? widget.isFormTooltip ? colors.logScreenFormTooltip : Colors.white : Colors.transparent,
+                          color: isHovered ? Colors.white : Colors.transparent,
                           width: 1,
                         ),
                       ),
@@ -92,10 +91,10 @@ class _LogScreenTextState extends State<LogScreenText> {
               child: Text(
                 widget.text,
                 style: TextStyle(
-                  color: widget.isFormTooltip ? colors.logScreenFormTooltip : Colors.white,
-                  fontSize: widget.isFormTooltip ? 14 : 17,
+                  color: Colors.white,
+                  fontSize: 17,
                   fontFamily: "inter",
-                  fontWeight: widget.isFormTooltip ? FontWeight.normal : FontWeight.bold,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),

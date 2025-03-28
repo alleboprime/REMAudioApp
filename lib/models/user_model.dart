@@ -14,7 +14,7 @@ class UserModel extends ChangeNotifier {
 
   final String remoteServerIp = "localhost";  
 
-  bool _isLogging = true;
+  bool _isLogging = false;
   bool _isLoading = false;
   bool _showDialog = false;
 
@@ -77,47 +77,6 @@ class UserModel extends ChangeNotifier {
     return [true];
   }
 
-  Future<List<dynamic>> register(String username, String email, String password, String confirmPassword) async {
-    List<dynamic> checkResults = checkForms(
-        [username, email, password, confirmPassword],
-        checkPasswords: true);
-    if (!checkResults[0]) {
-      return checkResults;
-    }
-
-    Map<String, String> body = {
-      'username': username,
-      'email': email,
-      'password': password,
-      'session_type': 'native'
-    };
-
-    var url = Uri.http('$remoteServerIp:8000', '/api/auth/register');
-
-    http.Response response;
-
-    try {
-      response = await http
-          .post(url,
-              headers: {"Content-Type": "application/json"},
-              body: jsonEncode(body))
-          .timeout(Duration(seconds: 5));
-    } on TimeoutException catch (_) {
-      accessToken = "";
-      return [false, "Request timed out"];
-    } on Exception catch (e) {
-      accessToken = "";
-      return [false, e.toString()];
-    }
-    if (response.statusCode == 200) {
-      accessToken = jsonDecode(response.body)["access_token"];
-      return [true];
-    } else {
-      accessToken = "";
-      return [false, jsonDecode(response.body)["reason"]];
-    }
-  }
-
   Future<List<dynamic>> login(String email, String password) async {
     List<dynamic> checkResults = checkForms([email, password]);
     if (!checkResults[0]) {
@@ -142,9 +101,9 @@ class UserModel extends ChangeNotifier {
     } on TimeoutException catch (_) {
       accessToken = "";
       return [false, "Request timed out"];
-    } on Exception catch (e) {
+    } on Exception{
       accessToken = "";
-      return [false, e.toString()];
+      return [false, "Something Went Wrong"];
     }
 
     if (response.statusCode == 200) {

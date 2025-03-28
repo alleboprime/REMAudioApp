@@ -5,7 +5,6 @@ import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:rem_app/screens/home_screen.dart';
 import 'package:rem_app/screens/log_screen.dart';
-import 'package:rem_app/screens/server_screen.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'dart:io';
 
@@ -33,16 +32,14 @@ class REMApp extends StatelessWidget {
     Dimensions().init(context);
     return ShadApp.material(
       debugShowCheckedModeBanner: false,
-      initialRoute: "/server_ip",
+      initialRoute: "/access",
       routes: {
-        "/server_ip" : (context) => ServerScreen(),
         "/access" : (context) => LoginScreen(),
         //"/matrix_connection" : (context) => ,
         "/home" : (context) => HomeScreen(),
       },
       //TODO implement landing page
-      //TODO implement server address form at beginning
-      //TODO implement matrix connection page
+      //TODO implement matrix connection page for admin
     );
   }
 }

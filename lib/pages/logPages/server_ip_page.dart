@@ -2,21 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:rem_app/components/logScreen/log_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage(
-      {super.key,
-      required this.emailController,
-      required this.passwordController});
+class ServerIpPage extends StatefulWidget {
+  const ServerIpPage({super.key, required this.serverIpController});
 
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
+  final TextEditingController serverIpController;
 
   @override
   // ignore: library_private_types_in_public_api
-  _LoginPageState createState() => _LoginPageState();
+  _ServerIpPageState createState() => _ServerIpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _ServerIpPageState extends State<ServerIpPage> {
+
   @override
   Widget build(BuildContext context) {
     final dimensions = Dimensions();
@@ -33,20 +30,8 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: dimensions.logScreenTextBoxHeight,
                 child: LogScreenTextBox(
-                    placeholder_: "Username",
-                    controller_: widget.emailController),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                height: dimensions.logScreenTextBoxHeight,
-                child: LogScreenTextBox(
-                  placeholder_: "Password",
-                  controller_: widget.passwordController,
-                  isPasswordBox: true,
-                ),
-              ),
+                  placeholder_: "Server Ip Address", controller_: widget.serverIpController),
+              )
             ],
           ),
         ),

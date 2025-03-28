@@ -5,7 +5,7 @@ import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/matrix_model.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:rem_app/pages/logPages/login_page.dart';
-import 'package:rem_app/pages/logPages/register_page.dart';
+import 'package:rem_app/pages/logPages/server_ip_page.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,11 +21,7 @@ class LoginScreenState extends State<LoginScreen> {
   final TextEditingController logEmailController = TextEditingController();
   final TextEditingController logPasswordController = TextEditingController();
 
-  final TextEditingController regEmailController = TextEditingController();
-  final TextEditingController regPasswordController = TextEditingController();
-
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController serverIpController = TextEditingController();
 
   UserModel model = UserModel();
 
@@ -34,15 +30,16 @@ class LoginScreenState extends State<LoginScreen> {
   bool failed = false;
   String failingReason = "";
 
-  void _authenticate(Future<List<dynamic>> Function() authMethod) async {
+  void login() async {
     setState(() {
       isLoading = true;
       failed = false;
     });
 
-    List<dynamic> response = await authMethod();
+    List<dynamic> response = await model.login(logEmailController.text, logPasswordController.text);
     
     if (response[0]) {
+      if(!mounted)return;
       isLoading = false;
       Navigator.restorablePushNamed(context, "/home");
       final matrixModel = MatrixModel();
@@ -62,24 +59,29 @@ class LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void login() {
-    _authenticate(
-      () => model.login(logEmailController.text, logPasswordController.text),
-    );
+  void submitIp() async {
+    setState(() {
+      isLoading = true;
+      failed = false;
+    });
+    await Future.delayed(Duration(seconds: 2));
+    bool result = await model.checkServer(serverIpController.text);
+    if(result){
+      isLoading = false;
+      model.isLogging = true;
+    }else{
+      setState(() {
+        isLoading = false;
+        failingReason = "Connection Failed";
+        failed = true;
+      });
+      Future.delayed(Duration(seconds: 3), () {
+        if (mounted) {
+          setState(() => failed = false);
+        }
+      });
+    }
   }
-
-  void register() {
-    _authenticate(
-      () => model.register(
-        usernameController.text,
-        regEmailController.text,
-        regPasswordController.text,
-        confirmPasswordController.text,
-      ),
-    );
-  }
-
-  //TODO: fix overflow in landscape mode on phone
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +95,7 @@ class LoginScreenState extends State<LoginScreen> {
         child: Consumer<UserModel>(
             builder: (context, model, child) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (model.isLogging) {
+                if (!model.isLogging) {
                   loginScreenPageController.animateToPage(
                     0,
                     duration: Duration(milliseconds: 200),
@@ -114,59 +116,63 @@ class LoginScreenState extends State<LoginScreen> {
                   Scaffold(
                     resizeToAvoidBottomInset: true,
                     backgroundColor: Colors.black,
-                    body: Column(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                            alignment: Alignment.center,
-                            child: SvgPicture.asset(
-                              colorFilter: ColorFilter.mode(
-                                Colors.black.withAlpha(40),
-                                BlendMode.srcATop,
-                              ),
-                              "assets/rem_logo.svg"
-                            )
-                          )
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: SizedBox(
-                            width: dimensions.logScreenTextBoxWidht,
-                            child: PageView(
-                              physics: NeverScrollableScrollPhysics(),
-                              controller: loginScreenPageController,
-                              children: [
-                                LoginPage(emailController: logEmailController, passwordController: logPasswordController,),
-                                RegisterPage(usernameController: usernameController, emailController: regEmailController, passwordController: regPasswordController, confirmPasswordController: confirmPasswordController,),
-                              ]
-                            ),
-                          )
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              LogScreenButton(
-                                width_: dimensions.logScreenButtonWidht,
-                                height_: dimensions.logScreenButtonHeight,
-                                text: model.isLogging ? "Log In" : "Sign Up",
-                                action: model.isLogging ? login : register,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 5),
-                                child: LogScreenText(
-                                  text: model.isLogging
-                                    ? "Sign Up"
-                                    : "Log In"
-                                ),
-                              ),
-                            ],
+                    body: Center(
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: dimensions.extremeNarrow ? 0 : 2,
+                            child: dimensions.extremeNarrow
+                              ? SizedBox.shrink()
+                              : Container(
+                                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                                alignment: Alignment.center,
+                                child: SvgPicture.asset(
+                                  colorFilter: ColorFilter.mode(
+                                    Colors.black.withAlpha(40),
+                                    BlendMode.srcATop,
+                                  ),
+                                  "assets/rem_logo.svg"
+                                )
+                              )
                           ),
-                        ),
-                      ],
+                          Expanded(
+                            flex: 2,
+                            child: SizedBox(
+                              width: dimensions.logScreenTextBoxWidht,
+                              child: PageView(
+                                physics: NeverScrollableScrollPhysics(),
+                                controller: loginScreenPageController,
+                                children: [
+                                  ServerIpPage(serverIpController: serverIpController,),
+                                  LoginPage(emailController: logEmailController, passwordController: logPasswordController,),
+                                ]
+                              ),
+                            )
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  LogScreenButton(
+                                    width_: dimensions.logScreenButtonWidht,
+                                    height_: dimensions.logScreenButtonHeight,
+                                    text: model.isLogging ? "Log In" : "Submit",
+                                    action: model.isLogging ? login : submitIp,
+                                  ),
+                                  if(model.isLogging)
+                                    SizedBox(height: 5,),
+                                  if(model.isLogging)
+                                    LogScreenText(
+                                      text: "Go Back"
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     )
                   ),
                   if (isLoading)

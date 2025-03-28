@@ -31,6 +31,7 @@ class ServerScreenState extends State<ServerScreen> {
     await Future.delayed(Duration(seconds: 2));
     bool result = await model.checkServer(serverIpController.text);
     if(result){
+      if(!mounted)return;
       isLoading = false;
       Navigator.restorablePushNamed(context, "/access");
     }else{
