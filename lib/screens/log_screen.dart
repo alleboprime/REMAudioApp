@@ -18,8 +18,8 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen> {
   PageController loginScreenPageController = PageController(initialPage: 0);
 
-  final TextEditingController logEmailController = TextEditingController();
-  final TextEditingController logPasswordController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   final TextEditingController serverIpController = TextEditingController();
 
@@ -36,7 +36,7 @@ class LoginScreenState extends State<LoginScreen> {
       failed = false;
     });
 
-    List<dynamic> response = await model.login(logEmailController.text, logPasswordController.text);
+    List<dynamic> response = await model.login(usernameController.text, passwordController.text);
     
     if (response[0]) {
       if(!mounted)return;
@@ -144,7 +144,7 @@ class LoginScreenState extends State<LoginScreen> {
                                 controller: loginScreenPageController,
                                 children: [
                                   ServerIpPage(serverIpController: serverIpController,),
-                                  LoginPage(emailController: logEmailController, passwordController: logPasswordController,),
+                                  LoginPage(usernameController: usernameController, passwordController: passwordController,),
                                 ]
                               ),
                             )

@@ -12,8 +12,10 @@ class UserModel extends ChangeNotifier {
 
   UserModel._internal();
 
-  final String remoteServerIp = "localhost";  
+  String remoteServerIp = "";  
 
+  String accessToken = "";
+  
   bool _isLogging = false;
   bool _isLoading = false;
   bool _showDialog = false;
@@ -37,10 +39,11 @@ class UserModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  String accessToken = "";
+  
 
-  Future<bool> checkServer(String ip) async {
-    if(ip == "192"){
+  Future<bool> checkServer(String address) async {
+    if(address == "localhost"){
+      remoteServerIp = address;
       return true;
     }
     return false;
@@ -77,14 +80,14 @@ class UserModel extends ChangeNotifier {
     return [true];
   }
 
-  Future<List<dynamic>> login(String email, String password) async {
-    List<dynamic> checkResults = checkForms([email, password]);
+  Future<List<dynamic>> login(String username, String password) async {
+    List<dynamic> checkResults = checkForms([username, password]);
     if (!checkResults[0]) {
       return checkResults;
     }
 
     Map<String, String> body = {
-      'email': email,
+      'username': username,
       'password': password,
       'session_type': 'native'
     };

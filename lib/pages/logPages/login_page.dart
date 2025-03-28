@@ -5,10 +5,10 @@ import 'package:rem_app/dimensions.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage(
       {super.key,
-      required this.emailController,
+      required this.usernameController,
       required this.passwordController});
 
-  final TextEditingController emailController;
+  final TextEditingController usernameController;
   final TextEditingController passwordController;
 
   @override
@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: dimensions.logScreenTextBoxHeight,
                 child: LogScreenTextBox(
                     placeholder_: "Username",
-                    controller_: widget.emailController),
+                    controller_: widget.usernameController),
               ),
               SizedBox(
                 height: 10,
