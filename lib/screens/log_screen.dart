@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/logScreen/log_screen_components.dart';
@@ -25,60 +27,72 @@ class LoginScreenState extends State<LoginScreen> {
 
   UserModel model = UserModel();
 
+  Timer? _failedTimer;
+
   bool isLoading = false;
 
-  bool failed = false;
-  String failingReason = "";
+  bool _failed = false;
+  bool get failed => _failed;
+  set failed(bool value){
+    if(value){
+      _failed = true;
+      _failedTimer?.cancel();
+      _failedTimer = Timer(Duration(seconds: 3), () {
+        if(mounted){
+          setState(() => _failed = false);
+        }
+      });
+    }else{
+      setState(() => _failed = false);
+    }
+  }
+
+  String _failingReason = "";
+  String get failingReason => _failingReason;
+  set failingReason(String value){
+    _failingReason = value;
+    failed = true;
+  }
 
   void login() async {
     setState(() {
       isLoading = true;
-      failed = false;
     });
+    List<dynamic> loginConnectionResult = await model.login(usernameController.text, passwordController.text);
+    String reason = loginConnectionResult[1];
 
-    List<dynamic> response = await model.login(usernameController.text, passwordController.text);
-    
-    if (response[0]) {
-      if(!mounted)return;
-      isLoading = false;
-      Navigator.restorablePushNamed(context, "/home");
+    if (loginConnectionResult[0]) {
       final matrixModel = MatrixModel();
-      matrixModel.socketConnect();
-    } else {
-      setState(() {
-        failingReason = response[1];
-        failed = true;
+      List<dynamic> socketConnectionResult = await matrixModel.connectSocket();
+      reason = socketConnectionResult[1];
+      if(socketConnectionResult[0]){
         isLoading = false;
-      });
-
-      Future.delayed(Duration(seconds: 3), () {
-        if (mounted) {
-          setState(() => failed = false);
-        }
-      });
-    }
+        if(!mounted)return;
+        //TODO check if pushNamed instead of restorablePushNamed generate errors.
+        //try on phone going back
+        //TODO make the switching page transition better looking
+        Navigator.pushNamed(context, "/home");
+      }
+    } 
+    setState(() {
+      failingReason = reason;
+      isLoading = false;
+    });
   }
 
   void submitIp() async {
     setState(() {
       isLoading = true;
-      failed = false;
     });
-    await Future.delayed(Duration(seconds: 2));
     bool result = await model.checkServer(serverIpController.text);
     if(result){
       isLoading = false;
       model.isLogging = true;
+      failed = false;
     }else{
       setState(() {
         isLoading = false;
-        failingReason = "Connection Failed";
-        failed = true;
-      });
-      Future.delayed(Duration(seconds: 3), () {
-        if (mounted) {
-          setState(() => failed = false);
-        }
+        failingReason = "Connection Test Failed";
       });
     }
   }
@@ -124,7 +138,7 @@ class LoginScreenState extends State<LoginScreen> {
                             child: dimensions.extremeNarrow
                               ? SizedBox.shrink()
                               : Container(
-                                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                                padding: EdgeInsets.only(top: 60, left: 50, right: 50),
                                 alignment: Alignment.center,
                                 child: SvgPicture.asset(
                                   colorFilter: ColorFilter.mode(

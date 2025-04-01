@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rem_app/models/user_model.dart';
 
-class MatrixModel extends ChangeNotifier{
+class MatrixModel extends ChangeNotifier {
   static final MatrixModel _instance = MatrixModel._internal();
 
   factory MatrixModel() {
@@ -17,59 +18,95 @@ class MatrixModel extends ChangeNotifier{
 
   String uuid = "";
 
-  Future<String> getInitialToken() async {
+  late WebSocket socket;
+
+  late Map<String, bool> inputChannelMuted;
+  late Map<String, bool> outputChannelMuted;
+
+  late Map<String, double> inputChannelVolume;
+  late Map<String, double> outputChannelVolume;
+
+  late Map<String, bool> channelVisibility;
+  late int currentPreset;
+
+  void updateData(String message) {
+    dynamic decodedMessage = jsonDecode(message);
+    inputChannelMuted = decodedMessage["i_mute"];
+    outputChannelMuted = decodedMessage["o_mute"];
+    inputChannelVolume = decodedMessage["i_volumes"];
+    outputChannelVolume = decodedMessage["o_volumes"];
+    //TODO wait for visibility features
+    //channelVisibility = decodedMessage["visibility"];
+    currentPreset = decodedMessage["current_preset"];
+    notifyListeners();
+  }
+
+  Future<List<dynamic>> connectSocket() async {
+    bool result = await getInitialToken();
+    if (!result) {
+      return [false, "Failed Retrieving Initial Token"];
+    }
+    result = await establishConnection();
+    if (!result) {
+      return [false, "Failed Establishing Connection"];
+    }
+    return [true, ""];
+  }
+
+  Future<bool> getInitialToken() async {
     var url = Uri.http('${userModel.remoteServerIp}:8000', '/ws/auth');
     http.Response response;
-
     try {
-      response = await http
-          .get(url,
-              headers: {"Authorization": userModel.accessToken},)
-          .timeout(Duration(seconds: 5));
-    }catch (e) {
-      print("errore");
-      return "";
+      response = await http.get(
+        url,
+        headers: {"Authorization": "Bearer ${userModel.accessToken}"},
+      ).timeout(Duration(seconds: 5));
+    } catch (_) {
+      return false;
     }
-
     if (response.statusCode == 200) {
-      print("body: ${jsonDecode(response.body)}");
-      return jsonDecode(response.body)["uuid"];
-    }else{
-      print(response.reasonPhrase);
-      return "";
+      uuid = jsonDecode(response.body)["uuid"];
+      return true;
+    } else {
+      return false;
     }
   }
 
-  void socketConnect() async{
-    if(uuid == ""){
-      uuid = await getInitialToken();
-    }
-    print("token: ${userModel.accessToken}");
-    print("uuid: $uuid");
+  Future<bool> establishConnection() async {
+    try {
+      // TODO implement socket establishment
+      socket = await WebSocket.connect(
+          "ws://${userModel.remoteServerIp}:8000/ws/app?uuid=$uuid");
 
-    /*try {
-      final Map<String, dynamic> headers = {
-        HttpHeaders.authorizationHeader: "Bearer $wsAuthToken",
-      };
+      Completer<bool> completer = Completer<bool>();
 
-      final WebSocket socket = await WebSocket.connect(wsUrl, headers: headers);
-      final channel = IOWebSocketChannel(socket);
-
-      print("Connesso al WebSocket");
-
-      channel.stream.listen(
+      socket.listen(
         (message) {
-          print("Messaggio ricevuto: $message");
-        },
-        onError: (error) {
-          print("Errore nella connessione: $error");
+          updateData(message);
+          if (!completer.isCompleted) {
+            completer.complete(true);
+          }
         },
         onDone: () {
-          print("Connessione chiusa");
+          print('WebSocket closed.');
+          if (!completer.isCompleted) {
+            completer.complete(false);
+          }
+        },
+        onError: (error) {
+          print('WebSocket Error: $error');
+          socket.close();
+          if (!completer.isCompleted) {
+            completer.complete(false);
+          }
+          //TODO _reconnect();
         },
       );
-    } catch (e) {
-      print("Errore nella connessione WebSocket: $e");
-    }*/
+
+      return completer.future;
+    } catch (_) {
+      return false;
+    }
   }
+
 }

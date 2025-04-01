@@ -39,14 +39,18 @@ class UserModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  
-
   Future<bool> checkServer(String address) async {
-    if(address == "localhost"){
-      remoteServerIp = address;
-      return true;
+    var url = Uri.http('$address:8000', '/api');
+    try {
+     await http
+          .get(url)              
+          .timeout(Duration(seconds: 5));
+    } catch (_) {
+      remoteServerIp = "";
+      return false;
     }
-    return false;
+    remoteServerIp = address;
+    return true;
   }
 
   List<dynamic> checkPassword(String password){
@@ -111,7 +115,7 @@ class UserModel extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       accessToken = jsonDecode(response.body)["access_token"];
-      return [true];
+      return [true, ""];
     } else {
       accessToken = "";
       return [false, jsonDecode(response.body)["reason"]];
