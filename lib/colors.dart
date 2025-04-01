@@ -19,4 +19,8 @@ class AppColors {
 
   Color get logScreenFormTooltip => Color.fromRGBO(133, 147, 166, 1);
 
+  Color get mutedChannel => Color.fromRGBO(255, 48, 48, 1);
+
+  Color get unmutedChannel => Color.fromRGBO(135, 255, 119, 1);
+
 }
