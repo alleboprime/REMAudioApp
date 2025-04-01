@@ -2,6 +2,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/models/matrix_model.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:rem_app/screens/home_screen.dart';
 import 'package:rem_app/screens/log_screen.dart';
@@ -9,10 +10,13 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'dart:io';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-      create: (context) => UserModel(),
-      child: REMApp(),
-    ),);
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => UserModel()),
+      ChangeNotifierProvider(create: (context) => MatrixModel()),
+    ],
+    child: REMApp(),
+  ));
 
   //Setting the minimum window sizes only for PC istances
   if(Platform.isWindows || Platform.isLinux || Platform.isMacOS){

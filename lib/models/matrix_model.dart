@@ -22,9 +22,31 @@ class MatrixModel extends ChangeNotifier {
 
   late Map<String, dynamic> receivedData;
 
+  late Map<String, bool> inputMute;
+  late Map<String, bool> outputMute;
+
+  late Map<String, double> inputVolumes;
+  late Map<String, double> outputVolumes;
+
+  late int currentPreset;
+
   void updateData(String message) {
     receivedData = jsonDecode(message);
-    print(receivedData);
+
+    inputMute = (receivedData["i_mute"] as Map<String, dynamic>)
+        .map((key, value) => MapEntry(key, value as bool));
+
+    outputMute = (receivedData["o_mute"] as Map<String, dynamic>)
+        .map((key, value) => MapEntry(key, value as bool));
+
+    inputVolumes = (receivedData["i_volumes"] as Map<String, dynamic>)
+        .map((key, value) => MapEntry(key, (value as num).toDouble()));
+
+    outputVolumes = (receivedData["o_volumes"] as Map<String, dynamic>)
+        .map((key, value) => MapEntry(key, (value as num).toDouble()));
+
+    currentPreset = receivedData["current_preset"] as int;
+
     notifyListeners();
   }
 
