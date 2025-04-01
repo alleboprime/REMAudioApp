@@ -20,24 +20,11 @@ class MatrixModel extends ChangeNotifier {
 
   late WebSocket socket;
 
-  late Map<String, bool> inputChannelMuted;
-  late Map<String, bool> outputChannelMuted;
-
-  late Map<String, double> inputChannelVolume;
-  late Map<String, double> outputChannelVolume;
-
-  late Map<String, bool> channelVisibility;
-  late int currentPreset;
+  late Map<String, dynamic> receivedData;
 
   void updateData(String message) {
-    dynamic decodedMessage = jsonDecode(message);
-    inputChannelMuted = decodedMessage["i_mute"];
-    outputChannelMuted = decodedMessage["o_mute"];
-    inputChannelVolume = decodedMessage["i_volumes"];
-    outputChannelVolume = decodedMessage["o_volumes"];
-    //TODO wait for visibility features
-    //channelVisibility = decodedMessage["visibility"];
-    currentPreset = decodedMessage["current_preset"];
+    receivedData = jsonDecode(message);
+    print(receivedData);
     notifyListeners();
   }
 
@@ -74,7 +61,6 @@ class MatrixModel extends ChangeNotifier {
 
   Future<bool> establishConnection() async {
     try {
-      // TODO implement socket establishment
       socket = await WebSocket.connect(
           "ws://${userModel.remoteServerIp}:8000/ws/app?uuid=$uuid");
 
@@ -99,7 +85,7 @@ class MatrixModel extends ChangeNotifier {
           if (!completer.isCompleted) {
             completer.complete(false);
           }
-          //TODO _reconnect();
+          //TODO implement _reconnect();
         },
       );
 
