@@ -117,4 +117,14 @@ class MatrixModel extends ChangeNotifier {
     }
   }
 
+  void toggleMuteChannel(int channel, String direction, bool status){
+    Map<String, String> command = {
+      "section": "mute",
+      "io": direction,
+      "channel": "$channel",
+      "value" : "$status"
+    };
+    socket.add(jsonEncode(command));
+  }
+
 }

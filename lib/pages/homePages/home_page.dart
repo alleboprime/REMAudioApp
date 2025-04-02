@@ -55,10 +55,10 @@ class _HomePageState extends State<HomePage>{
                             ],
                           ),
                         ),
-                        Divider(height: dimensions.extremeNarrow ? 2 : 10, thickness: 2, color: Colors.white,),
                         Expanded(
                           child: LayoutBuilder(
                             builder: (context, constraints) {
+                              Map<String, bool> values = selectedTag == 0 ? model.inputMute : model.outputMute;
                               Widget content = Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: List.generate(4, (rowIndex) {
@@ -66,13 +66,16 @@ class _HomePageState extends State<HomePage>{
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: List.generate(4, (colIndex) {
                                       return ShadButton.outline(
+                                        onTapUp: (_) => {
+                                          model.toggleMuteChannel(rowIndex * 4 + colIndex + 1, selectedTag == 0 ? "input" : "output", !(values["${rowIndex * 4 + colIndex + 1}"] ?? true))
+                                        },
                                         hoverBackgroundColor: Colors.transparent,
                                         width: 60,
                                         height: 50,
                                         padding: EdgeInsets.all(0),
                                         decoration: ShadDecoration(
                                           border: ShadBorder.all(
-                                            color: (model.inputMute["${rowIndex * 4 + colIndex + 1}"] ?? true) 
+                                            color: (values["${rowIndex * 4 + colIndex + 1}"] ?? true) 
                                               ? colors.mutedChannel 
                                               : colors.unmutedChannel, 
                                             radius: BorderRadius.circular(10),
@@ -82,7 +85,7 @@ class _HomePageState extends State<HomePage>{
                                           child: Text(
                                             'CH${rowIndex * 4 + colIndex + 1}',
                                             style: TextStyle(
-                                              color: (model.inputMute["${rowIndex * 4 + colIndex + 1}"] ?? true) 
+                                              color: (values["${rowIndex * 4 + colIndex + 1}"] ?? true) 
                                                 ? colors.mutedChannel 
                                                 : colors.unmutedChannel, 
                                               fontSize: 17,
@@ -100,7 +103,19 @@ class _HomePageState extends State<HomePage>{
                                   : content;
                             },
                           ),
-                        )
+                        ),
+                        SizedBox(
+                          height: dimensions.extremeNarrow ? 30 : 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              allToggleButton("Mute All", 0, model.toggleMuteChannel),
+                              SizedBox(width: 5,),
+                              allToggleButton("Unmute All", 1, model.toggleMuteChannel),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -128,6 +143,27 @@ class _HomePageState extends State<HomePage>{
       child: Text(title, style: TextStyle(fontSize: 17),), 
       onTapUp: (_){
         selectedTag = selection;
+      },
+    );
+  }
+
+  ShadButton allToggleButton(String title, int selection, Function function) {
+    return ShadButton.outline(
+      width: 110,
+      height: 30,
+      padding: EdgeInsets.all(0),
+      decoration: ShadDecoration(
+        border: ShadBorder.all(width: 2, color: selection == 0 ? colors.mutedChannel : colors.unmutedChannel, radius: BorderRadius.circular(50))
+      ),
+      hoverBackgroundColor: Colors.transparent,
+      backgroundColor: Colors.transparent,
+      foregroundColor: selection == 0 ? colors.mutedChannel : colors.unmutedChannel,
+      hoverForegroundColor: selection == 0 ? colors.mutedChannel : colors.unmutedChannel,
+      child: Text(title, style: TextStyle(fontSize: 17),), 
+      onTapUp: (_){
+        for(int i = 1; i <= 16; i++){
+          function(i, selectedTag == 0 ? "input" : "output", selection == 0);
+        }
       },
     );
   }
