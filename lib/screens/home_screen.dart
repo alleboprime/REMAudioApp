@@ -22,28 +22,54 @@ class HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => HomeNavBarModel(),
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: Consumer<HomeNavBarModel>(
-          builder: (context, model, child) {
-            return Row(
-              children: [
-                dimensions.isPc ? HomeNavBar() : Container(),
-                Expanded(flex: 3, child: IndexedStack(
-                  index: model.selectedPage,
-                  children: [
-                    HomePage(),
-                    AudioPage(),
-                    VideoPage(),
-                    SettingsPage(),
-                  ],
-                ))
-              ],
-            );
-          }
+      child: Stack(
+        children: [
+          Scaffold(
+          backgroundColor: Colors.black,
+          body: Consumer<HomeNavBarModel>(
+            builder: (context, model, child) {
+              return Row(
+                children: [
+                  dimensions.isPc ? HomeNavBar() : Container(),
+                  Expanded(flex: 3, child: IndexedStack(
+                    index: model.selectedPage,
+                    children: [
+                      HomePage(),
+                      AudioPage(),
+                      VideoPage(),
+                      SettingsPage(),
+                    ],
+                  ))
+                ],
+              );
+            }
+          ),
+          bottomNavigationBar: !dimensions.isPc ? HomeNavBar() : null,
+          
         ),
-        bottomNavigationBar: !dimensions.isPc ? HomeNavBar() : null,
-        
+          /*
+          if(true)
+            Container(
+              color: Colors.black.withAlpha(200),
+              child: Center(
+                child: SizedBox(
+                  width: 230,
+                  child: ShadAlert(
+                    decoration: ShadDecoration(
+                      color: Colors.black,
+                      border: ShadBorder.all(color: Colors.yellow)
+                    ),
+                    iconData: LucideIcons.clock,
+                    iconColor: Colors.yellow,
+                    title: Text('Matrix Unavailable', style: TextStyle(color: Colors.yellow)),
+                    description:
+                        Text('Please wait...', style: TextStyle(color: Colors.yellow),),
+                  ),
+                )
+              ),
+            ),
+            */
+        ]
       ),
     );
   }
