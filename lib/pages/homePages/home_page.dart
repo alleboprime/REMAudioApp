@@ -25,6 +25,14 @@ class _HomePageState extends State<HomePage>{
     });
   }
 
+  int _selectedAllTag = 0;
+  int get selectedAllTag => _selectedAllTag;
+  set selectedAllTag(int value){
+    setState(() {
+      _selectedAllTag = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -110,9 +118,7 @@ class _HomePageState extends State<HomePage>{
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              allToggleButton("Mute All", 0, model.toggleMuteChannel),
-                              SizedBox(width: 5,),
-                              allToggleButton("Unmute All", 1, model.toggleMuteChannel),
+                              allToggleButton(model.toggleMuteChannel),
                             ],
                           ),
                         ),
@@ -147,23 +153,24 @@ class _HomePageState extends State<HomePage>{
     );
   }
 
-  ShadButton allToggleButton(String title, int selection, Function function) {
+  ShadButton allToggleButton(Function function) {
     return ShadButton.outline(
       width: 110,
       height: 30,
       padding: EdgeInsets.all(0),
       decoration: ShadDecoration(
-        border: ShadBorder.all(width: 2, color: selection == 0 ? colors.mutedChannel : colors.unmutedChannel, radius: BorderRadius.circular(50))
+        border: ShadBorder.all(width: 2, color: selectedAllTag == 0 ? colors.mutedChannel : colors.unmutedChannel, radius: BorderRadius.circular(50))
       ),
       hoverBackgroundColor: Colors.transparent,
       backgroundColor: Colors.transparent,
-      foregroundColor: selection == 0 ? colors.mutedChannel : colors.unmutedChannel,
-      hoverForegroundColor: selection == 0 ? colors.mutedChannel : colors.unmutedChannel,
-      child: Text(title, style: TextStyle(fontSize: 17),), 
+      foregroundColor: selectedAllTag == 0 ? colors.mutedChannel : colors.unmutedChannel,
+      hoverForegroundColor: selectedAllTag == 0 ? colors.mutedChannel : colors.unmutedChannel,
+      child: Text(selectedAllTag == 0 ? "Mute All" : "Unmute All", style: TextStyle(fontSize: 17),), 
       onTapUp: (_){
         for(int i = 1; i <= 16; i++){
-          function(i, selectedTag == 0 ? "input" : "output", selection == 0);
+          function(i, selectedTag == 0 ? "input" : "output", selectedAllTag == 0);
         }
+        selectedAllTag = (selectedAllTag == 0 ? 1 : 0); 
       },
     );
   }
