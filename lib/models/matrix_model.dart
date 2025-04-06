@@ -29,6 +29,7 @@ class MatrixModel extends ChangeNotifier {
   late Map<String, double> outputVolumes;
 
   late int currentPreset;
+  bool matrixAvailable = true;
 
   void updateData(String message) {
     receivedData = jsonDecode(message);
@@ -46,6 +47,8 @@ class MatrixModel extends ChangeNotifier {
         .map((key, value) => MapEntry(key, (value as num).toDouble()));
 
     currentPreset = receivedData["current_preset"] as int;
+
+    matrixAvailable = receivedData["available"];
 
     notifyListeners();
   }

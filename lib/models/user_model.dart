@@ -15,6 +15,7 @@ class UserModel extends ChangeNotifier {
   String remoteServerIp = "";  
 
   String accessToken = "";
+  bool isAdmin = false;
   
   bool _isLogging = false;
   bool _isLoading = false;
@@ -107,17 +108,21 @@ class UserModel extends ChangeNotifier {
           .timeout(Duration(seconds: 5));
     } on TimeoutException catch (_) {
       accessToken = "";
+      isAdmin = false;
       return [false, "Request timed out"];
     } on Exception{
       accessToken = "";
+      isAdmin = false;
       return [false, "Something Went Wrong"];
     }
 
     if (response.statusCode == 200) {
       accessToken = jsonDecode(response.body)["access_token"];
+      isAdmin = jsonDecode(response.body)["admin"];
       return [true, ""];
     } else {
       accessToken = "";
+      isAdmin = false;
       return [false, jsonDecode(response.body)["reason"]];
     }
   }
