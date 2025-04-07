@@ -48,20 +48,20 @@ class HomeScreenState extends State<HomeScreen> {
                           ),
                           if(!model2.matrixAvailable)
                             Container(
-                              color: Colors.black.withAlpha(200),
+                              color: Colors.black.withAlpha(100),
                               child: Center(
                                 child: SizedBox(
-                                  width: 230,
+                                  width: 235,
                                   child: ShadAlert(
                                     decoration: ShadDecoration(
                                       color: Colors.black,
-                                      border: ShadBorder.all(color: Colors.yellow)
+                                      border: ShadBorder.all(color: Colors.yellow, width: 2)
                                     ),
                                     iconData: LucideIcons.clock,
                                     iconColor: Colors.yellow,
-                                    title: Text('Matrix Unavailable', style: TextStyle(color: Colors.yellow)),
+                                    title: Text('Matrix Unavailable', style: TextStyle(color: Colors.yellow, fontSize: 18)),
                                     description:
-                                        Text('Please wait...', style: TextStyle(color: Colors.yellow),),
+                                        Text('Please wait...', style: TextStyle(color: Colors.yellow, fontSize: 17),),
                                   ),
                                 )
                               ),

@@ -123,6 +123,7 @@ class _LogScreenTextBoxState extends State<LogScreenTextBox> {
   @override
   Widget build(BuildContext context) {
     return ShadInput(
+      style: TextStyle(fontSize: 17),
       controller: widget.controller_,
       obscureText: (widget.isPasswordBox) ? obscured : false,
       placeholder: Text(widget.placeholder_),

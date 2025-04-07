@@ -37,7 +37,6 @@ class HomeNavBar extends StatelessWidget {
 
     return dimensions.isPc
         ? Container(
-            margin: EdgeInsets.only(right: 10),
             color: colors.primaryColor,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -45,7 +44,7 @@ class HomeNavBar extends StatelessWidget {
             ),
           )
         : Container(
-            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
             decoration: BoxDecoration(
               color: colors.primaryColor,
               borderRadius: BorderRadius.circular(40),
