@@ -48,7 +48,14 @@ class SettingsPage extends StatelessWidget {
                         SettingsTile(title: "Change Language", iconOrigin: PhosphorIcons.translate(), action: (_)=>()),
                         Divider(thickness: 4, color: colors.primaryColor, height: 4,),
                         if(userModel.isAdmin)
-                          SettingsTile(title: "Matrix Connection", iconOrigin: PhosphorIcons.network(), action: (_)=>()),
+                          SettingsTile(
+                            title: "Matrix Connection", 
+                            iconOrigin: PhosphorIcons.network(), 
+                            action: (_){
+                              matrixModel.socket.close();
+                              Navigator.pushNamed(context, "/matrix_connection");
+                            }
+                          ),
                         if(userModel.isAdmin)
                           Divider(thickness: 4, color: colors.primaryColor, height: 4,),
                         SettingsTile(
