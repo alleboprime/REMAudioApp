@@ -8,7 +8,9 @@ final dimensions = Dimensions();
 final colors = AppColors();
 
 class NewConnectionButton extends StatefulWidget{
-  const NewConnectionButton({super.key});
+  const NewConnectionButton({super.key, this.authorized = true});
+
+  final bool authorized;
 
   @override
   // ignore: library_private_types_in_public_api

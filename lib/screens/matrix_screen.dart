@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:rem_app/components/matrixScreen/%20matrix_screen_components.dart';
+import 'package:rem_app/models/matrix_model.dart';
+import 'package:rem_app/models/user_model.dart';
 
 class MatrixScreen extends StatefulWidget {
   const MatrixScreen({super.key});
@@ -53,17 +56,21 @@ class MatrixScreenState extends State<MatrixScreen> {
           backgroundColor: Colors.black,
           actions: [],
         ),
-        body: Center(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              CustomPaint(
-                size: dimensions.isPc ? Size(460, 460) : Size(380, 380),
-                painter: ConnectionBackground(),
+        body: Consumer2<UserModel, MatrixModel>(
+          builder: (context, userModel, matrixModel, child) {
+            return Center(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  CustomPaint(
+                    size: dimensions.isPc ? Size(460, 460) : Size(380, 380),
+                    painter: ConnectionBackground(),
+                  ),
+                  NewConnectionButton(authorized: userModel.isAdmin,)
+                ]
               ),
-              NewConnectionButton()
-            ]
-          ),
+            );
+          }
         ),
       ),
     );
