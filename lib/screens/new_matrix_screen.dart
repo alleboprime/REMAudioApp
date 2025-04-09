@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:rem_app/components/matrixScreen/%20matrix_screen_components.dart';
+import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
 import 'package:rem_app/models/matrix_model.dart';
 import 'package:rem_app/models/user_model.dart';
 
-class MatrixScreen extends StatefulWidget {
-  const MatrixScreen({super.key});
+class NewMatrixConnectionScreen extends StatefulWidget {
+  const NewMatrixConnectionScreen({super.key});
 
   @override
-  State<MatrixScreen> createState() => MatrixScreenState();
+  State<NewMatrixConnectionScreen> createState() => NewMatrixConnectionScreenState();
 }
 
-class MatrixScreenState extends State<MatrixScreen> {
+class NewMatrixConnectionScreenState extends State<NewMatrixConnectionScreen> {
   bool isHovered = false;
 
   @override
@@ -54,7 +54,6 @@ class MatrixScreenState extends State<MatrixScreen> {
           leadingWidth: 100,
           toolbarHeight: 100,
           backgroundColor: Colors.black,
-          actions: [],
         ),
         body: Consumer2<UserModel, MatrixModel>(
           builder: (context, userModel, matrixModel, child) {

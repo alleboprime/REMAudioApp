@@ -6,7 +6,8 @@ import 'package:rem_app/models/matrix_model.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:rem_app/screens/home_screen.dart';
 import 'package:rem_app/screens/log_screen.dart';
-import 'package:rem_app/screens/matrix_screen.dart';
+import 'package:rem_app/screens/matrix_connections_screen.dart';
+import 'package:rem_app/screens/new_matrix_screen.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'dart:io';
 
@@ -40,7 +41,8 @@ class REMApp extends StatelessWidget {
       initialRoute: "/access",
       routes: {
         "/access" : (context) => LoginScreen(),
-        "/matrix_connection" : (context) => MatrixScreen(),
+        "/new_matrix_connection" : (context) => NewMatrixConnectionScreen(),
+        "/matrix_connection" : (context) => MatrixConnectionsScreen(),
         "/home" : (context) => HomeScreen(),
       },
       //TODO implement landing page

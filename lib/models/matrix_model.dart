@@ -17,23 +17,20 @@ class MatrixModel extends ChangeNotifier {
   final userModel = UserModel();
 
   String uuid = "";
+  bool connectionAvailable = false;
+  List<String> socketMatrixConnections = [];
 
   late WebSocket socket;
 
-  late Map<String, dynamic> receivedData;
-
   late Map<String, bool> inputMute;
   late Map<String, bool> outputMute;
-
   late Map<String, double> inputVolumes;
   late Map<String, double> outputVolumes;
-
+  late String connectedSocket;
   late int currentPreset;
   bool matrixAvailable = true;
 
-  void updateData(String message) {
-    receivedData = jsonDecode(message);
-
+  void updateData(Map<String, dynamic> receivedData) {
     inputMute = (receivedData["i_mute"] as Map<String, dynamic>)
         .map((key, value) => MapEntry(key, value as bool));
 
@@ -51,18 +48,6 @@ class MatrixModel extends ChangeNotifier {
     matrixAvailable = receivedData["available"];
 
     notifyListeners();
-  }
-
-  Future<List<dynamic>> connectSocket() async {
-    bool result = await getInitialToken();
-    if (!result) {
-      return [false, "Failed Retrieving Initial Token"];
-    }
-    result = await establishConnection();
-    if (!result) {
-      return [false, "Failed Establishing Connection"];
-    }
-    return [true, ""];
   }
 
   Future<bool> getInitialToken() async {
@@ -84,38 +69,71 @@ class MatrixModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> establishConnection() async {
+  Future<int> establishConnection() async {
     try {
       socket = await WebSocket.connect(
           "ws://${userModel.remoteServerIp}:8000/ws/app?uuid=$uuid");
 
-      Completer<bool> completer = Completer<bool>();
+      Completer<int> completer = Completer<int> ();
 
       socket.listen(
         (message) {
-          updateData(message);
+          Map<String, dynamic> receivedData = jsonDecode(message);
+          print(receivedData);
+          updateData(receivedData);
           if (!completer.isCompleted) {
-            completer.complete(true);
+            completer.complete(200);
           }
         },
         onDone: () {
           print('WebSocket closed.');
           if (!completer.isCompleted) {
-            completer.complete(false);
+            completer.complete(200);
           }
         },
         onError: (error) {
           print('WebSocket Error: $error');
           socket.close();
           if (!completer.isCompleted) {
-            completer.complete(false);
+            completer.complete(400);
           }
           //TODO implement _reconnect();
         },
       );
 
       return completer.future;
+    } catch (e) {
+      print(e);
+      if(e.toString().contains("404")){
+        return 404;
+      }
+      return 400;
+    }
+  }
+
+  Future<bool> checkForMatrixConnections() async {
+    var url = Uri.http('${userModel.remoteServerIp}:8000', '/api');
+    http.Response response;
+    try {
+      response = await http.get(url).timeout(Duration(seconds: 5));
     } catch (_) {
+      return false;
+    }
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> receivedData = jsonDecode(response.body);
+      print(receivedData);
+      if(receivedData["sockets"] != null){
+        connectionAvailable = true;
+        socketMatrixConnections.clear();
+        for(var connection in receivedData["sockets"]){
+          socketMatrixConnections.add("${connection["ip"]}:${connection["port"]}");
+        }
+      }else{
+        connectionAvailable = false;
+      }      
+      return true;
+    } else {
       return false;
     }
   }

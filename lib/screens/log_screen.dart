@@ -54,6 +54,10 @@ class LoginScreenState extends State<LoginScreen> {
     failed = true;
   }
 
+//TODO check if pushNamed instead of restorablePushNamed generate errors.
+//try on phone going back
+//TODO make the switching page transition better looking
+
   void login() async {
     setState(() {
       isLoading = true;
@@ -63,19 +67,37 @@ class LoginScreenState extends State<LoginScreen> {
 
     if (loginConnectionResult[0]) {
       final matrixModel = MatrixModel();
-      List<dynamic> socketConnectionResult = await matrixModel.connectSocket();
-      reason = socketConnectionResult[1];
-      if(socketConnectionResult[0]){
-        isLoading = false;
-        if(!mounted)return;
-        //TODO check if pushNamed instead of restorablePushNamed generate errors.
-        //try on phone going back
-        //TODO make the switching page transition better looking
-        Navigator.pushNamed(context, "/home");
+      bool result = await matrixModel.getInitialToken();
+      if(result){
+        if(model.isAdmin){
+          result = await matrixModel.checkForMatrixConnections();
+          if(result){
+            if(matrixModel.connectionAvailable){
+              Navigator.pushNamed(context, "/matrix_connection");
+            }else{
+              Navigator.pushNamed(context, "/new_matrix_connection");
+            }
+          }else{
+            reason = "Failed retrieving matrix connections";
+          }
+        }else{
+          int connectionResult = await matrixModel.establishConnection();
+          if(connectionResult == 200){
+            Navigator.pushNamed(context, "/home");
+          }else if(connectionResult == 404){
+            reason = "No connection found, please contact the administrator";
+          }else{
+            reason = "Failed establishing websocket connection";
+          }
+        }
+      }else{
+        reason = "Failed retrieving initial token";
       }
     } 
     setState(() {
-      failingReason = reason;
+      if(reason != ""){
+        failingReason = reason;
+      }
       isLoading = false;
     });
   }
@@ -209,7 +231,7 @@ class LoginScreenState extends State<LoginScreen> {
                       right: 20,
                       child: ShadToast(
                         backgroundColor: colors.logScreenToastColor,
-                        description: Text(failingReason),
+                        description: Text(failingReason, style: TextStyle(fontSize: dimensions.isPc ? 17 : 14),),
                       ),
                     ),
                 ]
