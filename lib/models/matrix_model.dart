@@ -17,8 +17,8 @@ class MatrixModel extends ChangeNotifier {
   final userModel = UserModel();
 
   String uuid = "";
-  bool connectionAvailable = false;
-  List<String> socketMatrixConnections = [];
+  bool sessionAvailable = false;
+  List<Map<String, String>> matrixSessions = [];
 
   late WebSocket socket;
 
@@ -26,8 +26,8 @@ class MatrixModel extends ChangeNotifier {
   late Map<String, bool> outputMute;
   late Map<String, double> inputVolumes;
   late Map<String, double> outputVolumes;
-  late String connectedSocket;
-  late int currentPreset;
+  late String connectedMatrixSocket; //TODO implement
+  late int currentMatrixPreset;
   bool matrixAvailable = true;
 
   void updateData(Map<String, dynamic> receivedData) {
@@ -43,7 +43,7 @@ class MatrixModel extends ChangeNotifier {
     outputVolumes = (receivedData["o_volumes"] as Map<String, dynamic>)
         .map((key, value) => MapEntry(key, (value as num).toDouble()));
 
-    currentPreset = receivedData["current_preset"] as int;
+    currentMatrixPreset = receivedData["current_preset"] as int;
 
     matrixAvailable = receivedData["available"];
 
@@ -69,12 +69,12 @@ class MatrixModel extends ChangeNotifier {
     }
   }
 
-  Future<int> establishConnection() async {
+  Future<bool> establishConnection() async {
     try {
       socket = await WebSocket.connect(
           "ws://${userModel.remoteServerIp}:8000/ws/app?uuid=$uuid");
 
-      Completer<int> completer = Completer<int> ();
+      Completer<bool> completer = Completer<bool> ();
 
       socket.listen(
         (message) {
@@ -82,32 +82,28 @@ class MatrixModel extends ChangeNotifier {
           print(receivedData);
           updateData(receivedData);
           if (!completer.isCompleted) {
-            completer.complete(200);
+            completer.complete(true);
           }
         },
         onDone: () {
           print('WebSocket closed.');
           if (!completer.isCompleted) {
-            completer.complete(200);
+            completer.complete(true);
           }
         },
         onError: (error) {
           print('WebSocket Error: $error');
           socket.close();
           if (!completer.isCompleted) {
-            completer.complete(400);
+            completer.complete(false);
           }
           //TODO implement _reconnect();
         },
       );
-
       return completer.future;
     } catch (e) {
       print(e);
-      if(e.toString().contains("404")){
-        return 404;
-      }
-      return 400;
+      return false;
     }
   }
 
@@ -122,15 +118,14 @@ class MatrixModel extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> receivedData = jsonDecode(response.body);
-      print(receivedData);
       if(receivedData["sockets"] != null){
-        connectionAvailable = true;
-        socketMatrixConnections.clear();
-        for(var connection in receivedData["sockets"]){
-          socketMatrixConnections.add("${connection["ip"]}:${connection["port"]}");
+        sessionAvailable = true;
+        matrixSessions.clear();
+        for (var connection in receivedData["sockets"]){
+          matrixSessions.add({"ip":connection["ip"], "port":connection["port"].toString()});
         }
       }else{
-        connectionAvailable = false;
+        sessionAvailable = false;
       }      
       return true;
     } else {

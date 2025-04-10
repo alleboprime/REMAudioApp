@@ -69,26 +69,24 @@ class LoginScreenState extends State<LoginScreen> {
       final matrixModel = MatrixModel();
       bool result = await matrixModel.getInitialToken();
       if(result){
-        if(model.isAdmin){
-          result = await matrixModel.checkForMatrixConnections();
-          if(result){
-            if(matrixModel.connectionAvailable){
+        result = await matrixModel.checkForMatrixConnections();
+        if(result){
+          if(matrixModel.sessionAvailable){
+            if(model.isAdmin){
               Navigator.pushNamed(context, "/matrix_connection");
             }else{
-              Navigator.pushNamed(context, "/new_matrix_connection");
+              result = await matrixModel.establishConnection();
+              if(result){
+                Navigator.pushNamed(context, "/home");
+              }else{
+                reason = "Failed establishing webso connection";
+              }
             }
           }else{
-            reason = "Failed retrieving matrix connections";
+            Navigator.pushNamed(context, "/new_matrix_connection");
           }
         }else{
-          int connectionResult = await matrixModel.establishConnection();
-          if(connectionResult == 200){
-            Navigator.pushNamed(context, "/home");
-          }else if(connectionResult == 404){
-            reason = "No connection found, please contact the administrator";
-          }else{
-            reason = "Failed establishing websocket connection";
-          }
+          reason = "Failed retrieving matrix connections";
         }
       }else{
         reason = "Failed retrieving initial token";

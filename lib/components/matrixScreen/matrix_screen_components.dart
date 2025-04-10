@@ -63,3 +63,48 @@ class NewConnectionButtonState extends State<NewConnectionButton>{
     );
   }
 }
+
+class ArrowBackMatrixScreen extends StatefulWidget{
+  const ArrowBackMatrixScreen({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  ArrowBackMatrixScreenState createState() => ArrowBackMatrixScreenState();
+}
+
+class ArrowBackMatrixScreenState extends State<ArrowBackMatrixScreen>{
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (details) => {
+        setState(() {
+          isHovered = true;
+        })
+      },
+      onTapCancel: () => {
+        setState(() {
+          isHovered = false;
+        }),
+      },
+      onTapUp: (details) => {
+        setState(() {
+          isHovered = false;
+        }),
+        Navigator.pop(context)
+      },
+      child: MouseRegion(
+        onEnter: (event) => {
+          setState(() => isHovered = true),
+        },
+        onExit: (event) => {
+          setState(() => isHovered = false),
+        },
+        cursor: SystemMouseCursors.click,
+        child: Icon(PhosphorIcons.arrowLeft(), size: dimensions.isPc ? 40 : 30, color: isHovered ? colors.selectionColor : Colors.white,),
+      ),
+    );
+  }
+}
+

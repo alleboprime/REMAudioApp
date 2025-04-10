@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
 import 'package:rem_app/models/matrix_model.dart';
 import 'package:rem_app/models/user_model.dart';
 
-class NewMatrixConnectionScreen extends StatefulWidget {
-  const NewMatrixConnectionScreen({super.key});
+class NewMatrixSessionScreen extends StatefulWidget {
+  const NewMatrixSessionScreen({super.key});
 
   @override
-  State<NewMatrixConnectionScreen> createState() => NewMatrixConnectionScreenState();
+  State<NewMatrixSessionScreen> createState() => NewMatrixSessionScreenState();
 }
 
-class NewMatrixConnectionScreenState extends State<NewMatrixConnectionScreen> {
+class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
   bool isHovered = false;
 
   @override
@@ -23,41 +22,15 @@ class NewMatrixConnectionScreenState extends State<NewMatrixConnectionScreen> {
         backgroundColor: Colors.black,
         appBar: AppBar(
           automaticallyImplyLeading: true,
-          leading: GestureDetector(
-            onTapDown: (details) => {
-              setState(() {
-                isHovered = true;
-              })
-            },
-            onTapCancel: () => {
-              setState(() {
-                isHovered = false;
-              }),
-            },
-            onTapUp: (details) => {
-              setState(() {
-                isHovered = false;
-              }),
-              Navigator.pop(context)
-            },
-            child: MouseRegion(
-              onEnter: (event) => {
-                setState(() => isHovered = true),
-              },
-              onExit: (event) => {
-                setState(() => isHovered = false),
-              },
-              cursor: SystemMouseCursors.click,
-              child: Icon(PhosphorIcons.arrowLeft(), size: dimensions.isPc ? 40 : 30, color: isHovered ? colors.selectionColor : Colors.white,),
-            ),
-          ),
           leadingWidth: 100,
           toolbarHeight: 100,
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.transparent,
+          leading: ArrowBackMatrixScreen(),
         ),
         body: Consumer2<UserModel, MatrixModel>(
           builder: (context, userModel, matrixModel, child) {
-            return Center(
+            return userModel.isAdmin
+            ?Center(
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -67,6 +40,15 @@ class NewMatrixConnectionScreenState extends State<NewMatrixConnectionScreen> {
                   ),
                   NewConnectionButton(authorized: userModel.isAdmin,)
                 ]
+              ),
+            )
+            :Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("x_X", style: TextStyle(fontSize: dimensions.isPc ? 120 : 100, fontWeight: FontWeight.bold),),
+                  Text("No connection available.\nContact the administrator.", style: TextStyle(fontSize: dimensions.isPc ? 18 : 15), textAlign: TextAlign.center,)
+                ],
               ),
             );
           }

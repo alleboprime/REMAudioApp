@@ -23,4 +23,6 @@ class AppColors {
 
   Color get unmutedChannel => Color.fromRGBO(135, 255, 119, 1);
 
+  Color get borderColors => Color.fromRGBO(60, 60, 60, 1);
+
 }
