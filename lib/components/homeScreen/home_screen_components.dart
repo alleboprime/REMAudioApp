@@ -24,43 +24,61 @@ class _SettingsTileState extends State<SettingsTile>{
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) {
+    return GestureDetector(
+      onTapDown: (details) => {
         setState(() {
           isHovered = true;
-        });
+        })
       },
-      onExit: (_) {
+      onTapCancel: () => {
         setState(() {
           isHovered = false;
-        });
+        }),
       },
-      child: ShadButton.outline(
-        onTapUp: widget.action,
-        hoverBackgroundColor: colors.primaryColor,
-        height: dimensions.isPc ? 60 : 50,
-        padding: EdgeInsets.all(10),
-        mainAxisAlignment: MainAxisAlignment.start,
-        decoration: ShadDecoration(border: ShadBorder.all(width: 0)),
-        icon: Icon(widget.iconOrigin, color: widget.color, size: dimensions.isPc ? 30 : 18,),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: isHovered ? widget.color : Colors.transparent,
-                width: 1,
+      onTapUp: (details) => {
+        setState(() {
+          isHovered = false;
+        }),
+        Navigator.pop(context)
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) {
+          setState(() {
+            isHovered = true;
+          });
+        },
+        onExit: (_) {
+          setState(() {
+            isHovered = false;
+          });
+        },
+        child: ShadButton.outline(
+          onTapUp: widget.action,
+          hoverBackgroundColor: colors.primaryColor,
+          height: dimensions.isPc ? 60 : 50,
+          padding: EdgeInsets.all(10),
+          mainAxisAlignment: MainAxisAlignment.start,
+          decoration: ShadDecoration(border: ShadBorder.all(width: 0)),
+          icon: Icon(widget.iconOrigin, color: widget.color, size: dimensions.isPc ? 30 : 18,),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: isHovered ? widget.color : Colors.transparent,
+                  width: 1,
+                ),
               ),
             ),
+            padding: EdgeInsets.only(bottom: 1),
+            child: Text(
+              widget.title, 
+              style: TextStyle(
+                color: widget.color, 
+                fontSize: dimensions.isPc ? 22 : 16,
+              ),
+            )
           ),
-          padding: EdgeInsets.only(bottom: 1),
-          child: Text(
-            widget.title, 
-            style: TextStyle(
-              color: widget.color, 
-              fontSize: dimensions.isPc ? 22 : 16,
-            ),
-          )
         ),
       ),
     );

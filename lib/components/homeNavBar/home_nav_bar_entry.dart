@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
+import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
 import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -45,7 +46,7 @@ class HomeNavBarEntry extends StatelessWidget {
                 
                 icon: PhosphorIcon(
                   icon,
-              
+                  size: dimensions.isPc ? 22 : 17,
                   ),
                 onPressed: () {
                   model.setSelectedPage(pageIndex);

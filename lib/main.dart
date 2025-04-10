@@ -46,7 +46,6 @@ class REMApp extends StatelessWidget {
         "/home" : (context) => HomeScreen(),
       },
       //TODO implement landing page
-      //TODO implement matrix connection page for admin
     );
   }
 }

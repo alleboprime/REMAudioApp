@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class Dimensions {
@@ -21,11 +20,7 @@ class Dimensions {
     screenHeight = MediaQuery.sizeOf(context).height;
     screenWidth = MediaQuery.sizeOf(context).width;
 
-    print(screenWidth);
-    print(screenHeight);
-
     double devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-    //Orientation orientation = MediaQuery.of(context).orientation;
 
     if(screenWidth / devicePixelRatio < 500){
       isPc = false;
@@ -38,11 +33,6 @@ class Dimensions {
       isPc = true;
       extremeNarrow = false;
     }
-
-    print(isPc ? "PC" : "SM");
-
-    //TODO: remove print for debugging
-
   }
 
   double get logScreenLogoHeight => screenHeight * 0.1;
@@ -52,7 +42,6 @@ class Dimensions {
   
   double get logScreenButtonWidht => isPc ? 120 : 100;
   double get logScreenButtonHeight => isPc ? 40 : 40;
-
 
   double get homeScreenAppBarHeight => screenHeight * 0.08;
 }

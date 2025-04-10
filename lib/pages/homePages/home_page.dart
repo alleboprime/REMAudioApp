@@ -74,6 +74,7 @@ class _HomePageState extends State<HomePage>{
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: List.generate(4, (colIndex) {
                                       return ShadButton.outline(
+                                        enabled: selectedTag == 0 ? (model.test[(rowIndex * 4 + colIndex + 1).toString()] ?? true) : (model.test[(rowIndex * 4 + colIndex + 1).toString()] ?? true),
                                         onTapUp: (_) => {
                                           model.toggleMuteChannel(rowIndex * 4 + colIndex + 1, selectedTag == 0 ? "input" : "output", !(values["${rowIndex * 4 + colIndex + 1}"] ?? true))
                                         },
@@ -118,7 +119,7 @@ class _HomePageState extends State<HomePage>{
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              allToggleButton(model.toggleMuteChannel),
+                              allToggleButton(model.toggleMuteChannel, model.test, model.test), //TODO pass the real maps
                             ],
                           ),
                         ),
@@ -153,7 +154,7 @@ class _HomePageState extends State<HomePage>{
     );
   }
 
-  ShadButton allToggleButton(Function function) {
+  ShadButton allToggleButton(Function function, Map<String, bool> i_visibility, Map<String, bool> o_visibility) {
     return ShadButton.outline(
       width: 110,
       height: 30,
@@ -168,7 +169,9 @@ class _HomePageState extends State<HomePage>{
       child: Text(selectedAllTag == 0 ? "Mute All" : "Unmute All", style: TextStyle(fontSize: 17),), 
       onTapUp: (_){
         for(int i = 1; i <= 16; i++){
-          function(i, selectedTag == 0 ? "input" : "output", selectedAllTag == 0);
+          if(selectedTag == 0 ? (i_visibility[i.toString()] ?? true) : (o_visibility[i.toString()] ?? true)){
+            function(i, selectedTag == 0 ? "input" : "output", selectedAllTag == 0);
+          }
         }
         selectedAllTag = (selectedAllTag == 0 ? 1 : 0); 
       },

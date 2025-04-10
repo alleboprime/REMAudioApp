@@ -22,11 +22,32 @@ class MatrixModel extends ChangeNotifier {
 
   late WebSocket socket;
 
+  var test = {
+    "1":true,
+    "2":false,
+    "3":false,
+    "4":false,
+    "5":false,
+    "6":false,
+    "7":false,
+    "8":false,
+    "9":false,
+    "10":true,
+    "11":false,
+    "12":false,
+    "13":false,
+    "14":false,
+    "15":false,
+    "16":true,
+  };
+
   late Map<String, bool> inputMute;
   late Map<String, bool> outputMute;
   late Map<String, double> inputVolumes;
   late Map<String, double> outputVolumes;
-  late String connectedMatrixSocket; //TODO implement
+  late Map<String, bool> inputVisibility;
+  late Map<String, bool> outputVisibility;
+  late String connectedMatrixSocket;
   late int currentMatrixPreset;
   bool matrixAvailable = true;
 
@@ -43,9 +64,17 @@ class MatrixModel extends ChangeNotifier {
     outputVolumes = (receivedData["o_volumes"] as Map<String, dynamic>)
         .map((key, value) => MapEntry(key, (value as num).toDouble()));
 
+    inputVisibility = (receivedData["i_visibility"] as Map<String, dynamic>)
+        .map((key, value) => MapEntry(key, value as bool));
+
+    outputVisibility = (receivedData["o_visibility"] as Map<String, dynamic>)
+        .map((key, value) => MapEntry(key, value as bool));
+
     currentMatrixPreset = receivedData["current_preset"] as int;
 
-    matrixAvailable = receivedData["available"];
+    matrixAvailable = receivedData["available"] as bool;
+
+    connectedMatrixSocket = receivedData["matrix_socket"] as String;
 
     notifyListeners();
   }
@@ -69,7 +98,7 @@ class MatrixModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> establishConnection() async {
+  Future<bool> establishConnection(BuildContext context) async {
     try {
       socket = await WebSocket.connect(
           "ws://${userModel.remoteServerIp}:8000/ws/app?uuid=$uuid");
@@ -79,30 +108,26 @@ class MatrixModel extends ChangeNotifier {
       socket.listen(
         (message) {
           Map<String, dynamic> receivedData = jsonDecode(message);
-          print(receivedData);
           updateData(receivedData);
           if (!completer.isCompleted) {
             completer.complete(true);
           }
         },
         onDone: () {
-          print('WebSocket closed.');
+          Navigator.pushNamedAndRemoveUntil(context, '/access', (Route<dynamic> route) => false);
           if (!completer.isCompleted) {
             completer.complete(true);
           }
         },
         onError: (error) {
-          print('WebSocket Error: $error');
           socket.close();
           if (!completer.isCompleted) {
             completer.complete(false);
           }
-          //TODO implement _reconnect();
         },
       );
       return completer.future;
-    } catch (e) {
-      print(e);
+    } catch (_) {
       return false;
     }
   }

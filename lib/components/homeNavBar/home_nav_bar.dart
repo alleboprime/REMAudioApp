@@ -36,23 +36,24 @@ class HomeNavBar extends StatelessWidget {
     final dimensions = Dimensions();
 
     return dimensions.isPc
-        ? Container(
+      ? Container(
+          width: 60,
+          color: colors.primaryColor,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: entries,
+          ),
+        )
+      : Container(
+          margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+          decoration: BoxDecoration(
             color: colors.primaryColor,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: entries,
-            ),
-          )
-        : Container(
-            margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
-            decoration: BoxDecoration(
-              color: colors.primaryColor,
-              borderRadius: BorderRadius.circular(40),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: entries,
-            ),
-          );
+            borderRadius: BorderRadius.circular(40),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: entries,
+          ),
+        );
   }
 }
