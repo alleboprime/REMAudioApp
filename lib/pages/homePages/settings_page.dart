@@ -51,8 +51,11 @@ class SettingsPage extends StatelessWidget {
                           SettingsTile(
                             title: "Matrix Connection", 
                             iconOrigin: PhosphorIcons.network(), 
-                            action: (_){
-                              Navigator.pushNamed(context, "/matrix_connection");
+                            action: (_)async{
+                              bool result = await matrixModel.checkForMatrixConnections();
+                              if(result){
+                                Navigator.pushNamed(context, "/matrix_connection");
+                              }
                             }
                           ),
                         if(userModel.isAdmin)

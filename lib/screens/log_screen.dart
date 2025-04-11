@@ -75,7 +75,7 @@ class LoginScreenState extends State<LoginScreen> {
             if(model.isAdmin){
               if(mounted){Navigator.pushNamed(context, "/matrix_connection");}
             }else{
-              if(mounted){result = await matrixModel.establishConnection(context);}
+              if(mounted){result = await matrixModel.establishConnection();}
               if(result){
                 if(mounted){Navigator.pushNamed(context, "/home");}
               }else{

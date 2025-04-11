@@ -49,11 +49,12 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.black,
-        appBar: AppBar(
+        appBar: AppBar( //TODO highlighting color still visible when scrolling list view
           automaticallyImplyLeading: true,
           leadingWidth: 100,
           toolbarHeight: 100,
           backgroundColor: Colors.transparent,
+          foregroundColor: Colors.transparent,
           leading: ArrowBackMatrixScreen(),
         ),
         body: Consumer<MatrixModel>(
@@ -63,7 +64,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
               String reason = "";
               await matrixModel.socket?.close();
               //matrixModel.setSocket();
-              bool result = await matrixModel.establishConnection(context);
+              bool result = await matrixModel.establishConnection();
               if(result){
                 Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);
               }else{

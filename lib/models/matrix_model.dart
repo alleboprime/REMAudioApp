@@ -21,6 +21,12 @@ class MatrixModel extends ChangeNotifier {
   List<Map<String, String>> matrixSessions = [];
 
   WebSocket? socket;
+  bool _socketConnected = false;
+  bool get socketConnected => _socketConnected;
+  set socketConnected(bool value){
+    _socketConnected = value;
+    notifyListeners();
+  }
 
   late Map<String, bool> inputMute;
   late Map<String, bool> outputMute;
@@ -79,7 +85,7 @@ class MatrixModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> establishConnection(BuildContext context) async {
+  Future<bool> establishConnection() async {
     try {
       socket = await WebSocket.connect(
           "ws://${userModel.remoteServerIp}:8000/ws/app?uuid=$uuid");
@@ -88,18 +94,23 @@ class MatrixModel extends ChangeNotifier {
 
       socket?.listen(
         (message) {
+          socketConnected = true;
           Map<String, dynamic> receivedData = jsonDecode(message);
-          updateData(receivedData);
+          if(!receivedData.containsKey("reason")){//TODO make the backend to respond only with a kind of message
+            updateData(receivedData);
+          } 
           if (!completer.isCompleted) {
             completer.complete(true);
           }
         },
         onDone: () {
+          socketConnected = false;
           if (!completer.isCompleted) {
             completer.complete(true);
           }
         },
         onError: (error) {
+          socketConnected = false;
           socket?.close();
           if (!completer.isCompleted) {
             completer.complete(false);
