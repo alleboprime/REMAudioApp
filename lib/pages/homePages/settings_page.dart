@@ -52,7 +52,6 @@ class SettingsPage extends StatelessWidget {
                             title: "Matrix Connection", 
                             iconOrigin: PhosphorIcons.network(), 
                             action: (_){
-                              matrixModel.socket.close();
                               Navigator.pushNamed(context, "/matrix_connection");
                             }
                           ),
@@ -62,7 +61,7 @@ class SettingsPage extends StatelessWidget {
                           title: "Log Out", 
                           iconOrigin: PhosphorIcons.signOut(), 
                           action: (_) {
-                            matrixModel.socket.close();
+                            matrixModel.socket?.close();
                             Navigator.pushNamedAndRemoveUntil(context, '/access', (Route<dynamic> route) => false);
                           }, 
                           color: Colors.red,

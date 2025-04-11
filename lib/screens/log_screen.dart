@@ -79,7 +79,7 @@ class LoginScreenState extends State<LoginScreen> {
               if(result){
                 if(mounted){Navigator.pushNamed(context, "/home");}
               }else{
-                reason = "Failed establishing webso connection";
+                reason = "Failed establishing websocket connection";
               }
             }
           }else{
@@ -112,7 +112,7 @@ class LoginScreenState extends State<LoginScreen> {
     }else{
       setState(() {
         isLoading = false;
-        failingReason = "Connection Test Failed";
+        failingReason = "Connection test failed";
       });
     }
   }

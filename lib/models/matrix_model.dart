@@ -20,26 +20,7 @@ class MatrixModel extends ChangeNotifier {
   bool sessionAvailable = false;
   List<Map<String, String>> matrixSessions = [];
 
-  late WebSocket socket;
-
-  var test = {
-    "1":true,
-    "2":false,
-    "3":false,
-    "4":false,
-    "5":false,
-    "6":false,
-    "7":false,
-    "8":false,
-    "9":false,
-    "10":true,
-    "11":false,
-    "12":false,
-    "13":false,
-    "14":false,
-    "15":false,
-    "16":true,
-  };
+  WebSocket? socket;
 
   late Map<String, bool> inputMute;
   late Map<String, bool> outputMute;
@@ -105,7 +86,7 @@ class MatrixModel extends ChangeNotifier {
 
       Completer<bool> completer = Completer<bool> ();
 
-      socket.listen(
+      socket?.listen(
         (message) {
           Map<String, dynamic> receivedData = jsonDecode(message);
           updateData(receivedData);
@@ -114,13 +95,12 @@ class MatrixModel extends ChangeNotifier {
           }
         },
         onDone: () {
-          Navigator.pushNamedAndRemoveUntil(context, '/access', (Route<dynamic> route) => false);
           if (!completer.isCompleted) {
             completer.complete(true);
           }
         },
         onError: (error) {
-          socket.close();
+          socket?.close();
           if (!completer.isCompleted) {
             completer.complete(false);
           }
@@ -146,11 +126,12 @@ class MatrixModel extends ChangeNotifier {
       if(receivedData["sockets"] != null){
         sessionAvailable = true;
         matrixSessions.clear();
-        for (var connection in receivedData["sockets"]){
-          matrixSessions.add({"ip":connection["ip"], "port":connection["port"].toString()});
+        for(var connection in receivedData["sockets"]){
+          matrixSessions.add({"name":connection["name"], "ip":connection["ip"], "port":connection["port"]});
         }
       }else{
         sessionAvailable = false;
+        matrixSessions.clear();
       }      
       return true;
     } else {
@@ -165,7 +146,7 @@ class MatrixModel extends ChangeNotifier {
       "channel": "$channel",
       "value" : "$status"
     };
-    socket.add(jsonEncode(command));
+    socket?.add(jsonEncode(command));
   }
 
 }

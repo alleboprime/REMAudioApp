@@ -113,7 +113,7 @@ class UserModel extends ChangeNotifier {
     } on Exception{
       accessToken = "";
       isAdmin = false;
-      return [false, "Something Went Wrong"];
+      return [false, "Something went wrong"];
     }
 
     if (response.statusCode == 200) {
