@@ -60,15 +60,19 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
         body: Consumer<MatrixModel>(
           builder: (context, matrixModel, child){
 
-            void connect(Map<String, String> matrix) async {
+            void connect(int index) async {
               String reason = "";
               await matrixModel.socket?.close();
-              //matrixModel.setSocket();
-              bool result = await matrixModel.establishConnection();
+              bool result = await matrixModel.setSocket(index);
               if(result){
-                Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);
+                result = await matrixModel.establishConnection();
+                if(result){
+                  Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);
+                }else{
+                  reason = "Failed websocket connection";
+                }
               }else{
-                reason = "Something went wrong";
+                reason = "Failed on setting socket";
               }
               setState(() {
                 if(reason != ""){
@@ -89,7 +93,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                         return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: colors.borderColors, width: 2),
+                            border: Border.all(color: index == 0 ? colors.selectionColor : colors.borderColors, width: 2),
                             color: colors.primaryColor
                           ),
                           padding: EdgeInsets.all(dimensions.isPc ? 25 : 20),
@@ -97,7 +101,12 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                           child: Column(
                             spacing: dimensions.isPc ? 10 : 5,
                             children: [
-                              Align(alignment: Alignment.centerLeft, child: Text(matrixModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(matrixModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),
+                                ],
+                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -133,7 +142,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                       setState(() {
                                         isLoading = true;
                                       });
-                                      connect(matrixModel.matrixSessions[index]);
+                                      connect(index);
                                     },
                                   )
                                 ],

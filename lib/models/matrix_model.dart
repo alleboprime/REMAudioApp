@@ -134,20 +134,47 @@ class MatrixModel extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> receivedData = jsonDecode(response.body);
-      if(receivedData["sockets"] != null){
+      matrixSessions.clear();
+      if(receivedData["latest_socket"] != null){ //TODO decide wheater to use null or [] for both latest and others
         sessionAvailable = true;
-        matrixSessions.clear();
-        for(var connection in receivedData["sockets"]){
-          matrixSessions.add({"name":connection["name"], "ip":connection["ip"], "port":connection["port"]});
+        var latest = receivedData["latest_socket"];
+        matrixSessions.add({"name":latest["name"], "ip":latest["ip"], "port":latest["port"]});
+        if((receivedData["sockets"] as List<dynamic>).isNotEmpty){
+          for(var connection in receivedData["sockets"]){
+            matrixSessions.add({"name":connection["name"], "ip":connection["ip"], "port":connection["port"]});
+          }
         }
       }else{
         sessionAvailable = false;
-        matrixSessions.clear();
-      }      
+      }  
       return true;
     } else {
       return false;
     }
+  }
+
+  Future<bool> setSocket(int index) async {
+    var url = Uri.http('${userModel.remoteServerIp}:8000', '/ws/socket/add', {"uuid":uuid});
+    http.Response response;
+    Map<String, String> settingSocket = matrixSessions[index];
+    try {
+      response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "socket_name": settingSocket["name"],
+          "socket": "${settingSocket["ip"]}:${settingSocket["port"]}"
+        }),
+      ).timeout(Duration(seconds: 5));      
+    } catch (_) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
   }
 
   void toggleMuteChannel(int channel, String direction, bool status){
