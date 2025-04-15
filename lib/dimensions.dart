@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class Dimensions {
@@ -11,6 +13,8 @@ class Dimensions {
 
   double screenHeight = 0;
   double screenWidth = 0;
+
+  bool isDesktop = (Platform.isWindows || Platform.isLinux || Platform.isMacOS);
 
   bool isPc = false;
 
