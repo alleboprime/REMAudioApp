@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
 import 'package:rem_app/models/matrix_model.dart';
@@ -25,7 +26,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
           leadingWidth: 100,
           toolbarHeight: 100,
           backgroundColor: Colors.transparent,
-          leading: ArrowBackMatrixScreen(),
+          leading: ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
         ),
         body: Consumer2<UserModel, MatrixModel>(
           builder: (context, userModel, matrixModel, child) {

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
 import 'package:rem_app/models/matrix_model.dart';
@@ -14,6 +15,8 @@ class MatrixSessionsScreen extends StatefulWidget{
 }
 
 class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
+  final matrixModel = MatrixModel();
+
   bool isHovered = false;
 
   Timer? _failedTimer;
@@ -43,6 +46,14 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
     failed = true;
   }
 
+  Future<void> refresh() async{
+    await matrixModel.checkForMatrixConnections();
+    setState(() {
+      matrixModel.matrixSessions;
+    });
+    return;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -55,7 +66,11 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
           toolbarHeight: 100,
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.transparent,
-          leading: ArrowBackMatrixScreen(),
+          leading: ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
+          actions: [
+            ActionButton(iconData: PhosphorIcons.arrowClockwise(), action: refresh,),
+            SizedBox(width: 40,)
+          ],
         ),
         body: Consumer<MatrixModel>(
           builder: (context, matrixModel, child){
@@ -67,7 +82,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
               if(result){
                 result = await matrixModel.establishConnection();
                 if(result){
-                  Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);
+                  if(context.mounted){Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);}
                 }else{
                   reason = "Failed websocket connection";
                 }
@@ -87,70 +102,73 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                 Center(
                   child: SizedBox(
                     width: dimensions.isPc ? 400 : 300,
-                    child: ListView.builder(
-                      itemCount: matrixModel.matrixSessions.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: index == 0 ? colors.selectionColor : colors.borderColors, width: 2),
-                            color: colors.primaryColor
-                          ),
-                          padding: EdgeInsets.all(dimensions.isPc ? 25 : 20),
-                          margin: EdgeInsets.symmetric(vertical: 20),
-                          child: Column(
-                            spacing: dimensions.isPc ? 10 : 5,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(matrixModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.horizontal(left: Radius.circular(10)),
-                                          border: Border.all(color: colors.borderColors, width: 2),
-                                        ),
-                                        padding: EdgeInsets.all(dimensions.isPc ? 15 : 10),
-                                        child: Text(matrixModel.matrixSessions[index]["ip"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.horizontal(right: Radius.circular(10)),
-                                          border: Border(
-                                            left: BorderSide.none,
-                                            top: BorderSide(color: colors.borderColors, width: 2),
-                                            right: BorderSide(color: colors.borderColors, width: 2),
-                                            bottom: BorderSide(color: colors.borderColors, width: 2),
+                    child: RefreshIndicator(
+                      onRefresh: refresh,
+                      child: ListView.builder(
+                        itemCount: matrixModel.matrixSessions.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: index == 0 ? colors.selectionColor : colors.borderColors, width: 2),
+                              color: colors.primaryColor
+                            ),
+                            padding: EdgeInsets.all(dimensions.isPc ? 25 : 20),
+                            margin: EdgeInsets.symmetric(vertical: 20),
+                            child: Column(
+                              spacing: dimensions.isPc ? 10 : 5,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(matrixModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.horizontal(left: Radius.circular(10)),
+                                            border: Border.all(color: colors.borderColors, width: 2),
                                           ),
+                                          padding: EdgeInsets.all(dimensions.isPc ? 15 : 10),
+                                          child: Text(matrixModel.matrixSessions[index]["ip"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
                                         ),
-                                        padding: EdgeInsets.all(dimensions.isPc ? 15 : 10),
-                                        child: Text(matrixModel.matrixSessions[index]["port"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
-                                      ),
-                                    ],
-                                  ),
-                                  ShadButton(
-                                    padding: EdgeInsets.all(10),
-                                    child: Text("Connect", style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
-                                    onTapUp: (value){
-                                      setState(() {
-                                        isLoading = true;
-                                      });
-                                      connect(index);
-                                    },
-                                  )
-                                ],
-                              )
-                            ],
-                          ),                      
-                        );
-                      }
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.horizontal(right: Radius.circular(10)),
+                                            border: Border(
+                                              left: BorderSide.none,
+                                              top: BorderSide(color: colors.borderColors, width: 2),
+                                              right: BorderSide(color: colors.borderColors, width: 2),
+                                              bottom: BorderSide(color: colors.borderColors, width: 2),
+                                            ),
+                                          ),
+                                          padding: EdgeInsets.all(dimensions.isPc ? 15 : 10),
+                                          child: Text(matrixModel.matrixSessions[index]["port"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
+                                        ),
+                                      ],
+                                    ),
+                                    ShadButton(
+                                      padding: EdgeInsets.all(10),
+                                      child: Text("Connect", style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
+                                      onTapUp: (value){
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        connect(index);
+                                      },
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),                      
+                          );
+                        }
+                      ),
                     ),
                   ),
                 ),
