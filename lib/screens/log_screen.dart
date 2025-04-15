@@ -94,17 +94,15 @@ class LoginScreenState extends State<LoginScreen> {
       if(result){
         result = await matrixModel.checkForMatrixConnections();
         if(result){
-          if(matrixModel.sessionAvailable){
-            if(model.isAdmin){
-              if(mounted){Navigator.pushNamed(context, "/matrix_connection");}
+          if(!model.isAdmin && matrixModel.latestSocketAvailable){
+            if(mounted){result = await matrixModel.establishConnection();}
+            if(result){
+              if(mounted){Navigator.pushNamed(context, "/home");}
             }else{
-              if(mounted){result = await matrixModel.establishConnection();}
-              if(result){
-                if(mounted){Navigator.pushNamed(context, "/home");}
-              }else{
-                reason = "Failed establishing websocket connection";
-              }
+              reason = "Failed establishing websocket connection";
             }
+          }else if(model.isAdmin && matrixModel.sessionAvailable){
+            if(mounted){Navigator.pushNamed(context, "/matrix_connection");}
           }else{
             if(mounted){Navigator.pushNamed(context, "/new_matrix_connection");}
           }

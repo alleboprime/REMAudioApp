@@ -64,15 +64,18 @@ class NewConnectionButtonState extends State<NewConnectionButton>{
   }
 }
 
-class ArrowBackMatrixScreen extends StatefulWidget{
-  const ArrowBackMatrixScreen({super.key});
+class ActionButton extends StatefulWidget{
+  const ActionButton({super.key, required this.iconData, required this.action});
+
+  final IconData iconData;
+  final VoidCallback action;
 
   @override
   // ignore: library_private_types_in_public_api
-  ArrowBackMatrixScreenState createState() => ArrowBackMatrixScreenState();
+  ActionButtonState createState() => ActionButtonState();
 }
 
-class ArrowBackMatrixScreenState extends State<ArrowBackMatrixScreen>{
+class ActionButtonState extends State<ActionButton>{
   bool isHovered = false;
 
   @override
@@ -88,11 +91,13 @@ class ArrowBackMatrixScreenState extends State<ArrowBackMatrixScreen>{
           isHovered = false;
         }),
       },
-      onTapUp: (details) => {
-        setState(() {
-          isHovered = false;
-        }),
-        Navigator.pop(context)
+      onTapUp: (details){
+        if(!dimensions.isDesktop){
+          setState(() {
+            isHovered = false;
+          });
+        }
+        widget.action();
       },
       child: MouseRegion(
         onEnter: (event) => {
@@ -102,7 +107,7 @@ class ArrowBackMatrixScreenState extends State<ArrowBackMatrixScreen>{
           setState(() => isHovered = false),
         },
         cursor: SystemMouseCursors.click,
-        child: Icon(PhosphorIcons.arrowLeft(), size: dimensions.isPc ? 40 : 30, color: isHovered ? colors.selectionColor : Colors.white,),
+        child: Icon(widget.iconData, size: dimensions.isPc ? 40 : 30, color: isHovered ? colors.selectionColor : Colors.white,),
       ),
     );
   }

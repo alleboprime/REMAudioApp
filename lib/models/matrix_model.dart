@@ -18,6 +18,7 @@ class MatrixModel extends ChangeNotifier {
 
   String uuid = "";
   bool sessionAvailable = false;
+  bool latestSocketAvailable = false;
   List<Map<String, String>> matrixSessions = [];
 
   WebSocket? socket;
@@ -96,7 +97,7 @@ class MatrixModel extends ChangeNotifier {
         (message) {
           socketConnected = true;
           Map<String, dynamic> receivedData = jsonDecode(message);
-          if(!receivedData.containsKey("reason")){//TODO make the backend to respond only with a kind of message
+          if(!receivedData.containsKey("reason")){
             updateData(receivedData);
           } 
           if (!completer.isCompleted) {
@@ -135,18 +136,20 @@ class MatrixModel extends ChangeNotifier {
     if (response.statusCode == 200) {
       Map<String, dynamic> receivedData = jsonDecode(response.body);
       matrixSessions.clear();
-      if(receivedData["latest_socket"] != null){ //TODO decide wheater to use null or [] for both latest and others
+      sessionAvailable = false;
+      latestSocketAvailable = false;
+      if(receivedData["latest_socket"] != null){
         sessionAvailable = true;
+        latestSocketAvailable = true;
         var latest = receivedData["latest_socket"];
         matrixSessions.add({"name":latest["name"], "ip":latest["ip"], "port":latest["port"]});
-        if((receivedData["sockets"] as List<dynamic>).isNotEmpty){
-          for(var connection in receivedData["sockets"]){
-            matrixSessions.add({"name":connection["name"], "ip":connection["ip"], "port":connection["port"]});
-          }
+      }
+      if(receivedData["sockets"] != null && (receivedData["sockets"] as List<dynamic>).isNotEmpty){
+        sessionAvailable = true;
+        for(var connection in receivedData["sockets"]){
+          matrixSessions.add({"name":connection["name"], "ip":connection["ip"], "port":connection["port"]});
         }
-      }else{
-        sessionAvailable = false;
-      }  
+      }
       return true;
     } else {
       return false;
