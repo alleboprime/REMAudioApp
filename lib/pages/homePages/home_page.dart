@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage>{
         builder: (context, model, child){
           return Center(
             child: Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(dimensions.isPc ? 40 : 20),
               child: SizedBox.expand(
                 child: Container(
                   decoration: BoxDecoration(

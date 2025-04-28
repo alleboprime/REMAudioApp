@@ -144,7 +144,7 @@ class MatrixModel extends ChangeNotifier {
         var latest = receivedData["latest_socket"];
         matrixSessions.add({"name":latest["name"], "ip":latest["ip"], "port":latest["port"]});
       }
-      if(receivedData["sockets"] != null && (receivedData["sockets"] as List<dynamic>).isNotEmpty){
+      if(receivedData["sockets"] != null){
         sessionAvailable = true;
         for(var connection in receivedData["sockets"]){
           matrixSessions.add({"name":connection["name"], "ip":connection["ip"], "port":connection["port"]});
