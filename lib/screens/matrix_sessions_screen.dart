@@ -61,16 +61,21 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.black,
         appBar: AppBar( //TODO highlighting color still visible when scrolling list view
-          automaticallyImplyLeading: true,
-          leadingWidth: 100,
           toolbarHeight: 100,
-          backgroundColor: Colors.transparent,
+          leadingWidth: 90,
+          backgroundColor: Colors.black,
           foregroundColor: Colors.transparent,
-          leading: ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
+          leading: Row(
+            children: [
+              SizedBox(width: 50),
+              ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
+            ],
+          ),
           actions: [
             ActionButton(iconData: PhosphorIcons.arrowClockwise(), action: refresh,),
-            SizedBox(width: 40,)
+            SizedBox(width: 50),
           ],
+          title: Center(child: Text("RECENT CONNECTIONS", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),)
         ),
         body: Consumer<MatrixModel>(
           builder: (context, matrixModel, child){
@@ -103,6 +108,8 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                   child: SizedBox(
                     width: dimensions.isPc ? 400 : 300,
                     child: RefreshIndicator(
+                      displacement: 50,
+                      backgroundColor: Colors.black,
                       onRefresh: refresh,
                       child: ListView.builder(
                         itemCount: matrixModel.matrixSessions.length,
@@ -110,7 +117,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                           return Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: index == 0 ? colors.selectionColor : colors.borderColors, width: 2),
+                              border: Border.all(color: matrixModel.latestSocketAvailable && index == 0 ? colors.selectionColor : colors.borderColors, width: 2),
                               color: colors.primaryColor
                             ),
                             padding: EdgeInsets.all(dimensions.isPc ? 25 : 20),

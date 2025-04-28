@@ -15,70 +15,76 @@ class NewMatrixSessionScreen extends StatefulWidget {
 class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
   bool isHovered = false;
 
+  final TextEditingController matrixNameController = TextEditingController();
+  final TextEditingController matrixIpController = TextEditingController();
+  final TextEditingController matrixPortController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          leadingWidth: 100,
+        appBar: AppBar( //TODO highlighting color still visible when scrolling list view
           toolbarHeight: 100,
-          backgroundColor: Colors.transparent,
-          leading: ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
+          leadingWidth: 90,
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.transparent,
+          leading: Row(
+            children: [
+              SizedBox(width: 50),
+              ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
+            ],
+          ),
+          actions: [
+            SizedBox(width: 90),
+          ],
+          title: Center(child: Text("CREATE CONNECTIONS", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),)
         ),
-        body: Consumer2<UserModel, MatrixModel>(
-          builder: (context, userModel, matrixModel, child) {
-            return userModel.isAdmin
-            ?Center(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  CustomPaint(
-                    size: dimensions.isPc ? Size(460, 460) : Size(380, 380),
-                    painter: ConnectionBackground(),
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(top: 10, left: 30, right: 30, bottom: 30),
+            child: Consumer2<UserModel, MatrixModel>(
+              builder: (context, userModel, matrixModel, child) {
+                return userModel.isAdmin
+                ?Center(
+                  child: Container(
+                    width: 600,
+                    height: 600,
+                    decoration: BoxDecoration(
+                      color: colors.primaryColor,
+                      border: Border.all(color: dimensions.isPc ? colors.selectionColor : colors.primaryColor),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            
+                            
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                )
+                :Align(
+                  alignment: Alignment.topCenter,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("x_X", style: TextStyle(fontSize: dimensions.isPc ? 120 : 100, fontWeight: FontWeight.bold),),
+                      Text("No connection available.\nContact the administrator.", style: TextStyle(fontSize: dimensions.isPc ? 18 : 15), textAlign: TextAlign.center,)
+                    ],
                   ),
-                  NewConnectionButton(authorized: userModel.isAdmin,)
-                ]
-              ),
-            )
-            :Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("x_X", style: TextStyle(fontSize: dimensions.isPc ? 120 : 100, fontWeight: FontWeight.bold),),
-                  Text("No connection available.\nContact the administrator.", style: TextStyle(fontSize: dimensions.isPc ? 18 : 15), textAlign: TextAlign.center,)
-                ],
-              ),
-            );
-          }
+                );
+              }
+            ),
+          ),
         ),
       ),
     );
   }
-}
-
-class ConnectionBackground extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    
-    final maxRadius = size.width / 2; 
-    final step = 20; 
-
-    for (int i = 1; i <= 4; i++) {
-      double r = maxRadius - (i * step);
-      double opacity = 1 - (4-i+1) * 0.2;
-      final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..color = Color.fromRGBO(0, 122, 255, opacity);
-      
-      canvas.drawCircle(center, r, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
