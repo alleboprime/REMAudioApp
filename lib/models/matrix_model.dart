@@ -180,6 +180,29 @@ class MatrixModel extends ChangeNotifier {
     return false;
   }
 
+  Future<bool> removeSocket(int index) async {
+    var url = Uri.http('${userModel.remoteServerIp}:8000', '/ws/socket/remove', {"uuid":uuid});
+    http.Response response;
+    Map<String, String> settingSocket = matrixSessions[index];
+    try {
+      response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "socket": "${settingSocket["ip"]}:${settingSocket["port"]}"
+        }),
+      ).timeout(Duration(seconds: 5));      
+    } catch (_) {
+      return false;
+    }
+    if (response.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
+
   void toggleMuteChannel(int channel, String direction, bool status){
     Map<String, String> command = {
       "section": "mute",
