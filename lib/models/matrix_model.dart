@@ -156,20 +156,26 @@ class MatrixModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> setSocket(int index) async {
+  Future<bool> setSocket({int index = 0, Map<String, String>? socket}) async {
     var url = Uri.http('${userModel.remoteServerIp}:8000', '/ws/socket/add', {"uuid":uuid});
     http.Response response;
-    Map<String, String> settingSocket = matrixSessions[index];
+    Map<String, String> settingSocket;
+    if(socket != null){
+      settingSocket = socket;
+    }else{
+      settingSocket = {
+        "socket_name": matrixSessions[index]["name"] ?? "",
+        "socket": "${matrixSessions[index]["ip"] ?? ""}:${matrixSessions[index]["port"] ?? ""}",
+        "device_type": matrixSessions[index]["device_type"] ?? ""
+      };
+    }
     try {
       response = await http.post(
         url,
         headers: {
           "Content-Type": "application/json",
         },
-        body: jsonEncode({
-          "socket_name": settingSocket["name"],
-          "socket": "${settingSocket["ip"]}:${settingSocket["port"]}"
-        }),
+        body: jsonEncode(settingSocket),
       ).timeout(Duration(seconds: 5));      
     } catch (_) {
       return false;

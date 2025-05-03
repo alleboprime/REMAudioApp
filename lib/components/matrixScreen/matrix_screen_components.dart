@@ -48,7 +48,7 @@ class ActionButtonState extends State<ActionButton>{
           setState(() => isHovered = false),
         },
         cursor: SystemMouseCursors.click,
-        child: Icon(widget.iconData, size: dimensions.isPc ? 40 : 30, color: isHovered ? colors.selectionColor : Colors.white,),
+        child: Icon(widget.iconData, size: dimensions.isPc ? 40 : 26, color: isHovered ? colors.selectionColor : Colors.white,),
       ),
     );
   }

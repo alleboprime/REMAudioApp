@@ -54,6 +54,11 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
     return;
   }
 
+  Future<void> newConnectionNavigation() async{
+    Navigator.pushNamed(context, "/new_matrix_connection");
+    return;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -62,18 +67,20 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
         backgroundColor: Colors.black,
         appBar: AppBar( //TODO highlighting color still visible when scrolling list view
           toolbarHeight: 100,
-          leadingWidth: 90,
+          leadingWidth: dimensions.isPc ? 150 : 90,
           backgroundColor: Colors.black,
           foregroundColor: Colors.transparent,
           leading: Row(
             children: [
-              SizedBox(width: 50),
+              SizedBox(width: dimensions.isPc ? 50 : 20),
               ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
             ],
           ),
           actions: [
+            ActionButton(iconData: PhosphorIcons.plus(), action: newConnectionNavigation),
+            SizedBox(width: dimensions.isPc ? 30 : 15),
             ActionButton(iconData: PhosphorIcons.arrowClockwise(), action: refresh,),
-            SizedBox(width: 50),
+            SizedBox(width: dimensions.isPc ? 50 : 20),
           ],
           title: Center(child: Text("RECENT CONNECTIONS", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),)
         ),
@@ -83,7 +90,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
             void connect(int index) async {
               String reason = "";
               await matrixModel.socket?.close();
-              bool result = await matrixModel.setSocket(index);
+              bool result = await matrixModel.setSocket(index: index);
               if(result){
                 result = await matrixModel.establishConnection();
                 if(result){
@@ -195,19 +202,6 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                               ),                      
                             );
                           }
-                        ),
-                      ),
-                    ),
-                  ),
-                if (isLoading)
-                  Container(
-                    color: Colors.black.withAlpha(180),
-                    child: Center(
-                      child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 5,
                         ),
                       ),
                     ),
