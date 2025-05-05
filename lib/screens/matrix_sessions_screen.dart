@@ -153,17 +153,16 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [                                      
-                                      Text(matrixModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),  
+                                        
                                       Row(
                                         spacing: 10,
                                         children: [
-                                          ShadBadge(
-                                            hoverBackgroundColor: Colors.white,
-                                            child: Text(matrixModel.matrixSessions[index]["device_type"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),
-                                          ),                                     
-                                          ShadButton.destructive(icon: Icon(PhosphorIcons.trash(), size: 16,), padding: EdgeInsets.all(0), onTapUp: (value) => removeConnection(index),),
+                                          Icon(matrixModel.matrixSessions[index]["device_type"] == "matrix" ? PhosphorIcons.network() : PhosphorIcons.camera(), size: 25, color: Colors.white,),
+                                          Text(matrixModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),                             
                                         ],
-                                      )
+                                      ),
+                                      ShadButton.destructive(icon: Icon(PhosphorIcons.trash(), size: 16,), padding: EdgeInsets.all(0), onTapUp: (value) => removeConnection(index),),
+
                                     ],
                                   ),
                                   Row(
