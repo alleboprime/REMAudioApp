@@ -106,6 +106,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                       });
                       return;
                     }
+                    _deviceTypeSelectionValue == "matrix" ? matrixModel.latestMatrixSocketAvailable = true : matrixModel.latestCameraSocketAvailable = true;
                     if(context.mounted){Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);}
                   }
         
