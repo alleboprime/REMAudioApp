@@ -38,7 +38,8 @@ class _HomePageState extends State<HomePage>{
     return SafeArea(
       child: Consumer<MatrixModel>(
         builder: (context, model, child){
-          return Center(
+          return model.latestMatrixSocketAvailable
+          ? Center(
             child: Padding(
               padding: EdgeInsets.all(dimensions.isPc ? 40 : 20),
               child: SizedBox.expand(
@@ -129,6 +130,9 @@ class _HomePageState extends State<HomePage>{
                 ),
               ),
             )
+          )
+          : Center(
+            child: Text("NO MATRIX CONNECTED"),
           );
         },
       )
