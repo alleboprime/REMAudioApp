@@ -18,7 +18,8 @@ class MatrixModel extends ChangeNotifier {
 
   String uuid = "";
   bool sessionAvailable = false;
-  bool latestSocketAvailable = false;
+  bool latestMatrixSocketAvailable = false;
+  bool latestCameraSocketAvailable = false;
   List<Map<String, String>> matrixSessions = [];
 
   WebSocket? socket;
@@ -137,17 +138,24 @@ class MatrixModel extends ChangeNotifier {
       Map<String, dynamic> receivedData = jsonDecode(response.body);
       matrixSessions.clear();
       sessionAvailable = false;
-      latestSocketAvailable = false;
-      if(receivedData["latest_socket"] != null){
+      latestMatrixSocketAvailable = false;
+      latestCameraSocketAvailable = false;
+      if(receivedData["latest_audio_socket"] != null){
         sessionAvailable = true;
-        latestSocketAvailable = true;
-        var latest = receivedData["latest_socket"];
-        matrixSessions.add({"name":latest["name"], "ip":latest["ip"], "port":latest["port"]});
+        latestMatrixSocketAvailable = true;
+        var latest = receivedData["latest_audio_socket"];
+        matrixSessions.add({"name":latest["name"], "ip":latest["ip"], "port":latest["port"], "device_type":latest["device_type"], "latest" :"true"});
+      }
+      if(receivedData["latest_video_socket"] != null){
+        sessionAvailable = true;
+        latestCameraSocketAvailable = true;
+        var latest = receivedData["latest_video_socket"];
+        matrixSessions.add({"name":latest["name"], "ip":latest["ip"], "port":latest["port"], "device_type":latest["device_type"], "latest" :"true"});
       }
       if(receivedData["sockets"] != null){
         sessionAvailable = true;
         for(var connection in receivedData["sockets"]){
-          matrixSessions.add({"name":connection["name"], "ip":connection["ip"], "port":connection["port"]});
+          matrixSessions.add({"name":connection["name"], "ip":connection["ip"], "port":connection["port"], "device_type":connection["device_type"], "latest" :"false"});
         }
       }
       return true;
@@ -166,7 +174,7 @@ class MatrixModel extends ChangeNotifier {
       settingSocket = {
         "socket_name": matrixSessions[index]["name"] ?? "",
         "socket": "${matrixSessions[index]["ip"] ?? ""}:${matrixSessions[index]["port"] ?? ""}",
-        "device_type": matrixSessions[index]["device_type"] ?? ""
+        "device_type": matrixSessions[index]["device_type"] ?? "matrix"
       };
     }
     try {

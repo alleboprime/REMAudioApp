@@ -89,7 +89,6 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
 
             void connect(int index) async {
               String reason = "";
-              await matrixModel.socket?.close();
               bool result = await matrixModel.setSocket(index: index);
               if(result){
                 result = await matrixModel.establishConnection();
@@ -143,7 +142,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                             return Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: matrixModel.latestSocketAvailable && index == 0 ? colors.selectionColor : colors.borderColors, width: 2),
+                                border: Border.all(color: matrixModel.matrixSessions[index]["latest"] == "true" ? colors.selectionColor : colors.borderColors, width: 2),
                                 color: colors.primaryColor
                               ),
                               padding: EdgeInsets.all(dimensions.isPc ? 25 : 20),
@@ -153,9 +152,18 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(matrixModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),
-                                      ShadButton.destructive(icon: Icon(PhosphorIcons.trash(), size: 16,), padding: EdgeInsets.all(0), onTapUp: (value) => removeConnection(index),)
+                                    children: [                                      
+                                      Text(matrixModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),  
+                                      Row(
+                                        spacing: 10,
+                                        children: [
+                                          ShadBadge(
+                                            hoverBackgroundColor: Colors.white,
+                                            child: Text(matrixModel.matrixSessions[index]["device_type"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),
+                                          ),                                     
+                                          ShadButton.destructive(icon: Icon(PhosphorIcons.trash(), size: 16,), padding: EdgeInsets.all(0), onTapUp: (value) => removeConnection(index),),
+                                        ],
+                                      )
                                     ],
                                   ),
                                   Row(
