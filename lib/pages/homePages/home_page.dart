@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
+import 'package:rem_app/components/homeScreen/home_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/matrix_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -17,22 +18,6 @@ class _HomePageState extends State<HomePage>{
   final colors = AppColors();
   final dimensions = Dimensions();
 
-  int _selectedTag = 0;
-  int get selectedTag => _selectedTag;
-  set selectedTag(int value){
-    setState(() {
-      _selectedTag = value;
-    });
-  }
-
-  int _selectedAllTag = 0;
-  int get selectedAllTag => _selectedAllTag;
-  set selectedAllTag(int value){
-    setState(() {
-      _selectedAllTag = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,44 +25,186 @@ class _HomePageState extends State<HomePage>{
         builder: (context, model, child){
           return model.latestMatrixSocketAvailable
           ? Center(
-            child: Padding(
-              padding: EdgeInsets.all(dimensions.isPc ? 40 : 20),
-              child: SizedBox.expand(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: colors.primaryColor,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
+            child: SizedBox.expand  (
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if(dimensions.screenHeight >= 600)
+                    Padding(
+                      padding: EdgeInsets.only(top: 20, bottom: 10),
+                      child: PresetButton(height: 50, fontSize: dimensions.isPc ? 22 : 18,)
+                    ),
+                  HomePageChannelPreview(isInput: true,),
+                  HomePageChannelPreview(isInput: false,),
+                  if(dimensions.screenHeight >= 600)
+                    Padding(
+                      padding: EdgeInsets.only(top: 10, bottom: 20),
+                      child: MuteAllButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, action: model.toggleAllMuteChannel,)
+                    ),
+                  if(dimensions.screenHeight < 600)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      spacing: 20,
+                      children: [
+                        PresetButton(height: 30, fontSize: 13,),
+                        MuteAllButton(height: 30, fontSize: 13, action: model.toggleAllMuteChannel,),
+                      ],
+                    )
+                ],
+              ),
+            ),
+          )
+          : Center(
+            child: Text("NO MATRIX CONNECTED"),
+          );
+        },
+      )
+    );
+  }
+}
+
+class MuteAllButton extends StatefulWidget {
+  const MuteAllButton({super.key, required this.height, required this.fontSize, required this.action});
+
+  final double height;
+  final double fontSize;
+  final Function action;
+
+  @override
+  // ignore: library_private_types_in_public_api
+  MuteAllButtonState createState() => MuteAllButtonState();
+}
+
+class MuteAllButtonState extends State<MuteAllButton>{
+  final colors = AppColors();
+
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (details) => {
+        setState(() {
+          isHovered = true;
+        })
+      },
+      onTapCancel: () => {
+        setState(() {
+          isHovered = false;
+        }),
+      },
+      onTapUp: (details) => {
+        setState(() {
+          isHovered = false;
+        }),
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) {
+          setState(() {
+            isHovered = true;
+          });
+        },
+        onExit: (_) {
+          setState(() {
+            isHovered = false;
+          });
+        },
+        child: ShadButton.outline(
+          onTapUp: (value) => widget.action(),
+          hoverBackgroundColor: Colors.black,
+          height: widget.height,
+          width: 120,
+          decoration: ShadDecoration(
+            border: ShadBorder.all(color: colors.mutedChannel)
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: isHovered ? colors.mutedChannel : Colors.transparent,
+                  width: 1,
+                ),
+              ),
+            ),
+            padding: EdgeInsets.only(bottom: 1),
+            child: Text("Mute All", style: TextStyle(color: colors.mutedChannel, fontSize: widget.fontSize))
+          ),
+        )
+      )
+    );
+  }
+}
+
+
+class HomePageChannelPreview extends StatefulWidget{
+  const HomePageChannelPreview({super.key, required this.isInput});
+
+  final bool isInput;
+
+  @override
+  // ignore: library_private_types_in_public_api
+  HomePageChannelPreviewState createState() => HomePageChannelPreviewState();
+}
+
+class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
+  final colors = AppColors();
+  final dimensions = Dimensions();
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<MatrixModel>(
+      builder: (context, matrixModel, child){
+        return Expanded(
+          child: Column(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: dimensions.screenHeight < 600 ? 1 : dimensions.screenHeight <= 800 ? 10 : 20, horizontal: 30),
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxWidth: 1200
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: dimensions.isDesktop ? colors.selectionColor : colors.primaryColor),
+                      color: colors.primaryColor
+                    ),
+                    padding: EdgeInsets.all(10),
                     child: Column(
                       children: [
-                        SizedBox(
-                          height: dimensions.extremeNarrow ? 30 : 60,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              tagButton("Input", 0),
-                              SizedBox(width: 5,),
-                              tagButton("Output", 1),
-                            ],
-                          ),
+                        Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(15)
+                              ),
+                              alignment: Alignment.center,
+                              width: dimensions.isPc ? 100 : 80,
+                              height: 30,
+                              child: Text(widget.isInput ? "Input" : "Output", style: TextStyle(fontSize: dimensions.isPc ? 20 : 16),)
+                            )
+                          ],
                         ),
                         Expanded(
                           child: LayoutBuilder(
                             builder: (context, constraints) {
-                              Map<String, bool> values = selectedTag == 0 ? model.inputMute : model.outputMute;
+                              Map<String, bool> visibility = widget.isInput ? matrixModel.inputVisibility : matrixModel.outputVisibility;
+                              Map<String, bool> mute = widget.isInput ? matrixModel.inputMute : matrixModel.outputMute;
+                              int rowNumber = (matrixModel.inputVisibility.length/4).toInt();
                               Widget content = Column(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: List.generate(4, (rowIndex) {
+                                spacing: 30,
+                                children: List.generate(rowNumber, (rowIndex) {
                                   return Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: List.generate(4, (colIndex) {
                                       return ShadButton.outline(
-                                        enabled: selectedTag == 0 ? (model.inputVisibility[(rowIndex * 4 + colIndex + 1).toString()] ?? true) : (model.outputVisibility[(rowIndex * 4 + colIndex + 1).toString()] ?? true),
+                                        enabled: visibility[(rowIndex * 4 + colIndex + 1).toString()] ?? true,
                                         onTapUp: (_) => {
-                                          model.toggleMuteChannel(rowIndex * 4 + colIndex + 1, selectedTag == 0 ? "input" : "output", !(values["${rowIndex * 4 + colIndex + 1}"] ?? true))
+                                          matrixModel.toggleMuteChannel(rowIndex * 4 + colIndex + 1, widget.isInput ? "input" : "output", !(mute[(rowIndex * 4 + colIndex + 1).toString()] ?? false))
                                         },
                                         hoverBackgroundColor: Colors.transparent,
                                         width: 60,
@@ -85,7 +212,7 @@ class _HomePageState extends State<HomePage>{
                                         padding: EdgeInsets.all(0),
                                         decoration: ShadDecoration(
                                           border: ShadBorder.all(
-                                            color: (values["${rowIndex * 4 + colIndex + 1}"] ?? true) 
+                                            color: (mute["${rowIndex * 4 + colIndex + 1}"] ?? true) 
                                               ? colors.mutedChannel 
                                               : colors.unmutedChannel, 
                                             radius: BorderRadius.circular(10),
@@ -95,7 +222,7 @@ class _HomePageState extends State<HomePage>{
                                           child: Text(
                                             'CH${rowIndex * 4 + colIndex + 1}',
                                             style: TextStyle(
-                                              color: (values["${rowIndex * 4 + colIndex + 1}"] ?? true) 
+                                              color: (mute["${rowIndex * 4 + colIndex + 1}"] ?? true) 
                                                 ? colors.mutedChannel 
                                                 : colors.unmutedChannel, 
                                               fontSize: 17,
@@ -107,21 +234,8 @@ class _HomePageState extends State<HomePage>{
                                   );
                                 }),
                               );
-
-                              return dimensions.extremeNarrow
-                                  ? SingleChildScrollView(child: content)
-                                  : content;
+                              return Center(child: SingleChildScrollView(child: content));
                             },
-                          ),
-                        ),
-                        SizedBox(
-                          height: dimensions.extremeNarrow ? 30 : 60,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              allToggleButton(model.toggleMuteChannel, model.inputVisibility, model.outputVisibility),
-                            ],
                           ),
                         ),
                       ],
@@ -129,57 +243,10 @@ class _HomePageState extends State<HomePage>{
                   ),
                 ),
               ),
-            )
-          )
-          : Center(
-            child: Text("NO MATRIX CONNECTED"),
-          );
-        },
-      )
-    );
-  }
-
-  ShadButton tagButton(String title, int selection) {
-    return ShadButton.outline(
-      width: 80,
-      height: 30,
-      padding: EdgeInsets.all(0),
-      decoration: ShadDecoration(
-        border: ShadBorder.all(width: 2, color: selectedTag == selection ? colors.selectionColor : Colors.white, radius: BorderRadius.circular(50))
-      ),
-      hoverBackgroundColor: Colors.transparent,
-      backgroundColor: Colors.transparent,
-      foregroundColor: selectedTag == selection ? colors.selectionColor : Colors.white,
-      hoverForegroundColor: selectedTag == selection ? colors.selectionColor : Colors.white,
-      child: Text(title, style: TextStyle(fontSize: 17),), 
-      onTapUp: (_){
-        selectedTag = selection;
+            ],
+          ),
+        );
       },
     );
   }
-
-  ShadButton allToggleButton(Function function, Map<String, bool> iVisibility, Map<String, bool> oVisibility) {
-    return ShadButton.outline(
-      width: 110,
-      height: 30,
-      padding: EdgeInsets.all(0),
-      decoration: ShadDecoration(
-        border: ShadBorder.all(width: 2, color: selectedAllTag == 0 ? colors.mutedChannel : colors.unmutedChannel, radius: BorderRadius.circular(50))
-      ),
-      hoverBackgroundColor: Colors.transparent,
-      backgroundColor: Colors.transparent,
-      foregroundColor: selectedAllTag == 0 ? colors.mutedChannel : colors.unmutedChannel,
-      hoverForegroundColor: selectedAllTag == 0 ? colors.mutedChannel : colors.unmutedChannel,
-      child: Text(selectedAllTag == 0 ? "Mute All" : "Unmute All", style: TextStyle(fontSize: 17),), 
-      onTapUp: (_){
-        for(int i = 1; i <= 16; i++){
-          if(selectedTag == 0 ? (iVisibility[i.toString()] ?? true) : (oVisibility[i.toString()] ?? true)){
-            function(i, selectedTag == 0 ? "input" : "output", selectedAllTag == 0);
-          }
-        }
-        selectedAllTag = (selectedAllTag == 0 ? 1 : 0); 
-      },
-    );
-  }
-
 }

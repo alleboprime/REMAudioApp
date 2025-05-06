@@ -88,6 +88,9 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
           builder: (context, matrixModel, child){
 
             void connect(int index) async {
+              setState(() {
+                isLoading = true;
+              });
               String reason = "";
               bool result = await matrixModel.setSocket(index: index);
               if(result){
@@ -101,10 +104,10 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                 reason = "Failed on setting socket";
               }
               setState(() {
+                isLoading = false;
                 if(reason != ""){
                   failingReason = reason;
                 }
-                isLoading = false;
               });
             }
 
@@ -153,16 +156,14 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [                                      
-                                        
                                       Row(
                                         spacing: 10,
                                         children: [
-                                          Icon(matrixModel.matrixSessions[index]["device_type"] == "matrix" ? PhosphorIcons.network() : PhosphorIcons.camera(), size: 25, color: Colors.white,),
+                                          Icon(matrixModel.matrixSessions[index]["device_type"] == "matrix" ? PhosphorIcons.hardDrive() : PhosphorIcons.camera(), size: 25, color: Colors.white,),
                                           Text(matrixModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),                             
                                         ],
                                       ),
                                       ShadButton.destructive(icon: Icon(PhosphorIcons.trash(), size: 16,), padding: EdgeInsets.all(0), onTapUp: (value) => removeConnection(index),),
-
                                     ],
                                   ),
                                   Row(
@@ -209,6 +210,19 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                               ),                      
                             );
                           }
+                        ),
+                      ),
+                    ),
+                  ),
+                if (isLoading)
+                  Container(
+                    color: Colors.black.withAlpha(180),
+                    child: Center(
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 5,
                         ),
                       ),
                     ),
