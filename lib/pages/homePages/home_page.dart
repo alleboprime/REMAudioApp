@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/homeScreen/home_screen_components.dart';
@@ -189,53 +190,52 @@ class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
                           ],
                         ),
                         Expanded(
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              Map<String, bool> visibility = widget.isInput ? matrixModel.inputVisibility : matrixModel.outputVisibility;
-                              Map<String, bool> mute = widget.isInput ? matrixModel.inputMute : matrixModel.outputMute;
-                              int rowNumber = (matrixModel.inputVisibility.length/4).toInt();
-                              Widget content = Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                spacing: 30,
-                                children: List.generate(rowNumber, (rowIndex) {
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: List.generate(4, (colIndex) {
-                                      return ShadButton.outline(
-                                        enabled: visibility[(rowIndex * 4 + colIndex + 1).toString()] ?? true,
-                                        onTapUp: (_) => {
-                                          matrixModel.toggleMuteChannel(rowIndex * 4 + colIndex + 1, widget.isInput ? "input" : "output", !(mute[(rowIndex * 4 + colIndex + 1).toString()] ?? false))
-                                        },
-                                        hoverBackgroundColor: Colors.transparent,
-                                        width: 60,
-                                        height: 50,
-                                        padding: EdgeInsets.all(0),
-                                        decoration: ShadDecoration(
-                                          border: ShadBorder.all(
-                                            color: (mute["${rowIndex * 4 + colIndex + 1}"] ?? true) 
-                                              ? colors.mutedChannel 
-                                              : colors.unmutedChannel, 
-                                            radius: BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            'CH${rowIndex * 4 + colIndex + 1}',
-                                            style: TextStyle(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                Map<String, bool> visibility = widget.isInput ? matrixModel.inputVisibility : matrixModel.outputVisibility;
+                                Map<String, bool> mute = widget.isInput ? matrixModel.inputMute : matrixModel.outputMute;
+                                Map<String, String> labels = widget.isInput ? matrixModel.inputLabels : matrixModel.outputLabels;
+                                int rowNumber = (matrixModel.inputVisibility.length/4).toInt();
+                                Widget content = Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  spacing: 30,
+                                  children: List.generate(rowNumber, (rowIndex) {
+                                    return Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: List.generate(4, (colIndex) {
+                                        return ShadButton.outline(
+                                          enabled: visibility[(rowIndex * 4 + colIndex + 1).toString()] ?? true,
+                                          onTapUp: (_) => {
+                                            matrixModel.toggleMuteChannel(rowIndex * 4 + colIndex + 1, widget.isInput ? "input" : "output", !(mute[(rowIndex * 4 + colIndex + 1).toString()] ?? false))
+                                          },
+                                          hoverBackgroundColor: Colors.transparent,
+                                          width: 60,
+                                          height: 50,
+                                          padding: EdgeInsets.all(0),
+                                          decoration: ShadDecoration(
+                                            border: ShadBorder.all(
                                               color: (mute["${rowIndex * 4 + colIndex + 1}"] ?? true) 
                                                 ? colors.mutedChannel 
                                                 : colors.unmutedChannel, 
-                                              fontSize: 17,
+                                              radius: BorderRadius.circular(10),
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    }),
-                                  );
-                                }),
-                              );
-                              return Center(child: SingleChildScrollView(child: content));
-                            },
+                                          child: ScrollingLabel(
+                                            text: labels["${rowIndex * 4 + colIndex + 1}"].toString(),
+                                            color: (mute["${rowIndex * 4 + colIndex + 1}"] ?? true)
+                                                ? colors.mutedChannel
+                                                : colors.unmutedChannel,
+                                          ),
+                                        );
+                                      }),
+                                    );
+                                  }),
+                                );
+                                return Center(child: SingleChildScrollView(child: content));
+                              },
+                            ),
                           ),
                         ),
                       ],
@@ -247,6 +247,53 @@ class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
           ),
         );
       },
+    );
+  }
+}
+
+
+class ScrollingLabel extends StatelessWidget {
+  final String text;
+  final Color color;
+
+  const ScrollingLabel({
+    super.key,
+    required this.text,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (text.length <= 4) {
+      return Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 17,
+        ),
+        overflow: TextOverflow.ellipsis,
+      );
+    }
+
+    return SizedBox(
+      width: 50, // regola la larghezza visibile
+      height: 20,
+      child: Marquee(
+        text: text,
+        style: TextStyle(
+          color: color,
+          fontSize: 17,
+        ),
+        scrollAxis: Axis.horizontal,
+        blankSpace: 20.0,
+        velocity: 30.0,
+        pauseAfterRound: Duration(milliseconds: 500),
+        startPadding: 5.0,
+        accelerationDuration: Duration(milliseconds: 500),
+        accelerationCurve: Curves.linear,
+        decelerationDuration: Duration(milliseconds: 500),
+        decelerationCurve: Curves.easeOut,
+      ),
     );
   }
 }
