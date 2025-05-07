@@ -49,7 +49,7 @@ class HomeNavBarEntry extends StatelessWidget {
                   size: dimensions.isPc ? 22 : 17,
                   ),
                 onPressed: () {
-                  model.setSelectedPage(pageIndex);
+                  model.selectedPage = pageIndex;
                 },
               );
             },
