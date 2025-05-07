@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/logScreen/log_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
-import 'package:rem_app/models/matrix_model.dart';
+import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:rem_app/pages/logPages/login_page.dart';
 import 'package:rem_app/pages/logPages/server_ip_page.dart';
@@ -88,7 +88,7 @@ class LoginScreenState extends State<LoginScreen> {
     String reason = loginConnectionResult[1];
 
     if (loginConnectionResult[0]) {
-      final matrixModel = MatrixModel();
+      final matrixModel = ApplicationModel();
       bool result = await matrixModel.getInitialToken();
       if(result){
         result = await matrixModel.checkForMatrixConnections();

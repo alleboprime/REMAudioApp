@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
-import 'package:rem_app/models/matrix_model.dart';
+import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -78,8 +78,8 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
           body: SafeArea(
             child: Padding(
               padding: EdgeInsets.only(top: 10, left: 30, right: 30, bottom: 30),
-              child: Consumer2<UserModel, MatrixModel>(
-                builder: (context, userModel, matrixModel, child) {
+              child: Consumer2<UserModel, ApplicationModel>(
+                builder: (context, userModel, appModel, child) {
         
                   void connectToSocket() async {
                     setState(() {
@@ -90,7 +90,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                       "socket": "${deviceIpController.text}:${devicePortController.text}",
                       "device_type": _deviceTypeSelectionValue
                     };
-                    bool result = await matrixModel.setSocket(socket: socket);
+                    bool result = await appModel.setSocket(socket: socket);
                     if(!result){
                       setState(() {
                         failingReason = "Failed setting the socket";
@@ -98,7 +98,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                       });
                       return;
                     }
-                    result = await matrixModel.establishConnection();
+                    result = await appModel.establishConnection();
                     if(!result){
                       setState(() {
                         failingReason = "Failed establishing connection";
@@ -106,7 +106,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                       });
                       return;
                     }
-                    _deviceTypeSelectionValue == "matrix" ? matrixModel.latestMatrixSocketAvailable = true : matrixModel.latestCameraSocketAvailable = true;
+                    _deviceTypeSelectionValue == "matrix" ? appModel.latestMatrixSocketAvailable = true : appModel.latestCameraSocketAvailable = true;
                     if(context.mounted){Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);}
                   }
         

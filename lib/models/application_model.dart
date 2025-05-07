@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:rem_app/models/user_model.dart';
 
-class MatrixModel extends ChangeNotifier {
-  static final MatrixModel _instance = MatrixModel._internal();
+class ApplicationModel extends ChangeNotifier {
+  static final ApplicationModel _instance = ApplicationModel._internal();
 
-  factory MatrixModel() {
+  factory ApplicationModel() {
     return _instance;
   }
 
-  MatrixModel._internal();
+  ApplicationModel._internal();
 
   final userModel = UserModel();
 
@@ -45,7 +45,7 @@ class MatrixModel extends ChangeNotifier {
   late int currentMatrixPreset;
   bool matrixAvailable = true;
 
-  void updateData(Map<String, dynamic> receivedData) {
+  void updateMatrixData(Map<String, dynamic> receivedData) {
     inputMute = (receivedData["i_mute"] as Map<String, dynamic>)
       .map((key, value) => MapEntry(key, value as bool));
 
@@ -82,6 +82,14 @@ class MatrixModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateCameraData(Map<String, dynamic> receivedData){
+    print(receivedData);
+  }
+
+  void manageReasons(reason){
+    print("reason");
+  }
+
   Future<bool> getInitialToken() async {
     var url = Uri.http('${userModel.remoteServerIp}:8000', '/ws/auth');
     http.Response response;
@@ -112,10 +120,14 @@ class MatrixModel extends ChangeNotifier {
         (message) {
           socketConnected = true;
           Map<String, dynamic> receivedData = jsonDecode(message);
-          if(!receivedData.containsKey("reason")){
-            updateData(receivedData);
-          } 
-          if (!completer.isCompleted) {
+          if(receivedData.containsKey("reason")){
+            manageReasons(receivedData["reason"]);
+          }else if(receivedData["device_type"] == "matrix"){
+            updateMatrixData(receivedData);
+          }else{
+            updateCameraData(receivedData);
+          }
+          if(!completer.isCompleted){
             completer.complete(true);
           }
         },

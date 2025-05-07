@@ -5,7 +5,7 @@ import 'package:rem_app/components/logScreen/log_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:rem_app/components/homeNavBar/home_nav_bar.dart';
-import 'package:rem_app/models/matrix_model.dart';
+import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/pages/homePages/audio_page.dart';
 import 'package:rem_app/pages/homePages/preset_page.dart';
 import 'package:rem_app/pages/homePages/video_page.dart';
@@ -29,8 +29,8 @@ class HomeScreenState extends State<HomeScreen> {
       create: (context) => HomeNavBarModel(),
       child: Scaffold(
         backgroundColor: Colors.black,
-        body: Consumer2<HomeNavBarModel, MatrixModel>(
-          builder: (context, navBarModel, matrixModel, child) {
+        body: Consumer2<HomeNavBarModel, ApplicationModel>(
+          builder: (context, navBarModel, appModel, child) {
             return Row(
               children: [
                 dimensions.isPc ? HomeNavBar() : Container(),
@@ -48,7 +48,7 @@ class HomeScreenState extends State<HomeScreen> {
                           PresetPage(),
                         ],
                       ),
-                      if(!matrixModel.matrixAvailable)
+                      if(!appModel.matrixAvailable)
                         Container(
                           color: Colors.black.withAlpha(100),
                           child: Center(
@@ -68,7 +68,7 @@ class HomeScreenState extends State<HomeScreen> {
                             )
                           ),
                         ),
-                      if(!matrixModel.socketConnected)
+                      if(!appModel.socketConnected)
                         Container(
                           color: Colors.black.withAlpha(100),
                           child: Center(

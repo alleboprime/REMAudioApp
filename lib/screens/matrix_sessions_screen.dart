@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
-import 'package:rem_app/models/matrix_model.dart';
+import 'package:rem_app/models/application_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class MatrixSessionsScreen extends StatefulWidget{
@@ -15,7 +15,7 @@ class MatrixSessionsScreen extends StatefulWidget{
 }
 
 class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
-  final matrixModel = MatrixModel();
+  final appModel = ApplicationModel();
 
   bool isHovered = false;
 
@@ -47,9 +47,9 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
   }
 
   Future<void> refresh() async{
-    await matrixModel.checkForMatrixConnections();
+    await appModel.checkForMatrixConnections();
     setState(() {
-      matrixModel.matrixSessions;
+      appModel.matrixSessions;
     });
     return;
   }
@@ -84,17 +84,17 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
           ],
           title: Center(child: Text("RECENT CONNECTIONS", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),)
         ),
-        body: Consumer<MatrixModel>(
-          builder: (context, matrixModel, child){
+        body: Consumer<ApplicationModel>(
+          builder: (context, appModel, child){
 
             void connect(int index) async {
               setState(() {
                 isLoading = true;
               });
               String reason = "";
-              bool result = await matrixModel.setSocket(index: index);
+              bool result = await appModel.setSocket(index: index);
               if(result){
-                result = await matrixModel.establishConnection();
+                result = await appModel.establishConnection();
                 if(result){
                   if(context.mounted){Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);}
                 }else{
@@ -113,7 +113,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
 
             void removeConnection(int index) async {
               String reason = "";
-              bool result = await matrixModel.removeSocket(index);
+              bool result = await appModel.removeSocket(index);
               if(!result){
                 reason = "Failed on removing socket";
               }else{
@@ -140,12 +140,12 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                       child: ScrollConfiguration(
                         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                         child: ListView.builder(
-                          itemCount: matrixModel.matrixSessions.length,
+                          itemCount: appModel.matrixSessions.length,
                           itemBuilder: (context, index) {
                             return Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: matrixModel.matrixSessions[index]["latest"] == "true" ? colors.selectionColor : colors.borderColors, width: 2),
+                                border: Border.all(color: appModel.matrixSessions[index]["latest"] == "true" ? colors.selectionColor : colors.borderColors, width: 2),
                                 color: colors.primaryColor
                               ),
                               padding: EdgeInsets.all(dimensions.isPc ? 25 : 20),
@@ -159,8 +159,8 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                       Row(
                                         spacing: 10,
                                         children: [
-                                          Icon(matrixModel.matrixSessions[index]["device_type"] == "matrix" ? PhosphorIcons.hardDrive() : PhosphorIcons.camera(), size: 25, color: Colors.white,),
-                                          Text(matrixModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),                             
+                                          Icon(appModel.matrixSessions[index]["device_type"] == "matrix" ? PhosphorIcons.hardDrive() : PhosphorIcons.camera(), size: 25, color: Colors.white,),
+                                          Text(appModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),                             
                                         ],
                                       ),
                                       ShadButton.destructive(icon: Icon(PhosphorIcons.trash(), size: 16,), padding: EdgeInsets.all(0), onTapUp: (value) => removeConnection(index),),
@@ -177,7 +177,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                               border: Border.all(color: colors.borderColors, width: 2),
                                             ),
                                             padding: EdgeInsets.all(dimensions.isPc ? 15 : 10),
-                                            child: Text(matrixModel.matrixSessions[index]["ip"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
+                                            child: Text(appModel.matrixSessions[index]["ip"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
                                           ),
                                           Container(
                                             decoration: BoxDecoration(
@@ -190,7 +190,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                               ),
                                             ),
                                             padding: EdgeInsets.all(dimensions.isPc ? 15 : 10),
-                                            child: Text(matrixModel.matrixSessions[index]["port"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
+                                            child: Text(appModel.matrixSessions[index]["port"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
                                           ),
                                         ],
                                       ),

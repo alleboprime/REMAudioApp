@@ -2,7 +2,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/dimensions.dart';
-import 'package:rem_app/models/matrix_model.dart';
+import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:rem_app/screens/home_screen.dart';
 import 'package:rem_app/screens/log_screen.dart';
@@ -15,7 +15,7 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => UserModel()),
-      ChangeNotifierProvider(create: (context) => MatrixModel()),
+      ChangeNotifierProvider(create: (context) => ApplicationModel()),
     ],
     child: REMApp(),
   ));

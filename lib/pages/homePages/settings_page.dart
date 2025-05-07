@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/homeScreen/home_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
-import 'package:rem_app/models/matrix_model.dart';
+import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -17,8 +17,8 @@ class SettingsPage extends StatelessWidget {
     final colors = AppColors();
 
     return SafeArea(
-      child: Consumer2<UserModel, MatrixModel>(
-        builder: (context, userModel, matrixModel, child){
+      child: Consumer2<UserModel, ApplicationModel>(
+        builder: (context, userModel, appModel, child){
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -52,9 +52,9 @@ class SettingsPage extends StatelessWidget {
                             title: "Matrix Connection", 
                             iconOrigin: PhosphorIcons.network(), 
                             action: (_)async{
-                              bool result = await matrixModel.checkForMatrixConnections();
+                              bool result = await appModel.checkForMatrixConnections();
                               if(result){
-                                matrixModel.socket?.close();
+                                appModel.socket?.close();
                                 if(context.mounted){Navigator.pushNamed(context, "/matrix_connection");}
                               }
                             }
@@ -65,7 +65,7 @@ class SettingsPage extends StatelessWidget {
                           title: "Log Out", 
                           iconOrigin: PhosphorIcons.signOut(), 
                           action: (_) {
-                            matrixModel.socket?.close();
+                            appModel.socket?.close();
                             Navigator.pushNamedAndRemoveUntil(context, '/access', (Route<dynamic> route) => false);
                           }, 
                           color: Colors.red,

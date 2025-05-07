@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rem_app/models/matrix_model.dart';
+import 'package:rem_app/models/application_model.dart';
 
 class AudioPage extends Container {
   AudioPage({super.key});
@@ -8,9 +8,9 @@ class AudioPage extends Container {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Consumer<MatrixModel>(
-        builder: (context, matrixModel, child){
-          return matrixModel.latestMatrixSocketAvailable
+      child: Consumer<ApplicationModel>(
+        builder: (context, appModel, child){
+          return appModel.latestMatrixSocketAvailable
           ? Center(
             child: Text("AUDIO"),
           )

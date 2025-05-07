@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/dimensions.dart';
-import 'package:rem_app/models/matrix_model.dart';
+import 'package:rem_app/models/application_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class PresetPage extends StatefulWidget{
@@ -50,8 +50,8 @@ class PresetPageState extends State<PresetPage>{
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.all(30),
-        child: Consumer<MatrixModel>(
-          builder: (context, matrixModel, child) {
+        child: Consumer<ApplicationModel>(
+          builder: (context, appModel, child) {
             return Stack(
               children: [
                 Center(

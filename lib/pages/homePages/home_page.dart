@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/homeScreen/home_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
-import 'package:rem_app/models/matrix_model.dart';
+import 'package:rem_app/models/application_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,9 +22,9 @@ class _HomePageState extends State<HomePage>{
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Consumer<MatrixModel>(
-        builder: (context, model, child){
-          return model.latestMatrixSocketAvailable
+      child: Consumer<ApplicationModel>(
+        builder: (context, appModel, child){
+          return appModel.latestMatrixSocketAvailable
           ? Center(
             child: SizedBox.expand  (
               child: Column(
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage>{
                   if(dimensions.screenHeight >= 600)
                     Padding(
                       padding: EdgeInsets.only(top: 10, bottom: 20),
-                      child: MuteAllButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, action: model.toggleAllMuteChannel,)
+                      child: MuteAllButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, action: appModel.toggleAllMuteChannel,)
                     ),
                   if(dimensions.screenHeight < 600)
                     Row(
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage>{
                       spacing: 20,
                       children: [
                         PresetButton(height: 30, fontSize: 13,),
-                        MuteAllButton(height: 30, fontSize: 13, action: model.toggleAllMuteChannel,),
+                        MuteAllButton(height: 30, fontSize: 13, action: appModel.toggleAllMuteChannel,),
                       ],
                     )
                 ],
@@ -155,8 +155,8 @@ class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MatrixModel>(
-      builder: (context, matrixModel, child){
+    return Consumer<ApplicationModel>(
+      builder: (context, appModel, child){
         return Expanded(
           child: Column(
             children: [
@@ -194,10 +194,10 @@ class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
                             padding: const EdgeInsets.all(10),
                             child: LayoutBuilder(
                               builder: (context, constraints) {
-                                Map<String, bool> visibility = widget.isInput ? matrixModel.inputVisibility : matrixModel.outputVisibility;
-                                Map<String, bool> mute = widget.isInput ? matrixModel.inputMute : matrixModel.outputMute;
-                                Map<String, String> labels = widget.isInput ? matrixModel.inputLabels : matrixModel.outputLabels;
-                                int rowNumber = (matrixModel.inputVisibility.length/4).toInt();
+                                Map<String, bool> visibility = widget.isInput ? appModel.inputVisibility : appModel.outputVisibility;
+                                Map<String, bool> mute = widget.isInput ? appModel.inputMute : appModel.outputMute;
+                                Map<String, String> labels = widget.isInput ? appModel.inputLabels : appModel.outputLabels;
+                                int rowNumber = (appModel.inputVisibility.length/4).toInt();
                                 Widget content = Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   spacing: 30,
@@ -208,7 +208,7 @@ class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
                                         return ShadButton.outline(
                                           enabled: visibility[(rowIndex * 4 + colIndex + 1).toString()] ?? true,
                                           onTapUp: (_) => {
-                                            matrixModel.toggleMuteChannel(rowIndex * 4 + colIndex + 1, widget.isInput ? "input" : "output", !(mute[(rowIndex * 4 + colIndex + 1).toString()] ?? false))
+                                            appModel.toggleMuteChannel(rowIndex * 4 + colIndex + 1, widget.isInput ? "input" : "output", !(mute[(rowIndex * 4 + colIndex + 1).toString()] ?? false))
                                           },
                                           hoverBackgroundColor: Colors.transparent,
                                           width: 60,
