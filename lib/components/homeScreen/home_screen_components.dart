@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class SettingsTile extends StatefulWidget{
@@ -133,31 +135,38 @@ class PresetButtonState extends State<PresetButton>{
             isHovered = false;
           });
         },
-        child: ShadButton.outline(
-          hoverBackgroundColor: Colors.black,
-          height: widget.height,
-          decoration: ShadDecoration(
-            border: ShadBorder.all(color: colors.selectionColor)
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: isHovered ? colors.selectionColor : Colors.transparent,
-                  width: 1,
+        child: Consumer<HomeNavBarModel>(
+          builder: (context, navBarModel, child){
+            return ShadButton.outline(
+              onTapUp: (value){
+                navBarModel.selectedPage = 4;
+              },
+              hoverBackgroundColor: Colors.black,
+              height: widget.height,
+              decoration: ShadDecoration(
+                border: ShadBorder.all(color: colors.selectionColor)
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: isHovered ? colors.selectionColor : Colors.transparent,
+                      width: 1,
+                    ),
+                  ),
                 ),
+                padding: EdgeInsets.only(bottom: 1),
+                child: Text(
+                  "Preset", 
+                  style: TextStyle(
+                    color: colors.selectionColor, 
+                    fontSize: widget.fontSize,
+                  ),
+                )
               ),
-            ),
-            padding: EdgeInsets.only(bottom: 1),
-            child: Text(
-              "Preset", 
-              style: TextStyle(
-                color: colors.selectionColor, 
-                fontSize: widget.fontSize,
-              ),
-            )
-          ),
-        ),
+            );
+          },
+        )
       ),
     );
   }
