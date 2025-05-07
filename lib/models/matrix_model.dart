@@ -36,34 +36,48 @@ class MatrixModel extends ChangeNotifier {
   late Map<String, double> outputVolumes;
   late Map<String, bool> inputVisibility;
   late Map<String, bool> outputVisibility;
-  late String connectedMatrixSocket;
+  late Map<String, String> inputLabels;
+  late Map<String, String> outputLabels;
+
+  late Map<String, String> presetLabels;
+
+  late String matrixSocket;
   late int currentMatrixPreset;
   bool matrixAvailable = true;
 
   void updateData(Map<String, dynamic> receivedData) {
     inputMute = (receivedData["i_mute"] as Map<String, dynamic>)
-        .map((key, value) => MapEntry(key, value as bool));
+      .map((key, value) => MapEntry(key, value as bool));
 
     outputMute = (receivedData["o_mute"] as Map<String, dynamic>)
-        .map((key, value) => MapEntry(key, value as bool));
+      .map((key, value) => MapEntry(key, value as bool));
 
     inputVolumes = (receivedData["i_volumes"] as Map<String, dynamic>)
-        .map((key, value) => MapEntry(key, (value as num).toDouble()));
+      .map((key, value) => MapEntry(key, (value as num).toDouble()));
 
     outputVolumes = (receivedData["o_volumes"] as Map<String, dynamic>)
-        .map((key, value) => MapEntry(key, (value as num).toDouble()));
+      .map((key, value) => MapEntry(key, (value as num).toDouble()));
 
     inputVisibility = (receivedData["i_visibility"] as Map<String, dynamic>)
-        .map((key, value) => MapEntry(key, value as bool));
+      .map((key, value) => MapEntry(key, value as bool));
 
     outputVisibility = (receivedData["o_visibility"] as Map<String, dynamic>)
-        .map((key, value) => MapEntry(key, value as bool));
+      .map((key, value) => MapEntry(key, value as bool));
+
+    inputLabels = (receivedData["i_labels"] as Map<String, dynamic>)
+      .map((key, value) => MapEntry(key, value as String));
+
+    outputLabels = (receivedData["o_labels"] as Map<String, dynamic>)
+      .map((key, value) => MapEntry(key, value as String));
+
+    presetLabels = (receivedData["preset_labels"] as Map<String, dynamic>)
+      .map((key, value) => MapEntry(key, value as String));
 
     currentMatrixPreset = receivedData["current_preset"] as int;
 
     matrixAvailable = receivedData["available"] as bool;
 
-    connectedMatrixSocket = receivedData["matrix_socket"] as String;
+    matrixSocket = receivedData["matrix_socket"] as String;
 
     notifyListeners();
   }
