@@ -1,10 +1,10 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/logScreen/log_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/application_model.dart';
+import 'package:rem_app/models/common_interface.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:rem_app/pages/logPages/login_page.dart';
 import 'package:rem_app/pages/logPages/server_ip_page.dart';
@@ -42,33 +42,7 @@ class LoginScreenState extends State<LoginScreen> {
   final FocusNode _focusNode = FocusNode();
 
   UserModel model = UserModel();
-
-  Timer? _failedTimer;
-
-  bool isLoading = false;
-
-  bool _failed = false;
-  bool get failed => _failed;
-  set failed(bool value){
-    if(value){
-      _failed = true;
-      _failedTimer?.cancel();
-      _failedTimer = Timer(Duration(seconds: 3), () {
-        if(mounted){
-          setState(() => _failed = false);
-        }
-      });
-    }else{
-      setState(() => _failed = false);
-    }
-  }
-
-  String _failingReason = "";
-  String get failingReason => _failingReason;
-  set failingReason(String value){
-    _failingReason = value;
-    failed = true;
-  }
+  CommonInterface commonInterface = CommonInterface();
 
   void checkKeyPressed(KeyEvent keyPressed){
     if (keyPressed.logicalKey == LogicalKeyboardKey.enter) {
@@ -82,7 +56,7 @@ class LoginScreenState extends State<LoginScreen> {
 
   void login() async {
     setState(() {
-      isLoading = true;
+      commonInterface.isLoading = true;
     });
     List<dynamic> loginConnectionResult = await model.login(usernameController.text, passwordController.text);
     String reason = loginConnectionResult[1];
@@ -113,26 +87,26 @@ class LoginScreenState extends State<LoginScreen> {
       }
     } 
     setState(() {
+      commonInterface.isLoading = false;
       if(reason != ""){
-        failingReason = reason;
+        commonInterface.failingReason = reason;
       }
-      isLoading = false;
     });
   }
 
   void submitIp() async {
     setState(() {
-      isLoading = true;
+      commonInterface.isLoading = true;
     });
     bool result = await model.checkServer(serverIpController.text);
     if(result){
-      isLoading = false;
+      commonInterface.isLoading = false;
       model.isLogging = true;
-      failed = false;
+      commonInterface.failed = false;
     }else{
       setState(() {
-        isLoading = false;
-        failingReason = "Connection test failed";
+        commonInterface.isLoading = false;
+        commonInterface.failingReason = "Connection test failed";
       });
     }
   }
@@ -168,94 +142,67 @@ class LoginScreenState extends State<LoginScreen> {
                 }
                 );
         
-                return Stack(
-                  children: [
-                    Scaffold(
-                      resizeToAvoidBottomInset: true,
-                      backgroundColor: Colors.black,
-                      body: Center(
-                        child: Column(
-                          children: [
-                            Expanded(
-                              flex: dimensions.extremeNarrow ? 0 : 2,
-                              child: dimensions.extremeNarrow
-                                ? SizedBox.shrink()
-                                : Container(
-                                  padding: EdgeInsets.only(top: 60, left: 50, right: 50),
-                                  alignment: Alignment.center,
-                                  child: SvgPicture.asset(
-                                    colorFilter: ColorFilter.mode(
-                                      Colors.black.withAlpha(40),
-                                      BlendMode.srcATop,
-                                    ),
-                                    "assets/rem_logo.svg"
-                                  )
-                                )
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: SizedBox(
-                                width: dimensions.logScreenTextBoxWidht,
-                                child: PageView(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  controller: loginScreenPageController,
-                                  children: [
-                                    ServerIpPage(serverIpController: serverIpController,),
-                                    LoginPage(usernameController: usernameController, passwordController: passwordController,),
-                                  ]
+                return Scaffold(
+                  resizeToAvoidBottomInset: true,
+                  backgroundColor: Colors.black,
+                  body: Center(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: dimensions.extremeNarrow ? 0 : 2,
+                          child: dimensions.extremeNarrow
+                            ? SizedBox.shrink()
+                            : Container(
+                              padding: EdgeInsets.only(top: 60, left: 50, right: 50),
+                              alignment: Alignment.center,
+                              child: SvgPicture.asset(
+                                colorFilter: ColorFilter.mode(
+                                  Colors.black.withAlpha(40),
+                                  BlendMode.srcATop,
                                 ),
+                                "assets/rem_logo.svg"
                               )
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    LogScreenButton(
-                                      width_: dimensions.logScreenButtonWidht,
-                                      height_: dimensions.logScreenButtonHeight,
-                                      text: model.isLogging ? "Log In" : "Submit",
-                                      action: model.isLogging ? login : submitIp,
-                                    ),
-                                    if(model.isLogging)
-                                      SizedBox(height: 5,),
-                                    if(model.isLogging)
-                                      LogScreenText(
-                                        text: "Go Back"
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                            )
                         ),
-                      )
-                    ),
-                    if (isLoading)
-                      Container(
-                        color: Colors.black.withAlpha(180),
-                        child: Center(
+                        Expanded(
+                          flex: 2,
                           child: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 5,
+                            width: dimensions.logScreenTextBoxWidht,
+                            child: PageView(
+                              physics: NeverScrollableScrollPhysics(),
+                              controller: loginScreenPageController,
+                              children: [
+                                ServerIpPage(serverIpController: serverIpController,),
+                                LoginPage(usernameController: usernameController, passwordController: passwordController,),
+                              ]
+                            ),
+                          )
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                LogScreenButton(
+                                  width_: dimensions.logScreenButtonWidht,
+                                  height_: dimensions.logScreenButtonHeight,
+                                  text: model.isLogging ? "Log In" : "Submit",
+                                  action: model.isLogging ? login : submitIp,
+                                ),
+                                if(model.isLogging)
+                                  SizedBox(height: 5,),
+                                if(model.isLogging)
+                                  LogScreenText(
+                                    text: "Go Back"
+                                  ),
+                              ],
                             ),
                           ),
                         ),
-                      ),
-                    if (failed)
-                      Positioned(
-                        bottom: 20,
-                        left: 20,
-                        right: 20,
-                        child: ShadToast(
-                          backgroundColor: colors.logScreenToastColor,
-                          description: Text(failingReason, style: TextStyle(fontSize: dimensions.isPc ? 17 : 14),),
-                        ),
-                      ),
-                  ]
+                      ],
+                    ),
+                  )
                 );
                 },
             )

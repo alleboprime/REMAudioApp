@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
 import 'package:rem_app/models/application_model.dart';
+import 'package:rem_app/models/common_interface.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -23,33 +22,6 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
   final TextEditingController devicePortController = TextEditingController();
 
   String _deviceTypeSelectionValue = "matrix";
-
-  Timer? _failedTimer;
-
-  bool isLoading = false;
-
-  bool _failed = false;
-  bool get failed => _failed;
-  set failed(bool value){
-    if(value){
-      _failed = true;
-      _failedTimer?.cancel();
-      _failedTimer = Timer(Duration(seconds: 3), () {
-        if(mounted){
-          setState(() => _failed = false);
-        }
-      });
-    }else{
-      setState(() => _failed = false);
-    }
-  }
-
-  String _failingReason = "";
-  String get failingReason => _failingReason;
-  set failingReason(String value){
-    _failingReason = value;
-    failed = true;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,12 +50,12 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
           body: SafeArea(
             child: Padding(
               padding: EdgeInsets.only(top: 10, left: 30, right: 30, bottom: 30),
-              child: Consumer2<UserModel, ApplicationModel>(
-                builder: (context, userModel, appModel, child) {
+              child: Consumer3<UserModel, ApplicationModel, CommonInterface>(
+                builder: (context, userModel, appModel, commonInterface, child) {
         
                   void connectToSocket() async {
                     setState(() {
-                      isLoading = true;
+                      commonInterface.isLoading = true;
                     });
                     var socket = {
                       "socket_name": deviceNameController.text,
@@ -93,132 +65,106 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                     bool result = await appModel.setSocket(socket: socket);
                     if(!result){
                       setState(() {
-                        failingReason = "Failed setting the socket";
-                        isLoading = false;
+                        commonInterface.failingReason = "Failed setting the socket";
+                        commonInterface.isLoading = false;
                       });
                       return;
                     }
                     result = await appModel.establishConnection();
                     if(!result){
                       setState(() {
-                        failingReason = "Failed establishing connection";
-                        isLoading = false;
+                        commonInterface.failingReason = "Failed establishing connection";
+                        commonInterface.isLoading = false;
                       });
                       return;
                     }
+                    commonInterface.isLoading = false;
                     //TODO verify this line
                     //_deviceTypeSelectionValue == "matrix" ? appModel.latestMatrixSocketAvailable = true : appModel.latestCameraSocketAvailable = true;
                     if(context.mounted){Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);}
                   }
         
                   return userModel.isAdmin
-                  ?Stack(
-                    children: [
-                      Center(
-                        child: Container(
-                          width: 600,
-                          height: 600,
-                          decoration: BoxDecoration(
-                            color: dimensions.isDesktop ? colors.primaryColor : Colors.transparent,
-                            border: Border.all(color: dimensions.isDesktop ? colors.selectionColor : Colors.transparent, width: 2),
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 30, horizontal: dimensions.isPc ? 60 : 30),
-                          child: Center(
-                            child: ScrollConfiguration(
-                              behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  spacing: 5,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                  ?Center(
+                    child: Container(
+                      width: 600,
+                      height: 600,
+                      decoration: BoxDecoration(
+                        color: dimensions.isDesktop ? colors.primaryColor : Colors.transparent,
+                        border: Border.all(color: dimensions.isDesktop ? colors.selectionColor : Colors.transparent, width: 2),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 30, horizontal: dimensions.isPc ? 60 : 30),
+                      child: Center(
+                        child: ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              spacing: 5,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                configurationText("Device Name"),
+                                configurationInput(deviceNameController, "Name"),
+                                SizedBox(height: 10,),
+                                configurationText("Device Ip"),
+                                configurationInput(deviceIpController, "Ip"),
+                                SizedBox(height: 10,),                              
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    configurationText("Device Name"),
-                                    configurationInput(deviceNameController, "Name"),
-                                    SizedBox(height: 10,),
-                                    configurationText("Device Ip"),
-                                    configurationInput(deviceIpController, "Ip"),
-                                    SizedBox(height: 10,),                              
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              configurationText("Device Port"),
-                                              configurationInput(devicePortController, "Port"),
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              configurationText("Device Type"),
-                                              ShadRadioGroup<String>(
-                                                initialValue: "matrix",
-                                                onChanged: (value) => _deviceTypeSelectionValue = (value ?? ""),
-                                                spacing: 5,
-                                                items: [
-                                                  ShadRadio(
-                                                    size: dimensions.isPc ? 12 : 9,
-                                                    label: Text('Matrix', style: TextStyle(fontSize: dimensions.isPc ? 15 : 12),),
-                                                    value: 'matrix',
-                                                  ),
-                                                  ShadRadio(
-                                                    size: dimensions.isPc ? 12 : 9,
-                                                    label: Text('Camera', style: TextStyle(fontSize: dimensions.isPc ? 15 : 12),),
-                                                    value: 'camera',
-                                                  ),
-                                                ],
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          configurationText("Device Port"),
+                                          configurationInput(devicePortController, "Port"),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          configurationText("Device Type"),
+                                          ShadRadioGroup<String>(
+                                            initialValue: "matrix",
+                                            onChanged: (value) => _deviceTypeSelectionValue = (value ?? ""),
+                                            spacing: 5,
+                                            items: [
+                                              ShadRadio(
+                                                size: dimensions.isPc ? 12 : 9,
+                                                label: Text('Matrix', style: TextStyle(fontSize: dimensions.isPc ? 15 : 12),),
+                                                value: 'matrix',
+                                              ),
+                                              ShadRadio(
+                                                size: dimensions.isPc ? 12 : 9,
+                                                label: Text('Camera', style: TextStyle(fontSize: dimensions.isPc ? 15 : 12),),
+                                                value: 'camera',
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 20,),
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: ShadButton(
-                                        onTapUp: (value) => connectToSocket(),
-                                        child: Text("Connect", style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
+                                        ],
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
-                              ),
+                                SizedBox(height: 20,),
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: ShadButton(
+                                    onTapUp: (value) => connectToSocket(),
+                                    child: Text("Connect", style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
+                                  ),
+                                )
+                              ],
                             ),
-                          ),
-                        )
-                      ),
-                      if (isLoading)
-                        Container(
-                      color: Colors.black.withAlpha(180),
-                      child: Center(
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 5,
                           ),
                         ),
                       ),
-                    ),
-                      if (failed)
-                        Positioned(
-                      bottom: 20,
-                      left: 20,
-                      right: 20,
-                      child: ShadToast(
-                        backgroundColor: colors.logScreenToastColor,
-                        description: Text(failingReason, style: TextStyle(fontSize: dimensions.isPc ? 17 : 14),),
-                      ),
-                    ),
-                    ],
+                    )
                   )
                   :Center(
                     child: Column(

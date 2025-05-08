@@ -1,8 +1,10 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rem_app/colors.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/application_model.dart';
+import 'package:rem_app/models/common_interface.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:rem_app/screens/home_screen.dart';
 import 'package:rem_app/screens/log_screen.dart';
@@ -16,6 +18,7 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (context) => UserModel()),
       ChangeNotifierProvider(create: (context) => ApplicationModel()),
+      ChangeNotifierProvider(create: (context) => CommonInterface()),
     ],
     child: REMApp(),
   ));
@@ -40,12 +43,48 @@ class REMApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: "/access",
       routes: {
-        "/access" : (context) => LoginScreen(),
-        "/new_matrix_connection" : (context) => NewMatrixSessionScreen(),
-        "/matrix_connection" : (context) => MatrixSessionsScreen(),
-        "/home" : (context) => HomeScreen(),
+        "/access": (context) => LoginScreen(),
+        "/new_matrix_connection": (context) => NewMatrixSessionScreen(),
+        "/matrix_connection": (context) => MatrixSessionsScreen(),
+        "/home": (context) => HomeScreen(),
       },
-      //TODO implement landing page
+      builder: (context, child) {
+        final colors = AppColors();
+
+        return Consumer<CommonInterface>(
+          builder: (context, commonInterface, child1){
+            return Stack(
+              children: [
+                child!,
+                if (commonInterface.isLoading)
+                  Container(
+                    color: Colors.black.withAlpha(180),
+                    child: const Center(
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: CircularProgressIndicator(strokeWidth: 5),
+                      ),
+                    ),
+                  ),
+                if (commonInterface.failed)
+                  Positioned(
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                    child: ShadToast(
+                      backgroundColor: colors.logScreenToastColor,
+                      description: Text(
+                        commonInterface.failingReason,
+                        style: TextStyle(fontSize: Dimensions().isPc ? 17 : 14),
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          }
+        );
+      },
     );
   }
 }
