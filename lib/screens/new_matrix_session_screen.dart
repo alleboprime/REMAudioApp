@@ -106,7 +106,8 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                       });
                       return;
                     }
-                    _deviceTypeSelectionValue == "matrix" ? appModel.latestMatrixSocketAvailable = true : appModel.latestCameraSocketAvailable = true;
+                    //TODO verify this line
+                    //_deviceTypeSelectionValue == "matrix" ? appModel.latestMatrixSocketAvailable = true : appModel.latestCameraSocketAvailable = true;
                     if(context.mounted){Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);}
                   }
         

@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage>{
     return SafeArea(
       child: Consumer<ApplicationModel>(
         builder: (context, appModel, child){
-          return appModel.latestMatrixSocketAvailable
+          return appModel.matrixConnected
           ? Center(
             child: SizedBox.expand  (
               child: Column(

@@ -91,6 +91,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
               setState(() {
                 isLoading = true;
               });
+              appModel.socket?.close();
               String reason = "";
               bool result = await appModel.setSocket(index: index);
               if(result){

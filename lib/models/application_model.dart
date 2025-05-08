@@ -23,10 +23,18 @@ class ApplicationModel extends ChangeNotifier {
   List<Map<String, String>> matrixSessions = [];
 
   WebSocket? socket;
-  bool _socketConnected = false;
-  bool get socketConnected => _socketConnected;
-  set socketConnected(bool value){
-    _socketConnected = value;
+
+  bool _matrixConnected = false;
+  bool get matrixConnected => _matrixConnected;
+  set matrixConnected(bool value){
+    _matrixConnected = value;
+    notifyListeners();
+  }
+
+  bool _cameraConnected = false;
+  bool get cameraConnected => _cameraConnected;
+  set cameraConnected(bool value){
+    _cameraConnected = value;
     notifyListeners();
   }
 
@@ -39,13 +47,21 @@ class ApplicationModel extends ChangeNotifier {
   late Map<String, String> inputLabels;
   late Map<String, String> outputLabels;
 
-  late Map<String, String> presetLabels;
+  late Map<String, String> matrixPresetLabels;
+  late Map<String, String> cameraPresetLabels;
 
   late String matrixSocket;
+  late String cameraSocket;
+
   late int currentMatrixPreset;
+  late int currentCameraPreset;
+
   bool matrixAvailable = true;
+  bool cameraAvailable = true;
 
   void updateMatrixData(Map<String, dynamic> receivedData) {
+    matrixConnected = true;
+
     inputMute = (receivedData["i_mute"] as Map<String, dynamic>)
       .map((key, value) => MapEntry(key, value as bool));
 
@@ -70,7 +86,7 @@ class ApplicationModel extends ChangeNotifier {
     outputLabels = (receivedData["o_labels"] as Map<String, dynamic>)
       .map((key, value) => MapEntry(key, value as String));
 
-    presetLabels = (receivedData["preset_labels"] as Map<String, dynamic>)
+    matrixPresetLabels = (receivedData["preset_labels"] as Map<String, dynamic>)
       .map((key, value) => MapEntry(key, value as String));
 
     currentMatrixPreset = receivedData["current_preset"] as int;
@@ -83,11 +99,24 @@ class ApplicationModel extends ChangeNotifier {
   }
 
   void updateCameraData(Map<String, dynamic> receivedData){
-    print(receivedData);
+    cameraConnected = true;
+
+    cameraPresetLabels = (receivedData["preset_labels"] as Map<String, dynamic>)
+      .map((key, value) => MapEntry(key, value as String));
+
+    cameraAvailable = receivedData["available"] as bool;
+
+    cameraSocket = receivedData["camera_socket"] as String;
+
+    currentCameraPreset = receivedData["current_preset"] as int;
   }
 
-  void manageReasons(reason){
-    print("reason");
+  void manageReasons(String reason){
+    if(reason.contains("matrix")){
+      matrixConnected = false;
+    }else if(reason.contains("camera")){
+      cameraConnected = false;
+    }
   }
 
   Future<bool> getInitialToken() async {
@@ -118,8 +147,8 @@ class ApplicationModel extends ChangeNotifier {
 
       socket?.listen(
         (message) {
-          socketConnected = true;
           Map<String, dynamic> receivedData = jsonDecode(message);
+          print(receivedData);
           if(receivedData.containsKey("reason")){
             manageReasons(receivedData["reason"]);
           }else if(receivedData["device_type"] == "matrix"){
@@ -132,13 +161,15 @@ class ApplicationModel extends ChangeNotifier {
           }
         },
         onDone: () {
-          socketConnected = false;
+          cameraConnected = false;
+          matrixConnected = false;
           if (!completer.isCompleted) {
             completer.complete(true);
           }
         },
         onError: (error) {
-          socketConnected = false;
+          cameraConnected = false;
+          matrixConnected = false;
           socket?.close();
           if (!completer.isCompleted) {
             completer.complete(false);

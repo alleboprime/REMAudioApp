@@ -10,7 +10,7 @@ class VideoPage extends Container {
     return SafeArea(
       child: Consumer<ApplicationModel>(
         builder: (context, appModel, child){
-          return appModel.latestCameraSocketAvailable
+          return appModel.cameraConnected
           ? Center(
             child: Text("VIDEO"),
           )

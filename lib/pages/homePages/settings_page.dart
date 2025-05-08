@@ -54,7 +54,6 @@ class SettingsPage extends StatelessWidget {
                             action: (_)async{
                               bool result = await appModel.checkForMatrixConnections();
                               if(result){
-                                appModel.socket?.close();
                                 if(context.mounted){Navigator.pushNamed(context, "/matrix_connection");}
                               }
                             }

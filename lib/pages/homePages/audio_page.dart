@@ -10,7 +10,7 @@ class AudioPage extends Container {
     return SafeArea(
       child: Consumer<ApplicationModel>(
         builder: (context, appModel, child){
-          return appModel.latestMatrixSocketAvailable
+          return appModel.matrixConnected
           ? Center(
             child: Text("AUDIO"),
           )

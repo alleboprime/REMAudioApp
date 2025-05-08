@@ -68,7 +68,7 @@ class HomeScreenState extends State<HomeScreen> {
                             )
                           ),
                         ),
-                      if(!appModel.socketConnected)
+                      if(!(appModel.matrixConnected || appModel.cameraConnected))
                         Container(
                           color: Colors.black.withAlpha(100),
                           child: Center(
