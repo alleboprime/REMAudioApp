@@ -31,10 +31,11 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
         child: Scaffold(
           extendBodyBehindAppBar: true,
           backgroundColor: Colors.black,
-          appBar: AppBar( //TODO highlighting color still visible when scrolling list view
+          appBar: AppBar(
             toolbarHeight: 100,
             leadingWidth: 90,
             backgroundColor: Colors.black,
+            surfaceTintColor: Colors.black,
             foregroundColor: Colors.transparent,
             leading: Row(
               children: [

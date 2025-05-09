@@ -39,13 +39,10 @@ class Dimensions {
     }
   }
 
-  double get logScreenLogoHeight => screenHeight * 0.1;
-
   double get logScreenTextBoxWidht => isPc ? 500 : 300;
   double get logScreenTextBoxHeight=> 50;
   
   double get logScreenButtonWidht => isPc ? 120 : 100;
   double get logScreenButtonHeight => isPc ? 40 : 40;
 
-  double get homeScreenAppBarHeight => screenHeight * 0.08;
 }

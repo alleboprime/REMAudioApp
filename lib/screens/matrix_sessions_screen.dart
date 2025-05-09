@@ -37,8 +37,9 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.black,
-        appBar: AppBar( //TODO highlighting color still visible when scrolling list view
+        appBar: AppBar(
           toolbarHeight: 100,
+          surfaceTintColor: Colors.black,
           leadingWidth: dimensions.isPc ? 150 : 90,
           backgroundColor: Colors.black,
           foregroundColor: Colors.transparent,

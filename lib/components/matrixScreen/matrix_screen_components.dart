@@ -12,7 +12,6 @@ class ActionButton extends StatefulWidget{
   final VoidCallback action;
 
   @override
-  // ignore: library_private_types_in_public_api
   ActionButtonState createState() => ActionButtonState();
 }
 

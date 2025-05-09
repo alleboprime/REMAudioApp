@@ -14,11 +14,10 @@ class SettingsTile extends StatefulWidget{
   final ValueChanged action;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _SettingsTileState createState() => _SettingsTileState();
+  SettingsTileState createState() => SettingsTileState();
 }
 
-class _SettingsTileState extends State<SettingsTile>{
+class SettingsTileState extends State<SettingsTile>{
   final dimensions = Dimensions();
   final colors = AppColors();
 
@@ -95,7 +94,6 @@ class PresetButton extends StatefulWidget{
   final double fontSize;
 
   @override
-  // ignore: library_private_types_in_public_api
   PresetButtonState createState() => PresetButtonState();
 }
 
@@ -143,6 +141,7 @@ class PresetButtonState extends State<PresetButton>{
               },
               hoverBackgroundColor: Colors.black,
               height: widget.height,
+              width: 120,
               decoration: ShadDecoration(
                 border: ShadBorder.all(color: colors.selectionColor)
               ),

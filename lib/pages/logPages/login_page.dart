@@ -12,11 +12,10 @@ class LoginPage extends StatefulWidget {
   final TextEditingController passwordController;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final dimensions = Dimensions();

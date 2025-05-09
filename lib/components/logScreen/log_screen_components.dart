@@ -53,11 +53,10 @@ class LogScreenText extends StatefulWidget {
   final String text;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LogScreenTextState createState() => _LogScreenTextState();
+  LogScreenTextState createState() => LogScreenTextState();
 }
 
-class _LogScreenTextState extends State<LogScreenText> {
+class LogScreenTextState extends State<LogScreenText> {
   bool isHovered = false;
 
   @override
@@ -113,11 +112,10 @@ class LogScreenTextBox extends StatefulWidget {
   final bool isPasswordBox;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LogScreenTextBoxState createState() => _LogScreenTextBoxState();
+  LogScreenTextBoxState createState() => LogScreenTextBoxState();
 }
 
-class _LogScreenTextBoxState extends State<LogScreenTextBox> {
+class LogScreenTextBoxState extends State<LogScreenTextBox> {
   bool obscured = true;
 
   @override

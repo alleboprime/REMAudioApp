@@ -8,11 +8,10 @@ class ServerIpPage extends StatefulWidget {
   final TextEditingController serverIpController;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _ServerIpPageState createState() => _ServerIpPageState();
+  ServerIpPageState createState() => ServerIpPageState();
 }
 
-class _ServerIpPageState extends State<ServerIpPage> {
+class ServerIpPageState extends State<ServerIpPage> {
 
   @override
   Widget build(BuildContext context) {
