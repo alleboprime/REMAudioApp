@@ -43,8 +43,6 @@ class SettingsPage extends StatelessWidget {
                     width: dimensions.isPc ? 400 : 300,
                     child: ListView(
                       children: [
-                        SettingsTile(title: "Change Theme", iconOrigin: PhosphorIcons.moon(), action: (_)=>(),),
-                        Divider(thickness: 4, color: colors.primaryColor, height: 4,),
                         SettingsTile(title: "Change Language", iconOrigin: PhosphorIcons.translate(), action: (_)=>()),
                         Divider(thickness: 4, color: colors.primaryColor, height: 4,),
                         if(userModel.isAdmin)
@@ -56,6 +54,16 @@ class SettingsPage extends StatelessWidget {
                               if(result){
                                 if(context.mounted){Navigator.pushNamed(context, "/matrix_connection");}
                               }
+                            }
+                          ),
+                        if(userModel.isAdmin)
+                          Divider(thickness: 4, color: colors.primaryColor, height: 4,),
+                        if(userModel.isAdmin)
+                          SettingsTile(
+                            title: "Change Preferences", 
+                            iconOrigin: PhosphorIcons.book(), 
+                            action: (_){
+                              if(context.mounted){Navigator.pushNamed(context, "/preferences");}
                             }
                           ),
                         if(userModel.isAdmin)

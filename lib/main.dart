@@ -10,6 +10,7 @@ import 'package:rem_app/screens/home_screen.dart';
 import 'package:rem_app/screens/log_screen.dart';
 import 'package:rem_app/screens/matrix_sessions_screen.dart';
 import 'package:rem_app/screens/new_matrix_session_screen.dart';
+import 'package:rem_app/screens/preferences_screen.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'dart:io';
 
@@ -46,6 +47,7 @@ class REMApp extends StatelessWidget {
         "/access": (context) => LoginScreen(),
         "/new_matrix_connection": (context) => NewMatrixSessionScreen(),
         "/matrix_connection": (context) => MatrixSessionsScreen(),
+        "/preferences": (context) => PreferencesScreen(),
         "/home": (context) => HomeScreen(),
       },
       builder: (context, child) {
