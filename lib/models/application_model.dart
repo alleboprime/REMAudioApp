@@ -59,6 +59,8 @@ class ApplicationModel extends ChangeNotifier {
   bool matrixAvailable = true;
   bool cameraAvailable = true;
 
+  Completer<bool>? waitingForMatrixUpdate;
+
   void updateMatrixData(Map<String, dynamic> receivedData) {
     matrixConnected = true;
 
@@ -94,6 +96,11 @@ class ApplicationModel extends ChangeNotifier {
     matrixAvailable = receivedData["available"] as bool;
 
     matrixSocket = receivedData["matrix_socket"] as String;
+
+    if(waitingForMatrixUpdate != null && !waitingForMatrixUpdate!.isCompleted){
+      waitingForMatrixUpdate!.complete(true);
+      waitingForMatrixUpdate = null;
+    }
 
     notifyListeners();
   }
@@ -272,6 +279,22 @@ class ApplicationModel extends ChangeNotifier {
       return true;
     }
     return false;
+  }
+
+  Future<bool> setMatrixPreset(int index) async {
+    Map<String, String> command = {
+      "section": "matrix_preset",
+      "value" : "$index"
+    };
+    socket?.add(jsonEncode(command));
+    waitingForMatrixUpdate = Completer<bool>();
+    return waitingForMatrixUpdate!.future.timeout(
+      Duration(seconds: 5),
+      onTimeout: () {
+        waitingForMatrixUpdate = null;
+        return false;
+      },
+    );
   }
 
   void toggleMuteChannel(int channel, String direction, bool status){

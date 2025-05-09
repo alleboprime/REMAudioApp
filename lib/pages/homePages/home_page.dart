@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:marquee/marquee.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/homeScreen/home_screen_components.dart';
+import 'package:rem_app/components/scrolling_label.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/application_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -11,11 +11,10 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage>{
+class HomePageState extends State<HomePage>{
   final colors = AppColors();
   final dimensions = Dimensions();
 
@@ -73,7 +72,6 @@ class MuteAllButton extends StatefulWidget {
   final Function action;
 
   @override
-  // ignore: library_private_types_in_public_api
   MuteAllButtonState createState() => MuteAllButtonState();
 }
 
@@ -145,7 +143,6 @@ class HomePageChannelPreview extends StatefulWidget{
   final bool isInput;
 
   @override
-  // ignore: library_private_types_in_public_api
   HomePageChannelPreviewState createState() => HomePageChannelPreviewState();
 }
 
@@ -169,7 +166,7 @@ class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: dimensions.isDesktop ? colors.selectionColor : colors.primaryColor),
+                      border: Border.all(color: dimensions.isDesktop ? colors.selectionColor : colors.primaryColor, width: 2),
                       color: colors.primaryColor
                     ),
                     padding: EdgeInsets.all(10),
@@ -223,6 +220,7 @@ class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
                                             ),
                                           ),
                                           child: ScrollingLabel(
+                                            maxCharCount: 4,
                                             text: labels["${rowIndex * 4 + colIndex + 1}"].toString(),
                                             color: (mute["${rowIndex * 4 + colIndex + 1}"] ?? true)
                                                 ? colors.mutedChannel
@@ -247,53 +245,6 @@ class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
           ),
         );
       },
-    );
-  }
-}
-
-
-class ScrollingLabel extends StatelessWidget {
-  final String text;
-  final Color color;
-
-  const ScrollingLabel({
-    super.key,
-    required this.text,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (text.length <= 4) {
-      return Text(
-        text,
-        style: TextStyle(
-          color: color,
-          fontSize: 17,
-        ),
-        overflow: TextOverflow.ellipsis,
-      );
-    }
-
-    return SizedBox(
-      width: 50, // regola la larghezza visibile
-      height: 20,
-      child: Marquee(
-        text: text,
-        style: TextStyle(
-          color: color,
-          fontSize: 17,
-        ),
-        scrollAxis: Axis.horizontal,
-        blankSpace: 20.0,
-        velocity: 30.0,
-        pauseAfterRound: Duration(milliseconds: 500),
-        startPadding: 5.0,
-        accelerationDuration: Duration(milliseconds: 500),
-        accelerationCurve: Curves.linear,
-        decelerationDuration: Duration(milliseconds: 500),
-        decelerationCurve: Curves.easeOut,
-      ),
     );
   }
 }
