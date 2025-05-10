@@ -61,7 +61,7 @@ class SettingsPage extends StatelessWidget {
                         if(userModel.isAdmin)
                           SettingsTile(
                             title: "Change Preferences", 
-                            iconOrigin: PhosphorIcons.book(), 
+                            iconOrigin: PhosphorIcons.bookBookmark(), 
                             action: (_){
                               if(context.mounted){Navigator.pushNamed(context, "/preferences");}
                             }

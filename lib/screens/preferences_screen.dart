@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
-import 'package:rem_app/components/scrolling_label.dart';
 import 'package:rem_app/dimensions.dart';
-import 'package:rem_app/models/application_model.dart';
-import 'package:rem_app/models/common_interface.dart';
-import 'package:rem_app/pages/homePages/preset_page.dart';
 import 'package:rem_app/pages/preferencesPages/channels_preferences_page.dart';
 import 'package:rem_app/pages/preferencesPages/preset_preferences_page.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -81,33 +76,47 @@ class PreferencesScreenState extends State<PreferencesScreen>{
           child: Center(
             child: Container(
               constraints: BoxConstraints(
-                maxWidth: 600,
-                maxHeight: 600,
+                maxWidth: 620,
+                maxHeight: 700,
               ),
-              decoration: BoxDecoration(
-                color: dimensions.isDesktop ? colors.primaryColor : colors.primaryColor,
-                border: Border.all(color: dimensions.isDesktop ? colors.selectionColor : Colors.transparent, width: 2),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
               child: Column(
+                spacing: 40,
                 children: [
                   Row(
-                    spacing: 20,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SelectionButton(text: "Preset\nLabels", index: 0, pageIndex: pageIndex, action: () => pageIndex = 0),
                       SelectionButton(text: "Channels", index: 1, pageIndex: pageIndex, action: () => pageIndex = 1)
                     ],
                   ),
-                  Center(
-                    child: PageView(
-                      physics: NeverScrollableScrollPhysics(),
-                      controller: preferencesScreenController,
-                      children: [
-                        PresetPreferencesPage(),
-                        ChannelsPreferencesPage(),
-                      ]
+                  Expanded(
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxWidth: 600,
+                        maxHeight: 600,
+                      ),
+                      decoration: BoxDecoration(
+                        color: dimensions.isDesktop ? colors.primaryColor : colors.primaryColor,
+                        border: Border.all(color: dimensions.isDesktop ? colors.selectionColor : Colors.transparent, width: 2),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: PageView(
+                                physics: NeverScrollableScrollPhysics(),
+                                controller: preferencesScreenController,
+                                children: [
+                                  PresetPreferencesPage(),
+                                  ChannelsPreferencesPage(),
+                                ]
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
