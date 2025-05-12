@@ -3,6 +3,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
+import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -27,8 +28,8 @@ class HomeNavBarEntry extends StatelessWidget {
           fontFamily: 'Inter',
         ),
       ),
-      child: Consumer<HomeNavBarModel>(
-        builder: (context, model, child){
+      child: Consumer2<HomeNavBarModel, ApplicationModel>(
+        builder: (context, model, appModel, child){
           return TweenAnimationBuilder(
             duration: const Duration(milliseconds: 130),
             tween: ColorTween(
@@ -37,6 +38,7 @@ class HomeNavBarEntry extends StatelessWidget {
             ),
             builder: (context, color, child){
               return ShadButton(
+                enabled: (!appModel.matrixConnected && (pageIndex == 0 || pageIndex == 1)) || (!appModel.cameraConnected && pageIndex == 2) ? false : true,
                 backgroundColor: Colors.transparent,
                 foregroundColor: color,
                 hoverForegroundColor: model.selectedPage == pageIndex ? colors.selectionColor : Colors.white,

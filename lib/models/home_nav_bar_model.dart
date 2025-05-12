@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:rem_app/models/application_model.dart';
 
 class HomeNavBarModel extends ChangeNotifier{
 
-  int _selectedPage = 0;
+  final appModel = ApplicationModel();
+
+  late int _selectedPage = appModel.matrixConnected ? 0 : 2;
 
   int get selectedPage => _selectedPage;
   set selectedPage (int value){

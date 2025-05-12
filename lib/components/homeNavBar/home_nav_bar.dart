@@ -9,7 +9,7 @@ class HomeNavBar extends StatelessWidget {
 
   final List<HomeNavBarEntry> entries = [
     HomeNavBarEntry(
-      title: "Panoramica",
+      title: "Home",
       icon: PhosphorIcons.house(),
       pageIndex: 0,
     ),
