@@ -312,19 +312,19 @@ class ApplicationModel extends ChangeNotifier {
     Map<String, String> command;
     for(int i = 1; i<=inputVisibility.length; i++){
       command = {
-      "section": "mute",
-      "io": "input",
-      "channel": "$i",
-      "value" : "true"
-    };
-    socket?.add(jsonEncode(command));
-    command = {
-      "section": "mute",
-      "io": "output",
-      "channel": "$i",
-      "value" : "true"
-    };
-    socket?.add(jsonEncode(command));
+        "section": "mute",
+        "io": "input",
+        "channel": "$i",
+        "value" : "true"
+      };
+      if(inputVisibility[i.toString()] ?? true)socket?.add(jsonEncode(command));
+      command = {
+        "section": "mute",
+        "io": "output",
+        "channel": "$i",
+        "value" : "true"
+      };
+      if(outputVisibility[i.toString()] ?? true)socket?.add(jsonEncode(command));
     }
   }
 

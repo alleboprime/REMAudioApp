@@ -156,8 +156,8 @@ class PresetButtonState extends State<PresetButton>{
                     ),
                   ),
                 ),
-                padding: EdgeInsets.only(bottom: 1),
-                child: ScrollingLabel(text: widget.text, color: colors.selectionColor, maxCharCount: 10, fontSize : widget.fontSize, width: 80,)
+                padding: EdgeInsets.only(bottom: 1), //TODO verify this line
+                child: ScrollingLabel(text: widget.text, color: colors.selectionColor, maxCharCount: 8, fontSize : widget.fontSize, width: 80,)
               ),
             );
           },
