@@ -38,23 +38,23 @@ class ApplicationModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  late Map<String, bool> inputMute;
-  late Map<String, bool> outputMute;
-  late Map<String, double> inputVolumes;
-  late Map<String, double> outputVolumes;
-  late Map<String, bool> inputVisibility;
-  late Map<String, bool> outputVisibility;
-  late Map<String, String> inputLabels;
-  late Map<String, String> outputLabels;
+  Map<String, bool> inputMute = {};
+  Map<String, bool> outputMute = {};
+  Map<String, double> inputVolumes = {};
+  Map<String, double> outputVolumes = {};
+  Map<String, bool> inputVisibility = {};
+  Map<String, bool> outputVisibility = {};
+  Map<String, String> inputLabels = {};
+  Map<String, String> outputLabels = {};
 
-  late Map<String, String> matrixPresetLabels;
-  late Map<String, String> cameraPresetLabels;
+  Map<String, String> matrixPresetLabels = {};
+  Map<String, String> cameraPresetLabels = {};
 
-  late String matrixSocket;
-  late String cameraSocket;
+  String matrixSocket = "";
+  String cameraSocket = "";
 
-  late int currentMatrixPreset;
-  late int currentCameraPreset;
+  int currentMatrixPreset = 1;
+  int currentCameraPreset = 0;
 
   bool matrixAvailable = true;
   bool cameraAvailable = true;
@@ -289,8 +289,9 @@ class ApplicationModel extends ChangeNotifier {
     socket?.add(jsonEncode(command));
     waitingForMatrixUpdate = Completer<bool>();
     return waitingForMatrixUpdate!.future.timeout(
-      Duration(seconds: 5),
+      Duration(seconds: 10),
       onTimeout: () {
+        print("\n\n\nTIMEOUT\n\n\n");
         waitingForMatrixUpdate = null;
         return false;
       },
@@ -325,6 +326,35 @@ class ApplicationModel extends ChangeNotifier {
     };
     socket?.add(jsonEncode(command));
     }
+  }
+
+  void toggleChannelVisibility(int channel, String direction, bool status){
+    Map<String, String> command = {
+      "section": "visibility",
+      "io": direction,
+      "channel": "$channel",
+      "value" : "$status"
+    };
+    socket?.add(jsonEncode(command));
+  }
+
+  void changePresetLabels(String deviceType, String index, String value){
+    Map<String, String> command = {
+      "section": "${deviceType}_preset_labels",
+      "index": index,
+      "value" : value
+    };
+    socket?.add(jsonEncode(command));
+  }
+
+  void changeChannelLabels(String direction, String channel, String value){
+    Map<String, String> command = {
+      "section": "channel_labels",
+      "io": direction,
+      "channel": channel,
+      "value" : value
+    };
+    socket?.add(jsonEncode(command));
   }
 
 }
