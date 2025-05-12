@@ -4,9 +4,7 @@ import 'package:rem_app/models/application_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class InputChannelsPreferencesPage extends StatefulWidget{
-  const InputChannelsPreferencesPage({super.key, required this.changedChannelLabels});
-
-  final Map<String, String> changedChannelLabels;
+  const InputChannelsPreferencesPage({super.key});
 
   @override
   State<InputChannelsPreferencesPage> createState() => InputChannelsPreferencesPageState();
@@ -73,7 +71,7 @@ class InputChannelsPreferencesPageState extends State<InputChannelsPreferencesPa
                                           fontSize: 17,
                                         ),
                                         padding: EdgeInsets.zero,
-                                        onChanged: (value) => widget.changedChannelLabels["${rowIndex * 2 + 1}"] = value,
+                                        onChanged: (value) => appModel.changeChannelLabels("input", "${rowIndex * 2 + 1}", value),
                                         initialValue: labels["${rowIndex * 2 + 1}"],
                                         decoration: ShadDecoration(                                    
                                           secondaryBorder: ShadBorder.all(
@@ -102,7 +100,7 @@ class InputChannelsPreferencesPageState extends State<InputChannelsPreferencesPa
                                           fontSize: 17,
                                         ),
                                         padding: EdgeInsets.zero,
-                                        onChanged: (value) => widget.changedChannelLabels["${rowIndex * 2 + 2}"] = value,
+                                        onChanged: (value) => appModel.changeChannelLabels("input", "${rowIndex * 2 + 2}", value),
                                         initialValue: labels["${rowIndex * 2 + 2}"],
                                         decoration: ShadDecoration(                                    
                                           secondaryBorder: ShadBorder.all(
@@ -160,9 +158,7 @@ class InputChannelsPreferencesPageState extends State<InputChannelsPreferencesPa
 
 
 class OutputChannelsPreferencesPage extends StatefulWidget{
-  const OutputChannelsPreferencesPage({super.key, required this.changedChannelLabels});
-
-  final Map<String, String> changedChannelLabels;
+  const OutputChannelsPreferencesPage({super.key});
 
   @override
   State<OutputChannelsPreferencesPage> createState() => OutputChannelsPreferencesPageState();
@@ -229,7 +225,7 @@ class OutputChannelsPreferencesPageState extends State<OutputChannelsPreferences
                                           fontSize: 17,
                                         ),
                                         padding: EdgeInsets.zero,
-                                        onChanged: (value) => widget.changedChannelLabels["${rowIndex * 2 + 3}"] = value,
+                                        onChanged: (value) => appModel.changeChannelLabels("output", "${rowIndex * 2 + 3}", value),
                                         initialValue: labels["${rowIndex * 2 + 3}"],
                                         decoration: ShadDecoration(                                    
                                           secondaryBorder: ShadBorder.all(
@@ -258,7 +254,7 @@ class OutputChannelsPreferencesPageState extends State<OutputChannelsPreferences
                                           fontSize: 17,
                                         ),
                                         padding: EdgeInsets.zero,
-                                        onChanged: (value) => widget.changedChannelLabels["${rowIndex * 2 + 4}"] = value,
+                                        onChanged: (value) => appModel.changeChannelLabels("output", "${rowIndex * 2 + 4}", value),
                                         initialValue: labels["${rowIndex * 2 + 4}"],
                                         decoration: ShadDecoration(                                    
                                           secondaryBorder: ShadBorder.all(

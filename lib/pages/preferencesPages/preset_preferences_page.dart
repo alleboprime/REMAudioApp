@@ -4,9 +4,7 @@ import 'package:rem_app/models/application_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class MatrixPresetPreferencesPage extends StatefulWidget{
-  const MatrixPresetPreferencesPage({super.key, required this.changedPresetLabels});
-
-  final Map<String, String> changedPresetLabels;
+  const MatrixPresetPreferencesPage({super.key});
 
   @override
   State<MatrixPresetPreferencesPage> createState() => MatrixPresetPreferencesPageState();
@@ -49,7 +47,7 @@ class MatrixPresetPreferencesPageState extends State<MatrixPresetPreferencesPage
                                     fontSize: 17,
                                   ),
                                   padding: EdgeInsets.zero,
-                                  onChanged: (value) => widget.changedPresetLabels["${rowIndex * 2 + colIndex + 1}"] = value,
+                                  onChanged: (value) => appModel.changePresetLabels("matrix", "${rowIndex * 2 + colIndex + 1}", value),
                                   placeholderAlignment: Alignment.center,
                                   initialValue: labels["${rowIndex * 2 + colIndex + 1}"],
                                   decoration: ShadDecoration(                                    
@@ -86,9 +84,7 @@ class MatrixPresetPreferencesPageState extends State<MatrixPresetPreferencesPage
 
 
 class CameraPresetPreferencesPage extends StatefulWidget{
-  const CameraPresetPreferencesPage({super.key, required this.changedPresetLabels});
-
-  final Map<String, String> changedPresetLabels;
+  const CameraPresetPreferencesPage({super.key});
 
   @override
   State<CameraPresetPreferencesPage> createState() => CameraPresetPreferencesPageState();
@@ -131,7 +127,7 @@ class CameraPresetPreferencesPageState extends State<CameraPresetPreferencesPage
                                     fontSize: 17,
                                   ),
                                   padding: EdgeInsets.zero,
-                                  onChanged: (value) => widget.changedPresetLabels["${rowIndex * 2 + colIndex}"] = value,
+                                  onChanged: (value) => appModel.changePresetLabels("camera", "${rowIndex * 2 + colIndex}", value),
                                   placeholderAlignment: Alignment.center,
                                   initialValue: labels["${rowIndex * 2 + colIndex}"],
                                   decoration: ShadDecoration(                                    

@@ -67,6 +67,7 @@ class PresetPageState extends State<PresetPage>{
                                           if(!result){
                                             commonInterface.failingReason = "Failed setting preset";
                                           }
+                                          if(context.mounted)Navigator.pushNamed(context, "/home");
                                         },
                                         hoverBackgroundColor: Colors.transparent,
                                         width: 120,

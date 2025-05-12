@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
-import 'package:rem_app/models/application_model.dart';
-import 'package:rem_app/models/common_interface.dart';
 import 'package:rem_app/pages/preferencesPages/channels_preferences_page.dart';
 import 'package:rem_app/pages/preferencesPages/preset_preferences_page.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -46,13 +43,6 @@ class PreferencesScreenState extends State<PreferencesScreen>{
       pageIndex = selection + subSelection;
     });
   }
-
-  Map<String, String> changedMatrixPresetLabels = {};
-  Map<String, String> changedCameraPresetLabels = {};
-
-  Map<String, String> changedInputChannelLabels = {};
-  Map<String, String> changedOutputChannelLabels = {};
-
 
   @override
   Widget build(BuildContext context) {
@@ -104,30 +94,11 @@ class PreferencesScreenState extends State<PreferencesScreen>{
                 ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
               ],
             ),
-            actions: [
-              SizedBox(width: 60,),
-              Consumer2<ApplicationModel, CommonInterface>(
-                builder: (context, appModel, commonInterface, child) {
-                  return ActionButton(iconData: PhosphorIcons.check(), action: (){
-                    for(var entry in changedMatrixPresetLabels.entries){
-                      appModel.changePresetLabels("matrix", entry.key, entry.value);
-                    }
-                    for(var entry in changedCameraPresetLabels.entries){
-                      appModel.changePresetLabels("camera", entry.key, entry.value);
-                    }
-                    for(var entry in changedInputChannelLabels.entries){
-                      appModel.changeChannelLabels("input", entry.key, entry.value);
-                    }
-                    for(var entry in changedOutputChannelLabels.entries){
-                      appModel.changeChannelLabels("output", entry.key, entry.value);
-                    }
-                  },);
-                }
-              ),
-              SizedBox(width: dimensions.isPc ? 50 : 20),
-            ],
             centerTitle: true,
-            title: Center(child: Text("PREFERENCES", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),)
+            title: Center(child: Text("PREFERENCES", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),),
+            actions: [
+              SizedBox(width: dimensions.isPc ? 150 : 100,)
+            ],
           ),
           body: Padding(
             padding: EdgeInsets.only(top: 0, left: 30, bottom: 30, right: 30),
@@ -205,10 +176,10 @@ class PreferencesScreenState extends State<PreferencesScreen>{
                                   physics: NeverScrollableScrollPhysics(),
                                   controller: preferencesScreenController,
                                   children: [
-                                    MatrixPresetPreferencesPage(changedPresetLabels: changedMatrixPresetLabels,),
-                                    CameraPresetPreferencesPage(changedPresetLabels: changedCameraPresetLabels,),
-                                    InputChannelsPreferencesPage(changedChannelLabels: changedInputChannelLabels,),
-                                    OutputChannelsPreferencesPage(changedChannelLabels: changedOutputChannelLabels,),
+                                    MatrixPresetPreferencesPage(),
+                                    CameraPresetPreferencesPage(),
+                                    InputChannelsPreferencesPage(),
+                                    OutputChannelsPreferencesPage(),
                                   ]
                                 ),
                               ),
