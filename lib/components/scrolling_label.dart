@@ -5,12 +5,17 @@ class ScrollingLabel extends StatelessWidget {
   final String text;
   final Color color;
   final int maxCharCount;
+  final double fontSize;
+  final double width; 
+
 
   const ScrollingLabel({
     super.key,
     required this.text,
     required this.color,
     required this.maxCharCount,
+    required this.width,
+    this.fontSize = 17
   });
 
   @override
@@ -27,7 +32,7 @@ class ScrollingLabel extends StatelessWidget {
     }
 
     return SizedBox(
-      width: 50,
+      width: width,
       height: 20,
       child: Marquee(
         text: text,
