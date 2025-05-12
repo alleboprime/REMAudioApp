@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
+import 'package:rem_app/components/scrolling_label.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -88,10 +89,11 @@ class SettingsTileState extends State<SettingsTile>{
 
 
 class PresetButton extends StatefulWidget{
-  const PresetButton({super.key, required this.height, required this.fontSize});
+  const PresetButton({super.key, required this.height, required this.fontSize, required this.text});
 
   final double height;
   final double fontSize;
+  final String text;
 
   @override
   PresetButtonState createState() => PresetButtonState();
@@ -155,13 +157,7 @@ class PresetButtonState extends State<PresetButton>{
                   ),
                 ),
                 padding: EdgeInsets.only(bottom: 1),
-                child: Text(
-                  "Preset", 
-                  style: TextStyle(
-                    color: colors.selectionColor, 
-                    fontSize: widget.fontSize,
-                  ),
-                )
+                child: ScrollingLabel(text: widget.text, color: colors.selectionColor, maxCharCount: 10, fontSize : widget.fontSize, width: 80,)
               ),
             );
           },

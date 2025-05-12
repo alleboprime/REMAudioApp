@@ -81,6 +81,7 @@ class PresetPageState extends State<PresetPage>{
                                           ),
                                         ),
                                         child: ScrollingLabel(
+                                          width: 100,
                                           maxCharCount: 10,
                                           text: labels["${rowIndex * 2 + colIndex + 1}"].toString(),
                                           color: (currentPreset == (rowIndex * 2 + colIndex + 1))

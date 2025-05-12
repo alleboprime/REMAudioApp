@@ -172,7 +172,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                     ],
                                   ),
                                   ShadButton(
-                                    padding: EdgeInsets.all(10),
+                                    padding: EdgeInsets.all(8),
                                     child: Text("Connect", style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
                                     onTapUp: (value){
                                       connect(index);

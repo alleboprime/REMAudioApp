@@ -33,7 +33,7 @@ class HomePageState extends State<HomePage>{
                   if(dimensions.screenHeight >= 600)
                     Padding(
                       padding: EdgeInsets.only(top: 20, bottom: 10),
-                      child: PresetButton(height: 50, fontSize: dimensions.isPc ? 22 : 18,)
+                      child: PresetButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset")
                     ),
                   HomePageChannelPreview(isInput: true,),
                   HomePageChannelPreview(isInput: false,),
@@ -47,7 +47,7 @@ class HomePageState extends State<HomePage>{
                       mainAxisAlignment: MainAxisAlignment.center,
                       spacing: 20,
                       children: [
-                        PresetButton(height: 30, fontSize: 13,),
+                        PresetButton(height: 30, fontSize: 13, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
                         MuteAllButton(height: 30, fontSize: 13, action: appModel.toggleAllMuteChannel,),
                       ],
                     )
@@ -220,6 +220,7 @@ class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
                                             ),
                                           ),
                                           child: ScrollingLabel(
+                                            width: 50,
                                             maxCharCount: 4,
                                             text: labels["${rowIndex * 4 + colIndex + 1}"].toString(),
                                             color: (mute["${rowIndex * 4 + colIndex + 1}"] ?? true)

@@ -88,6 +88,7 @@ class HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     Text('Something went wrong', style: TextStyle(color: colors.logScreenToastColor, fontSize: 17),),
                                     ShadButton.outline(
+                                      hoverBackgroundColor: Colors.black,
                                       onTapUp: (value){
                                         Navigator.pushNamedAndRemoveUntil(context, '/access', (Route<dynamic> route) => false);
                                       }, 

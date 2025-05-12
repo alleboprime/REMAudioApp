@@ -33,13 +33,13 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
           backgroundColor: Colors.black,
           appBar: AppBar(
             toolbarHeight: 100,
-            leadingWidth: 90,
+            leadingWidth: dimensions.isPc ? 90 : 90,
             backgroundColor: Colors.black,
             surfaceTintColor: Colors.black,
             foregroundColor: Colors.transparent,
             leading: Row(
               children: [
-                SizedBox(width: 50),
+                SizedBox(width: dimensions.isPc ? 50 : 20),
                 ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
               ],
             ),
@@ -54,7 +54,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
               child: Consumer3<UserModel, ApplicationModel, CommonInterface>(
                 builder: (context, userModel, appModel, commonInterface, child) {
         
-                  void connectToSocket() async {
+                  void connectToSocket() async { //TODO wait for data received before navigating into home
                     setState(() {
                       commonInterface.isLoading = true;
                     });
