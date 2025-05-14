@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/scrolling_label.dart';
 import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -89,11 +90,12 @@ class SettingsTileState extends State<SettingsTile>{
 
 
 class PresetButton extends StatefulWidget{
-  const PresetButton({super.key, required this.height, required this.fontSize, required this.text});
+  const PresetButton({super.key, required this.height, required this.fontSize, required this.text, required this.previousPage});
 
   final double height;
   final double fontSize;
   final String text;
+  final int previousPage;
 
   @override
   PresetButtonState createState() => PresetButtonState();
@@ -139,6 +141,7 @@ class PresetButtonState extends State<PresetButton>{
           builder: (context, navBarModel, child){
             return ShadButton.outline(
               onTapUp: (value){
+                navBarModel.previousPage = widget.previousPage;
                 navBarModel.selectedPage = 4;
               },
               hoverBackgroundColor: Colors.black,
@@ -165,5 +168,169 @@ class PresetButtonState extends State<PresetButton>{
       ),
     );
   }
+}
+
+
+class ChannelSlider extends StatefulWidget{
+  const ChannelSlider({super.key, this.isMaster = false, this.direction = 0, this.width = 90, required this.index, this.bidirectional = true});
+
+  final bool isMaster;
+  final bool bidirectional;
+  final int direction;
+  final double width;
+
+  final int index;
+
+  @override
+  State<ChannelSlider> createState() => ChannelSliderState();
+}
+
+class ChannelSliderState extends State<ChannelSlider>{
+
+  final appModel = ApplicationModel();
+
+  late int origin;
+  late ShadSliderController sliderController;
+
+  @override
+  void initState() {
+    super.initState();
+    origin = widget.direction;
+    sliderController = ShadSliderController(
+      initialValue: widget.isMaster 
+          ? appModel.outputVolumes["1"] ?? 0 
+          : widget.direction == 0 
+              ? appModel.inputVolumes[widget.index.toString()] ?? 0 
+              : appModel.outputVolumes[widget.index.toString()] ?? 0
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = AppColors();
+
+    return Consumer<ApplicationModel>(
+      builder: (context, appModel, child) {
+        sliderController.value = widget.isMaster ? appModel.outputVolumes["1"] ?? 0 : origin == 0 ? appModel.inputVolumes[widget.index.toString()] ?? 0 : appModel.outputVolumes[widget.index.toString()] ?? 0;
+        
+        Map<String, bool> mute = origin == 0 ? appModel.inputMute : appModel.outputMute;
+        Map<String, bool> visibility = origin == 0 ? appModel.inputVisibility : appModel.outputVisibility;
+
+        void toggleMuteChannel(int index, int direction, bool value){
+          appModel.toggleMuteChannel(index, direction == 0 ? "input" : "output", value);
+        }
+
+        return SizedBox(
+          width: widget.width,
+          child: Center(
+            child: Column(
+              spacing: 10,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(widget.isMaster ? appModel.outputVolumes["1"].toString() : origin == 0 ? appModel.inputVolumes[widget.index.toString()].toString() : appModel.outputVolumes[widget.index.toString()].toString()),
+                Expanded(
+                  child: RotatedBox(
+                    quarterTurns: -1,
+                    child: ShadSlider(
+                      enabled: visibility[widget.index.toString()] ?? true,
+                      max: 15,
+                      min: -60,
+                      controller: sliderController,
+                      divisions: 75,
+                      onChanged: (value) => print(value),
+                    ),
+                  ),
+                ),               
+                ScrollingLabel(
+                  text: widget.isMaster ? "Master" : origin == 0 ? appModel.inputLabels[widget.index.toString()].toString() : appModel.outputLabels[widget.index.toString()].toString(), 
+                  color: Colors.white, 
+                  maxCharCount: 8, 
+                  width: widget.width
+                ),
+                if(widget.bidirectional && !widget.isMaster)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ShadButton.outline(
+                        hoverBackgroundColor: Colors.transparent,
+                        width: 40,
+                        height: 30,
+                        padding: EdgeInsets.zero,
+                        decoration: ShadDecoration(
+                          border: ShadBorder.all(color: origin == 0 ? colors.selectionColor : Colors.white),
+                          disableSecondaryBorder: true,
+                        ),
+                        onTapUp: (value) {
+                          setState(() {
+                            origin = 0;
+                          });
+                        },
+                        child: Text("IN", style: TextStyle(color: origin == 0 ? colors.selectionColor : Colors.white),),
+                      ),
+                      ShadButton.outline(
+                        hoverBackgroundColor: Colors.transparent,
+                        width: 40,
+                        height: 30,
+                        padding: EdgeInsets.zero,
+                        decoration: ShadDecoration(
+                          border: ShadBorder.all(color: origin == 1 ? colors.selectionColor : Colors.white),
+                          disableSecondaryBorder: true,
+                        ),
+                        onTapUp: (value) {
+                          setState(() {
+                            origin = 1;
+                          });
+                        },
+                        child: Text("OUT", style: TextStyle(color: origin == 1 ? colors.selectionColor : Colors.white),),
+                      ),
+                    ],
+                  ),
+                if(!widget.bidirectional && !widget.isMaster)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ShadButton.outline(
+                        hoverBackgroundColor: Colors.transparent,
+                        width: 40,
+                        height: 30,
+                        padding: EdgeInsets.zero,
+                        decoration: ShadDecoration(
+                          border: ShadBorder.all(color: origin == widget.direction ? colors.selectionColor : Colors.white),
+                          disableSecondaryBorder: true,
+                        ),
+                        onTapUp: (value) {
+                          setState(() {
+                            origin = widget.direction;
+                          });
+                        },
+                        child: Text(widget.direction == 0 ? "IN" : "OUT", style: TextStyle(color: origin == widget.direction ? colors.selectionColor : Colors.white),),
+                      ),
+                    ],
+                  ),
+                    
+                ShadButton.outline(
+                  enabled: visibility[widget.index.toString()] ?? true,
+                  hoverBackgroundColor: Colors.transparent,
+                  width: 82,
+                  height: 30,
+                  padding: EdgeInsets.zero,
+                  decoration: ShadDecoration(
+                    border: ShadBorder.all(color: (mute[widget.index.toString()] ?? false) ? colors.mutedChannel : colors.unmutedChannel),
+                    disableSecondaryBorder: true,
+                  ),
+                  onTapUp: (value) {
+                    toggleMuteChannel(widget.index, origin, !(mute[widget.index.toString()] ?? false));
+                  },
+                  child: Text((mute[widget.index.toString()] ?? false) ? "UNMUTE" : "MUTE", style: TextStyle(color: (mute[widget.index.toString()] ?? false) ? colors.mutedChannel : colors.unmutedChannel),),
+                )
+              ],
+            ),
+          )
+        );
+      }
+    );
+  }
 
 }
+

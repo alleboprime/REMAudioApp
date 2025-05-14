@@ -33,7 +33,7 @@ class HomePageState extends State<HomePage>{
                   if(dimensions.screenHeight >= 600)
                     Padding(
                       padding: EdgeInsets.only(top: 20, bottom: 10),
-                      child: PresetButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset")
+                      child: PresetButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset")
                     ),
                   HomePageChannelPreview(isInput: true,),
                   HomePageChannelPreview(isInput: false,),
@@ -47,7 +47,7 @@ class HomePageState extends State<HomePage>{
                       mainAxisAlignment: MainAxisAlignment.center,
                       spacing: 20,
                       children: [
-                        PresetButton(height: 30, fontSize: 13, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
+                        PresetButton(height: 30, fontSize: 13, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
                         MuteAllButton(height: 30, fontSize: 13, action: appModel.toggleAllMuteChannel,),
                       ],
                     )
@@ -203,9 +203,9 @@ class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: List.generate(4, (colIndex) {
                                         return ShadButton.outline(
-                                          enabled: visibility[(rowIndex * 4 + colIndex + 1).toString()] ?? true,
-                                          onTapUp: (_) => {
-                                            appModel.toggleMuteChannel(rowIndex * 4 + colIndex + 1, widget.isInput ? "input" : "output", !(mute[(rowIndex * 4 + colIndex + 1).toString()] ?? false))
+                                          enabled: rowIndex == 0 && colIndex == 1 && !widget.isInput ? false : visibility[(rowIndex * 4 + colIndex + 1).toString()] ?? true,
+                                          onTapUp: (_){
+                                            appModel.toggleMuteChannel(rowIndex * 4 + colIndex + 1, widget.isInput ? "input" : "output", !(mute[(rowIndex * 4 + colIndex + 1).toString()] ?? false));
                                           },
                                           hoverBackgroundColor: Colors.transparent,
                                           width: 60,
@@ -222,7 +222,7 @@ class HomePageChannelPreviewState extends State<HomePageChannelPreview> {
                                           child: ScrollingLabel(
                                             width: 50,
                                             maxCharCount: 4,
-                                            text: labels["${rowIndex * 4 + colIndex + 1}"].toString(),
+                                            text: rowIndex == 0 && (colIndex == 0) && !widget.isInput ? "Master" : labels["${rowIndex * 4 + colIndex + 1}"].toString(),
                                             color: (mute["${rowIndex * 4 + colIndex + 1}"] ?? true)
                                                 ? colors.mutedChannel
                                                 : colors.unmutedChannel,

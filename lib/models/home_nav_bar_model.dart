@@ -12,4 +12,6 @@ class HomeNavBarModel extends ChangeNotifier{
     _selectedPage = value;
     notifyListeners();
   }
+
+  int previousPage = 0;
 }

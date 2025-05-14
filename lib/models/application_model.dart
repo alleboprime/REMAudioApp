@@ -62,6 +62,7 @@ class ApplicationModel extends ChangeNotifier {
   Completer<bool>? waitingForMatrixUpdate;
 
   void updateMatrixData(Map<String, dynamic> receivedData) {
+    print(receivedData);
     matrixConnected = true;
 
     inputMute = (receivedData["i_mute"] as Map<String, dynamic>)
@@ -155,7 +156,6 @@ class ApplicationModel extends ChangeNotifier {
       socket?.listen(
         (message) {
           Map<String, dynamic> receivedData = jsonDecode(message);
-          print(receivedData);
           if(receivedData.containsKey("reason")){
             manageReasons(receivedData["reason"]);
           }else if(receivedData["device_type"] == "matrix"){
@@ -290,8 +290,7 @@ class ApplicationModel extends ChangeNotifier {
     waitingForMatrixUpdate = Completer<bool>();
     return waitingForMatrixUpdate!.future.timeout(
       Duration(seconds: 10),
-      onTimeout: () {
-        print("\n\n\nTIMEOUT\n\n\n");
+      onTimeout: () {//TODO check wheter timeout is needed
         waitingForMatrixUpdate = null;
         return false;
       },
@@ -299,6 +298,15 @@ class ApplicationModel extends ChangeNotifier {
   }
 
   void toggleMuteChannel(int channel, String direction, bool status){
+    if(direction == "output" && channel == 1){
+      Map<String, String> command = {
+        "section": "mute",
+        "io": "output",
+        "channel": "2",
+        "value" : "$status"
+      };
+      socket?.add(jsonEncode(command));
+    }
     Map<String, String> command = {
       "section": "mute",
       "io": direction,

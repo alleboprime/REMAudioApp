@@ -5,6 +5,7 @@ import 'package:rem_app/components/scrolling_label.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/common_interface.dart';
+import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class PresetPage extends StatefulWidget{
@@ -56,6 +57,7 @@ class PresetPageState extends State<PresetPage>{
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 spacing: 30,
                                 children: List.generate(rowNumber, (rowIndex) {
+                                  final navBarModel = Provider.of<HomeNavBarModel>(context);
                                   return Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: List.generate(2, (colIndex) {
@@ -67,7 +69,7 @@ class PresetPageState extends State<PresetPage>{
                                           if(!result){
                                             commonInterface.failingReason = "Failed setting preset";
                                           }
-                                          if(context.mounted)Navigator.pushNamed(context, "/home");
+                                          navBarModel.selectedPage = navBarModel.previousPage;
                                         },
                                         hoverBackgroundColor: Colors.transparent,
                                         width: 120,
