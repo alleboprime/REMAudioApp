@@ -310,7 +310,13 @@ class ChannelSliderState extends State<ChannelSlider>{
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(widget.isMaster ? appModel.outputVolumes["1"].toString() : origin == 0 ? appModel.inputVolumes[widget.index.toString()].toString() : appModel.outputVolumes[widget.index.toString()].toString()),
+                Text(
+                  widget.isMaster
+                    ?appModel.outputVolumes["1"].toString()
+                    :origin == 0 
+                      ?appModel.inputVolumes[widget.index.toString()].toString()
+                      :appModel.outputVolumes[widget.index.toString()].toString()
+                ),
                 Expanded(
                   child: RotatedBox(
                     quarterTurns: -1,
@@ -320,7 +326,15 @@ class ChannelSliderState extends State<ChannelSlider>{
                       min: -60,
                       controller: sliderController,
                       divisions: 75,
-                      onChanged: (value) => print(value.round()),
+                      onChangeStart: (value){
+                        appModel.valueStack.clear();
+                        appModel.valueStack.add(value.round());
+                        appModel.startEditingChannelSlider(origin == 0 ? "input" : "output", widget.index.toString());
+                      },
+                      onChanged: (value) => appModel.valueStack.add(value.round()),
+                      onChangeEnd: (value){
+                        appModel.stopEditingChannelSlider();
+                      },
                     ),
                   ),
                 ),               

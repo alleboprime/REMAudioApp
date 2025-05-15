@@ -61,8 +61,13 @@ class ApplicationModel extends ChangeNotifier {
 
   Completer<bool>? waitingForMatrixUpdate;
 
+  List<int> valueStack = [];
+  bool editingChannelSlider = false;
+  String editingChannelSliderDirection = "input";
+  String editingChannelSliderNumber = "1";
+  Timer? _volumeSendTimer;
+
   void updateMatrixData(Map<String, dynamic> receivedData) {
-    print(receivedData);
     matrixConnected = true;
 
     inputMute = (receivedData["i_mute"] as Map<String, dynamic>)
@@ -360,6 +365,38 @@ class ApplicationModel extends ChangeNotifier {
       "section": "channel_labels",
       "io": direction,
       "channel": channel,
+      "value" : value
+    };
+    socket?.add(jsonEncode(command));
+  }
+
+  void startEditingChannelSlider(String direction, String channel){
+    editingChannelSlider = true;
+    editingChannelSliderDirection = direction;
+    editingChannelSliderNumber = channel;
+
+    _volumeSendTimer?.cancel();
+    _volumeSendTimer = Timer.periodic(Duration(milliseconds: 22), (_) {
+      if (valueStack.isNotEmpty) {
+        String value = valueStack.removeLast().toString();
+        setChannelVolume(value);
+        valueStack.clear();
+      }
+    });
+  }
+
+  void stopEditingChannelSlider() {
+    editingChannelSlider = false;
+    _volumeSendTimer?.cancel();
+    _volumeSendTimer = null;
+    valueStack.clear();
+}
+
+  void setChannelVolume(String value){
+    Map<String, String> command = {
+      "section": "volume",
+      "io": editingChannelSliderDirection,
+      "channel": editingChannelSliderNumber,
       "value" : value
     };
     socket?.add(jsonEncode(command));
