@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/models/application_model.dart';
 
-class VideoPage extends Container {
-  VideoPage({super.key});
+class VideoPage extends StatefulWidget {
+  const VideoPage({super.key});
+
+  @override
+  VideoPageState createState() => VideoPageState();
+}
+
+class VideoPageState extends State<VideoPage>{
 
   @override
   Widget build(BuildContext context) {

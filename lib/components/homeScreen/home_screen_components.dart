@@ -171,6 +171,88 @@ class PresetButtonState extends State<PresetButton>{
 }
 
 
+class MatrixMapButton extends StatefulWidget{
+  const MatrixMapButton({super.key, required this.height, required this.fontSize, required this.text, required this.previousPage});
+
+  final double height;
+  final double fontSize;
+  final String text;
+  final int previousPage;
+
+  @override
+  MatrixMapButtonState createState() => MatrixMapButtonState();
+}
+
+class MatrixMapButtonState extends State<MatrixMapButton>{
+  final dimensions = Dimensions();
+  final colors = AppColors();
+
+  bool isHovered = false;
+
+  @override
+  Widget build (BuildContext context){
+    return GestureDetector(
+      onTapDown: (details) => {
+        setState(() {
+          isHovered = true;
+        })
+      },
+      onTapCancel: () => {
+        setState(() {
+          isHovered = false;
+        }),
+      },
+      onTapUp: (details) => {
+        setState(() {
+          isHovered = false;
+        }),
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) {
+          setState(() {
+            isHovered = true;
+          });
+        },
+        onExit: (_) {
+          setState(() {
+            isHovered = false;
+          });
+        },
+        child: Consumer<HomeNavBarModel>(
+          builder: (context, navBarModel, child){
+            return ShadButton.outline(
+              onTapUp: (value){
+                navBarModel.previousPage = widget.previousPage;
+                navBarModel.selectedPage = 5;
+              },
+              hoverBackgroundColor: Colors.black,
+              height: widget.height,
+              width: 120,
+              decoration: ShadDecoration(
+                border: ShadBorder.all(color: colors.selectionColor)
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: isHovered ? colors.selectionColor : Colors.transparent,
+                      width: 1,
+                    ),
+                  ),
+                ),
+                padding: EdgeInsets.only(bottom: 1), //TODO verify this line
+                child: ScrollingLabel(text: widget.text, color: colors.selectionColor, maxCharCount: 8, fontSize : widget.fontSize, width: 80,)
+              ),
+            );
+          },
+        )
+      ),
+    );
+  }
+}
+
+
 class ChannelSlider extends StatefulWidget{
   const ChannelSlider({super.key, this.isMaster = false, this.direction = 0, this.width = 90, required this.index, this.bidirectional = true});
 
@@ -238,7 +320,7 @@ class ChannelSliderState extends State<ChannelSlider>{
                       min: -60,
                       controller: sliderController,
                       divisions: 75,
-                      onChanged: (value) => print(value),
+                      onChanged: (value) => print(value.round()),
                     ),
                   ),
                 ),               
@@ -254,7 +336,7 @@ class ChannelSliderState extends State<ChannelSlider>{
                     children: [
                       ShadButton.outline(
                         hoverBackgroundColor: Colors.transparent,
-                        width: 40,
+                        width: (widget.width - 4)/2,
                         height: 30,
                         padding: EdgeInsets.zero,
                         decoration: ShadDecoration(
@@ -266,11 +348,11 @@ class ChannelSliderState extends State<ChannelSlider>{
                             origin = 0;
                           });
                         },
-                        child: Text("IN", style: TextStyle(color: origin == 0 ? colors.selectionColor : Colors.white),),
+                        child: Text("IN", style: TextStyle(color: origin == 0 ? colors.selectionColor : Colors.white, fontSize: widget.width < 90 ? 10 : 14),),
                       ),
                       ShadButton.outline(
                         hoverBackgroundColor: Colors.transparent,
-                        width: 40,
+                        width: (widget.width - 4)/2,
                         height: 30,
                         padding: EdgeInsets.zero,
                         decoration: ShadDecoration(
@@ -282,7 +364,7 @@ class ChannelSliderState extends State<ChannelSlider>{
                             origin = 1;
                           });
                         },
-                        child: Text("OUT", style: TextStyle(color: origin == 1 ? colors.selectionColor : Colors.white),),
+                        child: Text("OUT", style: TextStyle(color: origin == 1 ? colors.selectionColor : Colors.white, fontSize: widget.width < 90 ? 10 : 14),),
                       ),
                     ],
                   ),
@@ -292,7 +374,7 @@ class ChannelSliderState extends State<ChannelSlider>{
                     children: [
                       ShadButton.outline(
                         hoverBackgroundColor: Colors.transparent,
-                        width: 40,
+                        width: (widget.width - 4)/2,
                         height: 30,
                         padding: EdgeInsets.zero,
                         decoration: ShadDecoration(
@@ -304,7 +386,7 @@ class ChannelSliderState extends State<ChannelSlider>{
                             origin = widget.direction;
                           });
                         },
-                        child: Text(widget.direction == 0 ? "IN" : "OUT", style: TextStyle(color: origin == widget.direction ? colors.selectionColor : Colors.white),),
+                        child: Text(widget.direction == 0 ? "IN" : "OUT", style: TextStyle(color: origin == widget.direction ? colors.selectionColor : Colors.white, fontSize: widget.width < 90 ? 10 : 14),),
                       ),
                     ],
                   ),
@@ -322,7 +404,7 @@ class ChannelSliderState extends State<ChannelSlider>{
                   onTapUp: (value) {
                     toggleMuteChannel(widget.index, origin, !(mute[widget.index.toString()] ?? false));
                   },
-                  child: Text((mute[widget.index.toString()] ?? false) ? "UNMUTE" : "MUTE", style: TextStyle(color: (mute[widget.index.toString()] ?? false) ? colors.mutedChannel : colors.unmutedChannel),),
+                  child: Text((mute[widget.index.toString()] ?? false) ? "UNMUTE" : "MUTE", style: TextStyle(color: (mute[widget.index.toString()] ?? false) ? colors.mutedChannel : colors.unmutedChannel, fontSize: widget.width < 90 ? 10 : 14),),
                 )
               ],
             ),

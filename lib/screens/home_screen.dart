@@ -7,6 +7,7 @@ import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:rem_app/components/homeNavBar/home_nav_bar.dart';
 import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/pages/homePages/audio_page.dart';
+import 'package:rem_app/pages/homePages/matrix_map_page.dart';
 import 'package:rem_app/pages/homePages/preset_page.dart';
 import 'package:rem_app/pages/homePages/video_page.dart';
 import 'package:rem_app/pages/homePages/settings_page.dart';
@@ -46,6 +47,7 @@ class HomeScreenState extends State<HomeScreen> {
                           VideoPage(),
                           SettingsPage(),
                           PresetPage(),
+                          MatrixMapPage(),
                         ],
                       ),
                       if(!appModel.matrixAvailable)

@@ -25,7 +25,7 @@ class ScrollingLabel extends StatelessWidget {
         text,
         style: TextStyle(
           color: color,
-          fontSize: 17,
+          fontSize: fontSize,
         ),
         overflow: TextOverflow.ellipsis,
       );
@@ -38,7 +38,7 @@ class ScrollingLabel extends StatelessWidget {
         text: text,
         style: TextStyle(
           color: color,
-          fontSize: 17,
+          fontSize: fontSize,
         ),
         scrollAxis: Axis.horizontal,
         blankSpace: 20.0,
