@@ -133,7 +133,7 @@ class ApplicationModel extends ChangeNotifier {
   }
 
   Future<bool> getInitialToken() async {
-    var url = Uri.http('${userModel.remoteServerIp}:8000', '/ws/auth');
+    var url = Uri.http(userModel.remoteServerIp, '/ws/auth');
     http.Response response;
     try {
       response = await http.get(
@@ -154,7 +154,7 @@ class ApplicationModel extends ChangeNotifier {
   Future<bool> establishConnection() async {
     try {
       socket = await WebSocket.connect(
-          "ws://${userModel.remoteServerIp}:8000/ws/app?uuid=$uuid");
+          "ws://${userModel.remoteServerIp}/ws/app?uuid=$uuid");
 
       Completer<bool> completer = Completer<bool> ();
 
@@ -195,7 +195,7 @@ class ApplicationModel extends ChangeNotifier {
   }
 
   Future<bool> checkForMatrixConnections() async {
-    var url = Uri.http('${userModel.remoteServerIp}:8000', '/api');
+    var url = Uri.http(userModel.remoteServerIp, '/api');
     http.Response response;
     try {
       response = await http.get(url).timeout(Duration(seconds: 5));
@@ -234,7 +234,7 @@ class ApplicationModel extends ChangeNotifier {
   }
 
   Future<bool> setSocket({int index = 0, Map<String, String>? socket}) async {
-    var url = Uri.http('${userModel.remoteServerIp}:8000', '/ws/socket/add', {"uuid":uuid});
+    var url = Uri.http(userModel.remoteServerIp, '/ws/socket/add', {"uuid":uuid});
     http.Response response;
     Map<String, String> settingSocket;
     if(socket != null){
@@ -264,7 +264,7 @@ class ApplicationModel extends ChangeNotifier {
   }
 
   Future<bool> removeSocket(int index) async {
-    var url = Uri.http('${userModel.remoteServerIp}:8000', '/ws/socket/remove', {"uuid":uuid});
+    var url = Uri.http(userModel.remoteServerIp, '/ws/socket/remove', {"uuid":uuid});
     http.Response response;
     Map<String, String> settingSocket = matrixSessions[index];
     try {
