@@ -42,7 +42,6 @@ class SettingsTileState extends State<SettingsTile>{
         setState(() {
           isHovered = false;
         }),
-        Navigator.pop(context)
       },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
@@ -160,7 +159,7 @@ class PresetButtonState extends State<PresetButton>{
                   ),
                 ),
                 padding: EdgeInsets.only(bottom: 1), //TODO verify this line
-                child: ScrollingLabel(text: widget.text, color: colors.selectionColor, maxCharCount: 8, fontSize : widget.fontSize, width: 80,)
+                child: ScrollingLabel(text: widget.text, color: colors.selectionColor, maxCharCount: 7, fontSize : widget.fontSize, width: 80,)
               ),
             );
           },
@@ -242,7 +241,7 @@ class MatrixMapButtonState extends State<MatrixMapButton>{
                   ),
                 ),
                 padding: EdgeInsets.only(bottom: 1), //TODO verify this line
-                child: ScrollingLabel(text: widget.text, color: colors.selectionColor, maxCharCount: 8, fontSize : widget.fontSize, width: 80,)
+                child: ScrollingLabel(text: widget.text, color: colors.selectionColor, maxCharCount: 7, fontSize : widget.fontSize, width: 80,)
               ),
             );
           },

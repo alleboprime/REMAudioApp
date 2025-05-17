@@ -236,7 +236,6 @@ class SelectionButtonState extends State<SelectionButton> {
         setState(() {
           isHovered = false;
         }),
-        Navigator.pop(context)
       },
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
