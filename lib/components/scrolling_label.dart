@@ -43,12 +43,6 @@ class ScrollingLabel extends StatelessWidget {
         scrollAxis: Axis.horizontal,
         blankSpace: 20.0,
         velocity: 30.0,
-        pauseAfterRound: Duration(milliseconds: 500),
-        startPadding: 5.0,
-        accelerationDuration: Duration(milliseconds: 500),
-        accelerationCurve: Curves.linear,
-        decelerationDuration: Duration(milliseconds: 500),
-        decelerationCurve: Curves.easeOut,
       ),
     );
   }
