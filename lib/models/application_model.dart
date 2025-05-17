@@ -47,6 +47,8 @@ class ApplicationModel extends ChangeNotifier {
   Map<String, String> inputLabels = {};
   Map<String, String> outputLabels = {};
 
+  Map<String, bool> matrixMixMap = {};
+
   Map<String, String> matrixPresetLabels = {};
   Map<String, String> cameraPresetLabels = {};
 
@@ -96,6 +98,9 @@ class ApplicationModel extends ChangeNotifier {
 
     matrixPresetLabels = (receivedData["preset_labels"] as Map<String, dynamic>)
       .map((key, value) => MapEntry(key, value as String));
+
+    matrixMixMap = (receivedData["mix_map"] as Map<String, dynamic>)
+      .map((key, value) => MapEntry(key, value as bool));
 
     currentMatrixPreset = receivedData["current_preset"] as int;
 
@@ -398,6 +403,16 @@ class ApplicationModel extends ChangeNotifier {
       "io": editingChannelSliderDirection,
       "channel": editingChannelSliderNumber,
       "value" : value
+    };
+    socket?.add(jsonEncode(command));
+  }
+
+  void setMatrixMixMapping(String input, String output, bool value){
+    Map<String, String> command = {
+      "section": "mix_map",
+      "index": input,
+      "channel": output,
+      "value" : value.toString()
     };
     socket?.add(jsonEncode(command));
   }
