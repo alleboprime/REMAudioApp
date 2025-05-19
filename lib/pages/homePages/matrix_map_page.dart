@@ -25,6 +25,7 @@ class MatrixMapPageState extends State<MatrixMapPage> {
 
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
           toolbarHeight: 100,
           surfaceTintColor: Colors.black,
