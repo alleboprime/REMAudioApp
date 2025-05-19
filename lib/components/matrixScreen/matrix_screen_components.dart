@@ -6,10 +6,11 @@ final dimensions = Dimensions();
 final colors = AppColors();
 
 class ActionButton extends StatefulWidget{
-  const ActionButton({super.key, required this.iconData, required this.action});
+  const ActionButton({super.key, required this.iconData, required this.primaryAction, this.secondaryAction});
 
   final IconData iconData;
-  final VoidCallback action;
+  final VoidCallback primaryAction;
+  final VoidCallback? secondaryAction;
 
   @override
   ActionButtonState createState() => ActionButtonState();
@@ -37,8 +38,9 @@ class ActionButtonState extends State<ActionButton>{
             isHovered = false;
           });
         }
-        widget.action();
+        widget.primaryAction();
       },
+      onDoubleTap: () => widget.secondaryAction,
       child: MouseRegion(
         onEnter: (event) => {
           setState(() => isHovered = true),

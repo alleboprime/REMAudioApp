@@ -417,4 +417,21 @@ class ApplicationModel extends ChangeNotifier {
     socket?.add(jsonEncode(command));
   }
 
+  void moveCamera({direction = "up", velocity = "medium", bool resetPosition = false}){
+    if(resetPosition){
+      Map<String, String> command = {
+        "section": "move_camera",
+        "direction": "home"
+      };
+      socket?.add(jsonEncode(command));
+    }else{
+      Map<String, String> command = {
+        "section": "move_camera",
+        "direction": direction,
+        "velocity": velocity
+      };
+      socket?.add(jsonEncode(command));
+    }
+  }
+
 }

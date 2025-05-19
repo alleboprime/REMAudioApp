@@ -46,13 +46,13 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
           leading: Row(
             children: [
               SizedBox(width: dimensions.isPc ? 50 : 20),
-              ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
+              ActionButton(iconData: PhosphorIcons.arrowLeft(), primaryAction: () => Navigator.pop(context),),
             ],
           ),
           actions: [
-            ActionButton(iconData: PhosphorIcons.plus(), action: newConnectionNavigation),
+            ActionButton(iconData: PhosphorIcons.plus(), primaryAction: newConnectionNavigation),
             SizedBox(width: dimensions.isPc ? 30 : 15),
-            ActionButton(iconData: PhosphorIcons.arrowClockwise(), action: refresh,),
+            ActionButton(iconData: PhosphorIcons.arrowClockwise(), primaryAction: refresh,),
             SizedBox(width: dimensions.isPc ? 50 : 20),
           ],
           title: Center(child: Text("RECENT CONNECTIONS", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),)

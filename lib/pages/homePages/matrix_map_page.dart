@@ -37,7 +37,7 @@ class MatrixMapPageState extends State<MatrixMapPage> {
               return Row(
                 children: [
                   SizedBox(width: dimensions.isPc ? 50 : 20),
-                  ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => navBar.selectedPage = navBar.previousPage,),
+                  ActionButton(iconData: PhosphorIcons.arrowLeft(), primaryAction: () => navBar.selectedPage = navBar.previousPage,),
                 ],
               );
             }

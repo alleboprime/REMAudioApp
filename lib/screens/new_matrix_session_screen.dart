@@ -40,7 +40,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
             leading: Row(
               children: [
                 SizedBox(width: dimensions.isPc ? 50 : 20),
-                ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
+                ActionButton(iconData: PhosphorIcons.arrowLeft(), primaryAction: () => Navigator.pop(context),),
               ],
             ),
             actions: [

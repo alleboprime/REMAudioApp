@@ -91,7 +91,7 @@ class PreferencesScreenState extends State<PreferencesScreen>{
             leading: Row(
               children: [
                 SizedBox(width: dimensions.isPc ? 50 : 20),
-                ActionButton(iconData: PhosphorIcons.arrowLeft(), action: () => Navigator.pop(context),),
+                ActionButton(iconData: PhosphorIcons.arrowLeft(), primaryAction: () => Navigator.pop(context),),
               ],
             ),
             centerTitle: true,
