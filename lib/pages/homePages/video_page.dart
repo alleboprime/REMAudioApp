@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mjpeg_view/mjpeg_view.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/homeScreen/home_screen_components.dart';
@@ -31,7 +32,9 @@ class VideoPageState extends State<VideoPage>{
                   flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.all(10),
-                    child: Text("CIAO"),
+                    child: MjpegView(
+                      uri: 'http://${userModel.remoteServerIp}/stream?a=MTkyLjE2OC4xOS40Mzo4NTU0',
+                    )
                   ),
                 ),
               Expanded(
