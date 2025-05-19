@@ -71,7 +71,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                       });
                       return;
                     }
-                    result = await appModel.establishConnection();
+                    result = await appModel.establishConnection(_deviceTypeSelectionValue == "matrix" ? "matrix" : "camera");
                     if(!result){
                       setState(() {
                         commonInterface.failingReason = "Failed establishing connection";

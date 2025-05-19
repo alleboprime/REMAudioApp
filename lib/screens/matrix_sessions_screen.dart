@@ -21,7 +21,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
   Future<void> refresh() async{
     await appModel.checkForMatrixConnections();
     setState(() {
-      appModel.matrixSessions;
+      appModel.sessions;
     });
     return;
   }
@@ -68,7 +68,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
               String reason = "";
               bool result = await appModel.setSocket(index: index);
               if(result){
-                result = await appModel.establishConnection();
+                result = await appModel.establishConnection(appModel.sessions[index]["device_type"] == "matrix" ? "matrix" : "camera");
                 if(result){
                   commonInterface.isLoading = false;
                   if(context.mounted){Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);}
@@ -117,12 +117,12 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                   child: ScrollConfiguration(
                     behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                     child: ListView.builder(
-                      itemCount: appModel.matrixSessions.length,
+                      itemCount: appModel.sessions.length,
                       itemBuilder: (context, index) {
                         return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: appModel.matrixSessions[index]["latest"] == "true" ? colors.selectionColor : colors.borderColors, width: 2),
+                            border: Border.all(color: appModel.sessions[index]["latest"] == "true" ? colors.selectionColor : colors.borderColors, width: 2),
                             color: colors.primaryColor
                           ),
                           padding: EdgeInsets.all(dimensions.isPc ? 25 : 20),
@@ -136,8 +136,8 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                   Row(
                                     spacing: 10,
                                     children: [
-                                      Icon(appModel.matrixSessions[index]["device_type"] == "matrix" ? PhosphorIcons.hardDrive() : PhosphorIcons.camera(), size: 25, color: Colors.white,),
-                                      Text(appModel.matrixSessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),                             
+                                      Icon(appModel.sessions[index]["device_type"] == "matrix" ? PhosphorIcons.hardDrive() : PhosphorIcons.camera(), size: 25, color: Colors.white,),
+                                      Text(appModel.sessions[index]["name"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 18 : 16,),),                             
                                     ],
                                   ),
                                   ShadButton.destructive(icon: Icon(PhosphorIcons.trash(), size: 16,), padding: EdgeInsets.all(0), onTapUp: (value) => removeConnection(index),),
@@ -154,7 +154,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                           border: Border.all(color: colors.borderColors, width: 2),
                                         ),
                                         padding: EdgeInsets.all(dimensions.isPc ? 15 : 10),
-                                        child: Text(appModel.matrixSessions[index]["ip"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
+                                        child: Text(appModel.sessions[index]["ip"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
                                       ),
                                       Container(
                                         decoration: BoxDecoration(
@@ -167,7 +167,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                           ),
                                         ),
                                         padding: EdgeInsets.all(dimensions.isPc ? 15 : 10),
-                                        child: Text(appModel.matrixSessions[index]["port"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
+                                        child: Text(appModel.sessions[index]["port"].toString(), style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
                                       ),
                                     ],
                                   ),

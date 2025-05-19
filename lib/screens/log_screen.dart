@@ -68,7 +68,7 @@ class LoginScreenState extends State<LoginScreen> {
         result = await matrixModel.checkForMatrixConnections();
         if(result){
           if(!model.isAdmin && (matrixModel.latestMatrixSocketAvailable || matrixModel.latestCameraSocketAvailable)){
-            if(mounted){result = await matrixModel.establishConnection();}
+            if(mounted){result = await matrixModel.establishConnection(matrixModel.latestMatrixSocketAvailable ? "matrix" : "camera");}
             if(result){
               if(mounted){Navigator.pushNamed(context, "/home");}
             }else{

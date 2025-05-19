@@ -20,7 +20,8 @@ class ApplicationModel extends ChangeNotifier {
   bool sessionAvailable = false;
   bool latestMatrixSocketAvailable = false;
   bool latestCameraSocketAvailable = false;
-  List<Map<String, String>> matrixSessions = [];
+
+  List<Map<String, String>> sessions = [];
 
   WebSocket? socket;
 
@@ -156,7 +157,7 @@ class ApplicationModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> establishConnection() async {
+  Future<bool> establishConnection(String waitingFor) async {
     try {
       socket = await WebSocket.connect(
           "ws://${userModel.remoteServerIp}/ws/app?uuid=$uuid");
@@ -168,13 +169,19 @@ class ApplicationModel extends ChangeNotifier {
           Map<String, dynamic> receivedData = jsonDecode(message);
           if(receivedData.containsKey("reason")){
             manageReasons(receivedData["reason"]);
+            if(!completer.isCompleted){
+              completer.complete(false);
+            }
           }else if(receivedData["device_type"] == "matrix"){
             updateMatrixData(receivedData);
+            if(!(completer.isCompleted) && waitingFor == "matrix"){
+              completer.complete(true);
+            }
           }else{
             updateCameraData(receivedData);
-          }
-          if(!completer.isCompleted){
-            completer.complete(true);
+            if(!(completer.isCompleted) && waitingFor == "camera"){
+              completer.complete(true);
+            }
           }
         },
         onDone: () {
@@ -210,7 +217,7 @@ class ApplicationModel extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> receivedData = jsonDecode(response.body);
-      matrixSessions.clear();
+      sessions.clear();
       sessionAvailable = false;
       latestMatrixSocketAvailable = false;
       latestCameraSocketAvailable = false;
@@ -218,18 +225,18 @@ class ApplicationModel extends ChangeNotifier {
         sessionAvailable = true;
         latestMatrixSocketAvailable = true;
         var latest = receivedData["latest_audio_socket"];
-        matrixSessions.add({"name":latest["name"], "ip":latest["ip"], "port":latest["port"], "device_type":latest["device_type"], "latest" :"true"});
+        sessions.add({"name":latest["name"], "ip":latest["ip"], "port":latest["port"], "device_type":latest["device_type"], "latest" :"true"});
       }
       if(receivedData["latest_video_socket"] != null){
         sessionAvailable = true;
         latestCameraSocketAvailable = true;
         var latest = receivedData["latest_video_socket"];
-        matrixSessions.add({"name":latest["name"], "ip":latest["ip"], "port":latest["port"], "device_type":latest["device_type"], "latest" :"true"});
+        sessions.add({"name":latest["name"], "ip":latest["ip"], "port":latest["port"], "device_type":latest["device_type"], "latest" :"true"});
       }
       if(receivedData["sockets"] != null){
         sessionAvailable = true;
         for(var connection in receivedData["sockets"]){
-          matrixSessions.add({"name":connection["name"], "ip":connection["ip"], "port":connection["port"], "device_type":connection["device_type"], "latest" :"false"});
+          sessions.add({"name":connection["name"], "ip":connection["ip"], "port":connection["port"], "device_type":connection["device_type"], "latest" :"false"});
         }
       }
       return true;
@@ -246,9 +253,9 @@ class ApplicationModel extends ChangeNotifier {
       settingSocket = socket;
     }else{
       settingSocket = {
-        "socket_name": matrixSessions[index]["name"] ?? "",
-        "socket": "${matrixSessions[index]["ip"] ?? ""}:${matrixSessions[index]["port"] ?? ""}",
-        "device_type": matrixSessions[index]["device_type"] ?? "matrix"
+        "socket_name": sessions[index]["name"] ?? "",
+        "socket": "${sessions[index]["ip"] ?? ""}:${sessions[index]["port"] ?? ""}",
+        "device_type": sessions[index]["device_type"] ?? "matrix"
       };
     }
     try {
@@ -271,7 +278,7 @@ class ApplicationModel extends ChangeNotifier {
   Future<bool> removeSocket(int index) async {
     var url = Uri.http(userModel.remoteServerIp, '/ws/socket/remove', {"uuid":uuid});
     http.Response response;
-    Map<String, String> settingSocket = matrixSessions[index];
+    Map<String, String> settingSocket = sessions[index];
     try {
       response = await http.post(
         url,
