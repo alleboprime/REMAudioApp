@@ -41,6 +41,7 @@ class REMApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Dimensions().init(context);
     return ShadApp.material(
+      themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
       initialRoute: "/access",
       routes: {
