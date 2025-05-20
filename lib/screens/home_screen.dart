@@ -51,25 +51,9 @@ class HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                       if(!appModel.matrixAvailable)
-                        Container(
-                          color: Colors.black.withAlpha(100),
-                          child: Center(
-                            child: SizedBox(
-                              width: 235,
-                              child: ShadAlert(
-                                decoration: ShadDecoration(
-                                  color: Colors.black,
-                                  border: ShadBorder.all(color: Colors.yellow, width: 2)
-                                ),
-                                iconData: LucideIcons.clock,
-                                iconColor: Colors.yellow,
-                                title: Text('Matrix Unavailable', style: TextStyle(color: Colors.yellow, fontSize: 18)),
-                                description:
-                                    Text('Please wait...', style: TextStyle(color: Colors.yellow, fontSize: 17),),
-                              ),
-                            )
-                          ),
-                        ),
+                        deviceUnavailable("Matrix", 235),
+                      if(!appModel.cameraAvailable)
+                        deviceUnavailable("Camera", 245),
                       if(!(appModel.matrixConnected || appModel.cameraConnected))
                         Container(
                           color: Colors.black.withAlpha(100),
@@ -112,6 +96,28 @@ class HomeScreenState extends State<HomeScreen> {
           }
         ),
         bottomNavigationBar: !dimensions.isPc ? HomeNavBar() : null,
+      ),
+    );
+  }
+
+  Container deviceUnavailable(String device, double width) {
+    return Container(
+      color: Colors.black.withAlpha(100),
+      child: Center(
+        child: SizedBox(
+          width: width,
+          child: ShadAlert(
+            decoration: ShadDecoration(
+              color: Colors.black,
+              border: ShadBorder.all(color: Colors.yellow, width: 2)
+            ),
+            iconData: LucideIcons.clock,
+            iconColor: Colors.yellow,
+            title: Text('$device Unavailable', style: TextStyle(color: Colors.yellow, fontSize: 18)),
+            description:
+                Text('Please wait...', style: TextStyle(color: Colors.yellow, fontSize: 17),),
+          ),
+        )
       ),
     );
   }
