@@ -441,4 +441,25 @@ class ApplicationModel extends ChangeNotifier {
     }
   }
 
+  void zoomTele(){
+    Map<String, String> command = {
+      "section": "zoom_tele",
+    };
+    socket?.add(jsonEncode(command));
+  }
+
+  void zoomWide(){
+    Map<String, String> command = {
+      "section": "zoom_wide",
+    };
+    socket?.add(jsonEncode(command));
+  }
+
+  void zoomStop(){
+    Map<String, String> command = {
+      "section": "zoom_stop",
+    };
+    socket?.add(jsonEncode(command));
+  }
+
 }

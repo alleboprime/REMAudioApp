@@ -33,7 +33,8 @@ class VideoPageState extends State<VideoPage>{
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: MjpegView(
-                      uri: 'http://${userModel.remoteServerIp}/stream?a=MTkyLjE2OC4xOS40Mzo4NTU0',
+                      //TODO complete with port rstp
+                      uri: 'http://${userModel.remoteServerIp}/stream?a=MTkyLjE2OC44OC4yMjY6ODU1NA',
                     )
                   ),
                 ),
@@ -135,14 +136,15 @@ class VideoPageState extends State<VideoPage>{
   }
 
   Row zoomPanel(){
+    final appModel = ApplicationModel();
     return Row(
       spacing: 10,
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        ActionButton(iconData: PhosphorIcons.minusCircle(), primaryAction: () => {},),
+        ActionButton(iconData: PhosphorIcons.minusCircle(), isZoom: true, primaryAction: appModel.zoomWide, secondaryAction: appModel.zoomStop,),
         Text("ZOOM"),
-        ActionButton(iconData: PhosphorIcons.plusCircle(), primaryAction: () => {},),
+        ActionButton(iconData: PhosphorIcons.plusCircle(), isZoom: true, primaryAction: appModel.zoomTele, secondaryAction: appModel.zoomStop,),
       ],
     );
   }

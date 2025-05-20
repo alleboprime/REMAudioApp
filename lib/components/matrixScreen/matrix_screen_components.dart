@@ -6,11 +6,13 @@ final dimensions = Dimensions();
 final colors = AppColors();
 
 class ActionButton extends StatefulWidget{
-  const ActionButton({super.key, required this.iconData, required this.primaryAction, this.secondaryAction});
+  const ActionButton({super.key, required this.iconData, required this.primaryAction, this.secondaryAction, this.isZoom = false});
 
   final IconData iconData;
   final VoidCallback primaryAction;
   final VoidCallback? secondaryAction;
+
+  final bool isZoom;
 
   @override
   ActionButtonState createState() => ActionButtonState();
@@ -22,15 +24,17 @@ class ActionButtonState extends State<ActionButton>{
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: (details) => {
+      onTapDown: (details){
         setState(() {
           isHovered = true;
-        })
+        });
+        if(widget.isZoom)widget.primaryAction();
       },
-      onTapCancel: () => {
+      onTapCancel: (){
         setState(() {
           isHovered = false;
-        }),
+        });
+        if(widget.isZoom)widget.secondaryAction!();
       },
       onTapUp: (details){
         if(!dimensions.isDesktop){
@@ -38,9 +42,15 @@ class ActionButtonState extends State<ActionButton>{
             isHovered = false;
           });
         }
-        widget.primaryAction();
+        if(widget.isZoom){
+          widget.secondaryAction!();
+        }else{
+          widget.primaryAction();
+        }
       },
-      onDoubleTap: () => widget.secondaryAction,
+      onDoubleTap: (){
+        widget.secondaryAction!();
+      },
       child: MouseRegion(
         onEnter: (event) => {
           setState(() => isHovered = true),
