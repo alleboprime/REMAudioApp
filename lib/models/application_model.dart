@@ -63,6 +63,7 @@ class ApplicationModel extends ChangeNotifier {
   bool cameraAvailable = true;
 
   Completer<bool>? waitingForMatrixUpdate;
+  Completer<bool>? waitingForCameraUpdate;
 
   List<int> valueStack = [];
   bool editingChannelSlider = false;
@@ -128,6 +129,12 @@ class ApplicationModel extends ChangeNotifier {
     cameraSocket = receivedData["camera_socket"] as String;
 
     currentCameraPreset = receivedData["current_preset"] as int;
+
+    if(waitingForCameraUpdate != null && !waitingForCameraUpdate!.isCompleted){
+      waitingForCameraUpdate!.complete(true);
+      waitingForCameraUpdate = null;
+    }
+    notifyListeners();
   }
 
   void manageReasons(String reason){
@@ -298,20 +305,31 @@ class ApplicationModel extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> setMatrixPreset(int index) async {
+  Future<bool> setPreset(bool isMatrix, int index) async {
     Map<String, String> command = {
-      "section": "matrix_preset",
+      "section": "${isMatrix?"matrix":"camera"}_preset",
       "value" : "$index"
     };
     socket?.add(jsonEncode(command));
-    waitingForMatrixUpdate = Completer<bool>();
-    return waitingForMatrixUpdate!.future.timeout(
-      Duration(seconds: 10),
-      onTimeout: () {//TODO check wheter timeout is needed
-        waitingForMatrixUpdate = null;
-        return false;
-      },
-    );
+    if(isMatrix){
+      waitingForMatrixUpdate = Completer<bool>();
+      return waitingForMatrixUpdate!.future.timeout(
+        Duration(seconds: 10),
+        onTimeout: () {
+          waitingForMatrixUpdate = null;
+          return false;
+        },
+      );
+    }else{
+      waitingForCameraUpdate = Completer<bool>();
+      return waitingForCameraUpdate!.future.timeout(
+        Duration(seconds: 10),
+        onTimeout: () {
+          waitingForCameraUpdate = null;
+          return false;
+        },
+      );
+    }
   }
 
   void toggleMuteChannel(int channel, String direction, bool status){

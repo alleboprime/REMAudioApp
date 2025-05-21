@@ -50,9 +50,9 @@ class HomeScreenState extends State<HomeScreen> {
                           MatrixMapPage(),
                         ],
                       ),
-                      if(!appModel.matrixAvailable)
+                      if(!appModel.matrixAvailable && (navBarModel.selectedPage != 2 && navBarModel.selectedPage != 3 && navBarModel.selectedPage != 4))
                         deviceUnavailable("Matrix", 235),
-                      if(!appModel.cameraAvailable)
+                      if(!appModel.cameraAvailable && navBarModel.selectedPage == 2 )
                         deviceUnavailable("Camera", 245),
                       if(!(appModel.matrixConnected || appModel.cameraConnected))
                         Container(

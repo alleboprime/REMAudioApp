@@ -52,7 +52,7 @@ class VideoPageState extends State<VideoPage>{
                             Column(
                               spacing: 20,
                               children: [
-                                PresetButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, text: appModel.cameraPresetLabels[appModel.currentMatrixPreset.toString()] ?? "Preset", previousPage: 2),
+                                PresetButton(matrixPreset: false, height: 50, fontSize: dimensions.isPc ? 22 : 18, text: appModel.cameraPresetLabels[appModel.currentCameraPreset.toString()] ?? "Preset", previousPage: 2),
                                 zoomPanel(),
                                 commandGrid(),
                               ],

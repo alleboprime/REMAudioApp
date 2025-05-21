@@ -36,7 +36,7 @@ class HomePageState extends State<HomePage>{
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          PresetButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
+                          PresetButton(matrixPreset: true, height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
                           MatrixMapButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: "Matrix Map")
                         ],
                       )
@@ -53,7 +53,7 @@ class HomePageState extends State<HomePage>{
                       mainAxisAlignment: MainAxisAlignment.center,
                       spacing: 20,
                       children: [
-                        PresetButton(height: 30, fontSize: 13, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
+                        PresetButton(matrixPreset: true, height: 30, fontSize: 13, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
                         MatrixMapButton(height: 30, fontSize: 13, previousPage: 0, text: "Matrix Map"),
                         MuteAllButton(height: 30, fontSize: 13, action: appModel.toggleAllMuteChannel,),
                       ],

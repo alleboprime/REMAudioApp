@@ -13,5 +13,12 @@ class HomeNavBarModel extends ChangeNotifier{
     notifyListeners();
   }
 
+  bool _matrixPreset = false;
+  bool get matrixPreset => _matrixPreset;
+  set matrixPreset (bool value){
+    _matrixPreset = value;
+    notifyListeners();
+  }
+
   int previousPage = 0;
 }

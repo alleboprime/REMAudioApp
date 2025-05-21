@@ -89,12 +89,13 @@ class SettingsTileState extends State<SettingsTile>{
 
 
 class PresetButton extends StatefulWidget{
-  const PresetButton({super.key, required this.height, required this.fontSize, required this.text, required this.previousPage});
+  const PresetButton({super.key, required this.height, required this.fontSize, required this.text, required this.previousPage, required this.matrixPreset});
 
   final double height;
   final double fontSize;
   final String text;
   final int previousPage;
+  final bool matrixPreset;
 
   @override
   PresetButtonState createState() => PresetButtonState();
@@ -141,6 +142,7 @@ class PresetButtonState extends State<PresetButton>{
             return ShadButton.outline(
               onTapUp: (value){
                 navBarModel.previousPage = widget.previousPage;
+                navBarModel.matrixPreset = widget.matrixPreset;
                 navBarModel.selectedPage = 4;
               },
               hoverBackgroundColor: Colors.black,

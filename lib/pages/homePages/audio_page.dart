@@ -36,7 +36,7 @@ class AudioPageState extends State<AudioPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     spacing: 30,
                     children: [
-                      PresetButton(height: 50, fontSize: 22, previousPage: 1, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
+                      PresetButton(matrixPreset: true, height: 50, fontSize: 22, previousPage: 1, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
                       MatrixMapButton(height: 50, fontSize: 22, previousPage: 1, text: "Matrix Map"),
                       Container(
                         width: 150,
@@ -173,11 +173,11 @@ class AudioPageState extends State<AudioPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if(!dimensions.extremeNarrow)
-                      PresetButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
+                      PresetButton(matrixPreset: true, height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
                     if(!dimensions.extremeNarrow)
                       MatrixMapButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: "Matrix Map"),
                     if(dimensions.extremeNarrow)
-                      PresetButton(height: 30, fontSize: 10, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
+                      PresetButton(matrixPreset: true, height: 30, fontSize: 10, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
                     if(dimensions.extremeNarrow)
                       MatrixMapButton(height: 30, fontSize: 10, previousPage: 0, text: "Matrix Map"),
                   ]
