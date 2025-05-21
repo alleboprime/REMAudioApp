@@ -328,12 +328,12 @@ class ChannelSliderState extends State<ChannelSlider>{
                       controller: sliderController,
                       divisions: 75,
                       onChangeStart: (value){
-                        appModel.valueStack.clear();
-                        appModel.valueStack.add(value.round());
+                        appModel.lastVolumeValue = value.round();
                         appModel.startEditingChannelSlider(origin == 0 ? "input" : "output", widget.index.toString());
                       },
-                      onChanged: (value) => appModel.valueStack.add(value.round()),
+                      onChanged: (value) => appModel.lastVolumeValue = value.round(),
                       onChangeEnd: (value){
+                        appModel.lastVolumeValue = value.round();
                         appModel.stopEditingChannelSlider();
                       },
                     ),
