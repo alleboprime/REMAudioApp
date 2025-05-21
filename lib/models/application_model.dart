@@ -16,6 +16,8 @@ class ApplicationModel extends ChangeNotifier {
 
   final userModel = UserModel();
 
+  String rtspURLFragment = "";
+
   String uuid = "";
   bool sessionAvailable = false;
   bool latestMatrixSocketAvailable = false;
@@ -65,7 +67,7 @@ class ApplicationModel extends ChangeNotifier {
   Completer<bool>? waitingForMatrixUpdate;
   Completer<bool>? waitingForCameraUpdate;
 
-  List<int> valueStack = [];
+  int lastVolumeValue = 0;
   bool editingChannelSlider = false;
   String editingChannelSliderDirection = "input";
   String editingChannelSliderNumber = "1";
@@ -407,11 +409,7 @@ class ApplicationModel extends ChangeNotifier {
 
     _volumeSendTimer?.cancel();
     _volumeSendTimer = Timer.periodic(Duration(milliseconds: 22), (_) {
-      if (valueStack.isNotEmpty) {
-        String value = valueStack.removeLast().toString();
-        setChannelVolume(value);
-        valueStack.clear();
-      }
+      setChannelVolume(lastVolumeValue.toString());
     });
   }
 
@@ -419,7 +417,6 @@ class ApplicationModel extends ChangeNotifier {
     editingChannelSlider = false;
     _volumeSendTimer?.cancel();
     _volumeSendTimer = null;
-    valueStack.clear();
 }
 
   void setChannelVolume(String value){

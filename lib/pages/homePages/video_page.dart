@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:mjpeg_view/mjpeg_view.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,7 @@ import 'package:rem_app/components/homeScreen/home_screen_components.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
 import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/user_model.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class VideoPage extends StatefulWidget {
   const VideoPage({super.key});
@@ -18,12 +21,15 @@ class VideoPageState extends State<VideoPage>{
 
   final userModel = UserModel();
 
+  final rtspController = ShadTextEditingController();
+
+  Client? client;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Consumer<ApplicationModel>(
         builder: (context, appModel, child){
-
           Widget reducedWidget = Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -32,9 +38,27 @@ class VideoPageState extends State<VideoPage>{
                   flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.all(10),
-                    child: MjpegView(
-                      //TODO complete with port rstp
-                      uri: 'http://${userModel.remoteServerIp}/stream?a=MTkyLjE2OC44OC4yMjY6ODU1NA',
+                    child: Center(
+                      child: appModel.rtspURLFragment.isEmpty
+                        ?onDoneWidget(appModel)
+                        :MjpegView(
+                          client: client,
+                          doneWidget: (context) {
+                            client?.close();
+                            return onDoneWidget(appModel);
+                          },
+                          onError: (error, stackTrace) {
+                            setState(() {
+                              appModel.rtspURLFragment = "";
+                            });
+                          },
+                          errorWidget: (context) {
+                            return SizedBox.shrink();
+                          },
+                          timeout: Duration(seconds: 5),
+                          //TODO change remoteServerIP with camera Ip
+                          uri: 'http://${userModel.remoteServerIp}/stream?a=${appModel.rtspURLFragment}',
+                        ),
                     )
                   ),
                 ),
@@ -76,6 +100,40 @@ class VideoPageState extends State<VideoPage>{
           );
         },
       )
+    );
+  }
+
+  Row onDoneWidget(ApplicationModel appModel) {
+    return Row(
+      spacing: 10,
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          width: 120,
+          height: 50,
+          child: ShadInput(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            placeholder: Text("RTSP Port"),
+            controller: rtspController,
+          ),
+        ),
+        ShadButton(
+          width: 40,
+          height: 40,
+          icon: Icon(PhosphorIcons.check(), size: 28,),
+          onTapUp: (value) {
+            //TODO update this line
+            //String encodedSocket = base64Url.encode(utf8.encode("${appModel.matrixSocket.split(":")[0]}:${rtspController.text}")).replaceAll("=", "");
+            String encodedSocket = base64Url.encode(utf8.encode("192.168.88.213:${rtspController.text}")).replaceAll("=", "");
+            setState(() {
+              appModel.rtspURLFragment = encodedSocket;
+            });
+            client = Client();
+            client?.get(Uri.parse("http://${userModel.remoteServerIp}/stream?a=${appModel.rtspURLFragment}"));
+          },
+        )
+      ],
     );
   }
 

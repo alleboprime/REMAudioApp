@@ -54,7 +54,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
               child: Consumer3<UserModel, ApplicationModel, CommonInterface>(
                 builder: (context, userModel, appModel, commonInterface, child) {
         
-                  void connectToSocket() async { //TODO wait for data received before navigating into home
+                  void connectToSocket() async {
                     setState(() {
                       commonInterface.isLoading = true;
                     });
@@ -80,8 +80,6 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                       return;
                     }
                     commonInterface.isLoading = false;
-                    //TODO verify this line
-                    //_deviceTypeSelectionValue == "matrix" ? appModel.latestMatrixSocketAvailable = true : appModel.latestCameraSocketAvailable = true;
                     if(context.mounted){Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);}
                   }
         
