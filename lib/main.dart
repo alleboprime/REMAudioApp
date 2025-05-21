@@ -5,6 +5,7 @@ import 'package:rem_app/colors.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/common_interface.dart';
+import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:rem_app/screens/home_screen.dart';
 import 'package:rem_app/screens/log_screen.dart';
@@ -20,6 +21,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => UserModel()),
       ChangeNotifierProvider(create: (context) => ApplicationModel()),
       ChangeNotifierProvider(create: (context) => CommonInterface()),
+      ChangeNotifierProvider(create: (context) => HomeNavBarModel()),
     ],
     child: REMApp(),
   ));

@@ -39,6 +39,7 @@ class InputChannelsPreferencesPageState extends State<InputChannelsPreferencesPa
                             spacing: 30,
                             children: List.generate(rowNumber, (rowIndex) {
                               return Row(
+                                spacing: 5,
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children:[
                                   Row(children: [
@@ -62,7 +63,7 @@ class InputChannelsPreferencesPageState extends State<InputChannelsPreferencesPa
                                       hoverForegroundColor: Colors.white,
                                     ),
                                     SizedBox(
-                                      width: 100,
+                                      width: 90,
                                       height: 50,
                                       child: ShadInput(
                                         textAlign: TextAlign.center,
@@ -91,7 +92,7 @@ class InputChannelsPreferencesPageState extends State<InputChannelsPreferencesPa
                                   ],),
                                   Row(children: [
                                     SizedBox(
-                                      width: 100,
+                                      width: 90,
                                       height: 50,
                                       child: ShadInput(
                                         textAlign: TextAlign.center,
@@ -193,6 +194,7 @@ class OutputChannelsPreferencesPageState extends State<OutputChannelsPreferences
                             spacing: 30,
                             children: List.generate(rowNumber, (rowIndex) {
                               return Row(
+                                spacing: 5,
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children:[
                                   Row(children: [
@@ -216,7 +218,7 @@ class OutputChannelsPreferencesPageState extends State<OutputChannelsPreferences
                                       hoverForegroundColor: Colors.white,
                                     ),
                                     SizedBox(
-                                      width: 100,
+                                      width: 90,
                                       height: 50,
                                       child: ShadInput(
                                         textAlign: TextAlign.center,
@@ -245,7 +247,7 @@ class OutputChannelsPreferencesPageState extends State<OutputChannelsPreferences
                                   ],),
                                   Row(children: [
                                     SizedBox(
-                                      width: 100,
+                                      width: 90,
                                       height: 50,
                                       child: ShadInput(
                                         textAlign: TextAlign.center,

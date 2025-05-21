@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/pages/preferencesPages/channels_preferences_page.dart';
 import 'package:rem_app/pages/preferencesPages/preset_preferences_page.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -80,120 +82,154 @@ class PreferencesScreenState extends State<PreferencesScreen>{
     return SafeArea(
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: Scaffold(
-          backgroundColor: Colors.black,
-          appBar: AppBar(
-            toolbarHeight: 100,
-            leadingWidth: dimensions.isPc ? 150 : 90,
-            backgroundColor: Colors.black,
-            surfaceTintColor: Colors.black,
-            foregroundColor: Colors.transparent,
-            leading: Row(
+        child: Consumer<ApplicationModel>(
+          builder: (context, appModel, child) {
+            return Stack(
               children: [
-                SizedBox(width: dimensions.isPc ? 50 : 20),
-                ActionButton(iconData: PhosphorIcons.arrowLeft(), primaryAction: () => Navigator.pop(context),),
-              ],
-            ),
-            centerTitle: true,
-            title: Center(child: Text("PREFERENCES", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),),
-            actions: [
-              SizedBox(width: dimensions.isPc ? 150 : 100,)
-            ],
-          ),
-          body: Padding(
-            padding: EdgeInsets.only(top: 0, left: 30, bottom: 30, right: 30),
-            child: Center(
-              child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: 620,
-                  maxHeight: 700,
-                ),
-                child: Column(
-                  spacing: 20,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                Scaffold(
+                  backgroundColor: Colors.black,
+                  appBar: AppBar(
+                    toolbarHeight: 100,
+                    leadingWidth: dimensions.isPc ? 150 : 90,
+                    backgroundColor: Colors.black,
+                    surfaceTintColor: Colors.black,
+                    foregroundColor: Colors.transparent,
+                    leading: Row(
                       children: [
-                        SelectionButton(text: "Preset\nLabels", index: 0, selection: selection, action: () => selection = 0),
-                        SelectionButton(text: "Channels", index: 2, selection: selection, action: () => selection = 2)
+                        SizedBox(width: dimensions.isPc ? 50 : 20),
+                        ActionButton(iconData: PhosphorIcons.arrowLeft(), primaryAction: () => Navigator.pop(context),),
                       ],
                     ),
-                    Row( 
-                      spacing: 10,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ShadButton.outline(
-                          hoverBackgroundColor: Colors.transparent,
-                          width: selection == 0 ? 70 : 40,
-                          height: 30,
-                          padding: EdgeInsets.zero,
-                          decoration: ShadDecoration(
-                            border: ShadBorder.all(color: subSelection == 0 ? colors.selectionColor : Colors.white),
-                            disableSecondaryBorder: true,
-                          ),
-                          onTapUp: (value) {
-                            setState(() {
-                              subSelection = 0;
-                            });
-                          },
-                          child: Text(selection == 0 ? "Matrix" : "IN", style: TextStyle(color: subSelection == 0 ? colors.selectionColor : Colors.white),),
-                        ),
-                        ShadButton.outline(
-                          hoverBackgroundColor: Colors.transparent,
-                          width: selection == 0 ? 70 : 40,
-                          height: 30,
-                          padding: EdgeInsets.zero,
-                          decoration: ShadDecoration(
-                            border: ShadBorder.all(color: subSelection == 1 ? colors.selectionColor : Colors.white),
-                            disableSecondaryBorder: true,
-                          ),
-                          onTapUp: (value) {
-                            setState(() {
-                              subSelection = 1;
-                            });
-                          },
-                          child: Text(selection == 0 ? "Camera" : "OUT", style: TextStyle(color: subSelection == 1 ? colors.selectionColor : Colors.white),),
-                        )
-                      ],
-                    ),
-                    Expanded(
+                    centerTitle: true,
+                    title: Center(child: Text("PREFERENCES", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),),
+                    actions: [
+                      SizedBox(width: dimensions.isPc ? 150 : 100,)
+                    ],
+                  ),
+                  body: Padding(
+                    padding: EdgeInsets.only(top: 0, left: 30, bottom: 30, right: 30),
+                    child: Center(
                       child: Container(
                         constraints: BoxConstraints(
-                          maxWidth: 600,
-                          maxHeight: 600,
+                          maxWidth: 620,
+                          maxHeight: 700,
                         ),
-                        decoration: BoxDecoration(
-                          color: dimensions.isDesktop ? colors.primaryColor : colors.primaryColor,
-                          border: Border.all(color: dimensions.isDesktop ? colors.selectionColor : Colors.transparent, width: 2),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
                         child: Column(
+                          spacing: 20,
                           children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SelectionButton(text: "Preset\nLabels", index: 0, selection: selection, action: () => selection = 0),
+                                SelectionButton(text: "Channels", index: 2, selection: selection, action: () => selection = 2)
+                              ],
+                            ),
+                            Row( 
+                              spacing: 10,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ShadButton.outline(
+                                  hoverBackgroundColor: Colors.transparent,
+                                  width: selection == 0 ? 70 : 40,
+                                  height: 30,
+                                  padding: EdgeInsets.zero,
+                                  decoration: ShadDecoration(
+                                    border: ShadBorder.all(color: subSelection == 0 ? colors.selectionColor : Colors.white),
+                                    disableSecondaryBorder: true,
+                                  ),
+                                  onTapUp: (value) {
+                                    setState(() {
+                                      subSelection = 0;
+                                    });
+                                  },
+                                  child: Text(selection == 0 ? "Matrix" : "IN", style: TextStyle(color: subSelection == 0 ? colors.selectionColor : Colors.white),),
+                                ),
+                                ShadButton.outline(
+                                  hoverBackgroundColor: Colors.transparent,
+                                  width: selection == 0 ? 70 : 40,
+                                  height: 30,
+                                  padding: EdgeInsets.zero,
+                                  decoration: ShadDecoration(
+                                    border: ShadBorder.all(color: subSelection == 1 ? colors.selectionColor : Colors.white),
+                                    disableSecondaryBorder: true,
+                                  ),
+                                  onTapUp: (value) {
+                                    setState(() {
+                                      subSelection = 1;
+                                    });
+                                  },
+                                  child: Text(selection == 0 ? "Camera" : "OUT", style: TextStyle(color: subSelection == 1 ? colors.selectionColor : Colors.white),),
+                                )
+                              ],
+                            ),
                             Expanded(
-                              child: Center(
-                                child: PageView(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  controller: preferencesScreenController,
+                              child: Container(
+                                constraints: BoxConstraints(
+                                  maxWidth: 600,
+                                  maxHeight: 600,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: dimensions.isDesktop ? colors.primaryColor : colors.primaryColor,
+                                  border: Border.all(color: dimensions.isDesktop ? colors.selectionColor : Colors.transparent, width: 2),
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+                                child: Column(
                                   children: [
-                                    MatrixPresetPreferencesPage(),
-                                    CameraPresetPreferencesPage(),
-                                    InputChannelsPreferencesPage(),
-                                    OutputChannelsPreferencesPage(),
-                                  ]
+                                    Expanded(
+                                      child: Center(
+                                        child: PageView(
+                                          physics: NeverScrollableScrollPhysics(),
+                                          controller: preferencesScreenController,
+                                          children: [
+                                            MatrixPresetPreferencesPage(),
+                                            CameraPresetPreferencesPage(),
+                                            InputChannelsPreferencesPage(),
+                                            OutputChannelsPreferencesPage(),
+                                          ]
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ],
                         ),
-                      ),
+                      )
                     ),
-                  ],
+                  ),
                 ),
-              )
-            ),
-          ),
+                if(!appModel.matrixAvailable && pageIndex != 1)
+                  deviceUnavailable("Matrix", 235),
+                if(!appModel.cameraAvailable && pageIndex == 1 )
+                  deviceUnavailable("Camera", 245),
+              ],
+            );
+          }
         ),
+      ),
+    );
+  }
+  
+  Container deviceUnavailable(String device, double width) {
+    return Container(
+      color: Colors.black.withAlpha(100),
+      child: Center(
+        child: SizedBox(
+          width: width,
+          child: ShadAlert(
+            decoration: ShadDecoration(
+              color: Colors.black,
+              border: ShadBorder.all(color: Colors.yellow, width: 2)
+            ),
+            iconData: LucideIcons.clock,
+            iconColor: Colors.yellow,
+            title: Text('$device Unavailable', style: TextStyle(color: Colors.yellow, fontSize: 18)),
+            description:
+                Text('Please wait...', style: TextStyle(color: Colors.yellow, fontSize: 17),),
+          ),
+        )
       ),
     );
   }
