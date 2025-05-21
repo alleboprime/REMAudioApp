@@ -37,11 +37,9 @@ class ActionButtonState extends State<ActionButton>{
         if(widget.isZoom)widget.secondaryAction!();
       },
       onTapUp: (details){
-        if(!dimensions.isDesktop){
-          setState(() {
-            isHovered = false;
-          });
-        }
+        setState(() {
+          isHovered = false;
+        });
         if(widget.isZoom){
           widget.secondaryAction!();
         }else{
@@ -49,7 +47,9 @@ class ActionButtonState extends State<ActionButton>{
         }
       },
       onDoubleTap: (){
-        widget.secondaryAction!();
+        if(widget.secondaryAction != null){
+          widget.secondaryAction!();
+        }
       },
       child: MouseRegion(
         onEnter: (event) => {
