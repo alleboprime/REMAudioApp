@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:rem_app/languages.dart';
 
 class UserModel extends ChangeNotifier {
   static final UserModel _instance = UserModel._internal();
@@ -11,6 +12,8 @@ class UserModel extends ChangeNotifier {
   }
 
   UserModel._internal();
+
+  final languages = Languages();
 
   String remoteServerIp = "";  
 
@@ -55,7 +58,7 @@ class UserModel extends ChangeNotifier {
   }
 
   Future<List<dynamic>> login(String username, String password) async {
-    if(username.isEmpty || password.isEmpty)return[false, "All fields must be filled"];
+    if(username.isEmpty || password.isEmpty)return[false, languages.isEnglish ? "All fields must be filled" : languages.traductions["All fields must be filled"] ?? ""];
     
     Map<String, String> body = {
       'username': username,
@@ -75,11 +78,11 @@ class UserModel extends ChangeNotifier {
     } on TimeoutException catch (_) {
       accessToken = "";
       isAdmin = false;
-      return [false, "Request timed out"];
+      return [false, languages.isEnglish ? "Request timed out" : languages.traductions["Request timed out"] ?? ""];
     } on Exception{
       accessToken = "";
       isAdmin = false;
-      return [false, "Something went wrong"];
+      return [false, languages.isEnglish ? "Something went wrong" : languages.traductions["Something went wrong"] ?? ""];
     }
 
     if (response.statusCode == 200) {
@@ -89,7 +92,7 @@ class UserModel extends ChangeNotifier {
     } else {
       accessToken = "";
       isAdmin = false;
-      return [false, jsonDecode(response.body)["reason"]];
+      return [false, languages.isEnglish ? "Wrong Credentials" : languages.traductions["Wrong Credentials"] ?? ""];
     }
   }
 }

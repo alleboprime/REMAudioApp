@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
+import 'package:rem_app/languages.dart';
 import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/common_interface.dart';
 import 'package:rem_app/models/user_model.dart';
@@ -15,6 +16,8 @@ class NewMatrixSessionScreen extends StatefulWidget {
 }
 
 class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
+  final languages = Languages();
+
   bool isHovered = false;
 
   final TextEditingController deviceNameController = TextEditingController();
@@ -46,7 +49,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
             actions: [
               SizedBox(width: 90),
             ],
-            title: Center(child: Text("CREATE CONNECTIONS", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),)
+            title: Center(child: Text(languages.isEnglish ? "CREATE CONNECTION" : languages.traductions["CREATE CONNECTION"] ?? "", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),)
           ),
           body: SafeArea(
             child: Padding(
@@ -66,7 +69,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                     bool result = await appModel.setSocket(socket: socket);
                     if(!result){
                       setState(() {
-                        commonInterface.failingReason = "Failed setting the socket";
+                        commonInterface.failingReason = languages.isEnglish ? "Failed on setting socket" : languages.traductions["Failed on setting socket"] ?? "";
                         commonInterface.isLoading = false;
                       });
                       return;
@@ -74,7 +77,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                     result = await appModel.establishConnection(_deviceTypeSelectionValue == "matrix" ? "matrix" : "camera");
                     if(!result){
                       setState(() {
-                        commonInterface.failingReason = "Failed establishing connection";
+                        commonInterface.failingReason = languages.isEnglish ? "Failed establishing websocket connection" : languages.traductions["Failed establishing websocket connection"] ?? "";
                         commonInterface.isLoading = false;
                       });
                       return;
@@ -103,10 +106,10 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                configurationText("Device Name"),
-                                configurationInput(deviceNameController, "Name"),
+                                configurationText(languages.isEnglish ? "Device Name" : languages.traductions["Device Name"] ?? ""),
+                                configurationInput(deviceNameController, languages.isEnglish ? "Name" : languages.traductions["Name"] ?? ""),
                                 SizedBox(height: 10,),
-                                configurationText("Device Ip"),
+                                configurationText(languages.isEnglish ? "Device Ip" : languages.traductions["Device Ip"] ?? ""),
                                 configurationInput(deviceIpController, "Ip"),
                                 SizedBox(height: 10,),                              
                                 Row(
@@ -117,8 +120,8 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          configurationText("Device Port"),
-                                          configurationInput(devicePortController, "Port"),
+                                          configurationText(languages.isEnglish ? "Device Port" : languages.traductions["Device Port"] ?? ""),
+                                          configurationInput(devicePortController, languages.isEnglish ? "Port" : languages.traductions["Port"] ?? ""),
                                         ],
                                       ),
                                     ),
@@ -127,7 +130,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
-                                          configurationText("Device Type"),
+                                          configurationText(languages.isEnglish ? "Device Type" : languages.traductions["Device Type"] ?? ""),
                                           ShadRadioGroup<String>(
                                             initialValue: "matrix",
                                             onChanged: (value) => _deviceTypeSelectionValue = (value ?? ""),
@@ -135,7 +138,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                                             items: [
                                               ShadRadio(
                                                 size: dimensions.isPc ? 12 : 9,
-                                                label: Text('Matrix', style: TextStyle(fontSize: dimensions.isPc ? 15 : 12),),
+                                                label: Text(languages.isEnglish ? "Matrix" : languages.traductions["Matrix"] ?? "", style: TextStyle(fontSize: dimensions.isPc ? 15 : 12),),
                                                 value: 'matrix',
                                               ),
                                               ShadRadio(
@@ -155,7 +158,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                                   alignment: Alignment.center,
                                   child: ShadButton(
                                     onTapUp: (value) => connectToSocket(),
-                                    child: Text("Connect", style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
+                                    child: Text(languages.isEnglish ? "Connect" : languages.traductions["Connect"] ?? "" , style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
                                   ),
                                 )
                               ],
@@ -170,7 +173,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text("x_X", style: TextStyle(fontSize: dimensions.isPc ? 120 : 100, fontWeight: FontWeight.bold),),
-                        Text("No connection available.\nContact the administrator.", style: TextStyle(fontSize: dimensions.isPc ? 18 : 15), textAlign: TextAlign.center,)
+                        Text(languages.isEnglish ? "No connection available.\nContact an administrator." : languages.traductions["No connection available.\nContact an administrator."] ?? "", style: TextStyle(fontSize: dimensions.isPc ? 18 : 15), textAlign: TextAlign.center,)
                       ],
                     ),
                   );

@@ -42,7 +42,7 @@ class Dimensions {
   double get logScreenTextBoxWidht => isPc ? 500 : 300;
   double get logScreenTextBoxHeight=> 50;
   
-  double get logScreenButtonWidht => isPc ? 120 : 100;
+  double get logScreenButtonWidht => isPc ? 120 : 110;
   double get logScreenButtonHeight => isPc ? 40 : 40;
 
 }

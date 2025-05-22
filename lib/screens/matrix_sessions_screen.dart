@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
+import 'package:rem_app/languages.dart';
 import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/common_interface.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -15,6 +16,7 @@ class MatrixSessionsScreen extends StatefulWidget{
 
 class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
   final appModel = ApplicationModel();
+  final languages = Languages();
 
   bool isHovered = false;
 
@@ -55,7 +57,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
             ActionButton(iconData: PhosphorIcons.arrowClockwise(), primaryAction: refresh,),
             SizedBox(width: dimensions.isPc ? 50 : 20),
           ],
-          title: Center(child: Text("RECENT CONNECTIONS", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),)
+          title: Center(child: Text(languages.isEnglish ? "RECENT SESSIONS" : languages.traductions["RECENT SESSIONS"] ?? "", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),)
         ),
         body: Consumer2<ApplicationModel, CommonInterface>(
           builder: (context, appModel, commonInterface, child){
@@ -73,10 +75,10 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                   commonInterface.isLoading = false;
                   if(context.mounted){Navigator.pushNamedAndRemoveUntil(context, '/home', (Route<dynamic> route) => false);}
                 }else{
-                  reason = "Failed websocket connection";
+                  reason = languages.isEnglish ? "Failed establishing websocket connection" : languages.traductions["Failed establishing websocket connection"] ?? "";
                 }
               }else{
-                reason = "Failed on setting socket";
+                reason = languages.isEnglish ? "Failed on setting socket" : languages.traductions["Failed on setting socket"] ?? "";
               }
               setState(() {
                 commonInterface.isLoading = false;
@@ -93,7 +95,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
               String reason = "";
               bool result = await appModel.removeSocket(index);
               if(!result){
-                reason = "Failed on removing socket";
+                reason = languages.isEnglish ? "Failed on removing socket" : languages.traductions["Failed on removing socket"] ?? "";
               }else{
                 commonInterface.isLoading = false;
                 refresh();
@@ -173,7 +175,7 @@ class MatrixSessionsScreenState extends State<MatrixSessionsScreen>{
                                   ),
                                   ShadButton(
                                     padding: EdgeInsets.all(8),
-                                    child: Text("Connect", style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
+                                    child: Text(languages.isEnglish ? "Connect" : languages.traductions["Connect"] ?? "", style: TextStyle(fontSize: dimensions.isPc ? 17 : 15),),
                                     onTapUp: (value){
                                       connect(index);
                                     },

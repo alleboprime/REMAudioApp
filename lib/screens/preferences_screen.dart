@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/languages.dart';
 import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/pages/preferencesPages/channels_preferences_page.dart';
 import 'package:rem_app/pages/preferencesPages/preset_preferences_page.dart';
@@ -17,6 +18,7 @@ class PreferencesScreen extends StatefulWidget{
 }
 
 class PreferencesScreenState extends State<PreferencesScreen>{
+  final languages = Languages();
 
   PageController preferencesScreenController = PageController(initialPage: 0);  
 
@@ -101,7 +103,7 @@ class PreferencesScreenState extends State<PreferencesScreen>{
                       ],
                     ),
                     centerTitle: true,
-                    title: Center(child: Text("PREFERENCES", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),),
+                    title: Center(child: Text(languages.isEnglish ? "PREFERENCES" : languages.traductions["PREFERENCES"] ?? "", style: TextStyle(color: Colors.white, fontSize: dimensions.isPc ? 20 : 15),),),
                     actions: [
                       SizedBox(width: dimensions.isPc ? 150 : 100,)
                     ],
@@ -120,8 +122,8 @@ class PreferencesScreenState extends State<PreferencesScreen>{
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SelectionButton(text: "Preset\nLabels", index: 0, selection: selection, action: () => selection = 0),
-                                SelectionButton(text: "Channels", index: 2, selection: selection, action: () => selection = 2)
+                                SelectionButton(text: languages.isEnglish ? "Preset\nLabels" : languages.traductions["Preset\nLabels"] ?? "", index: 0, selection: selection, action: () => selection = 0),
+                                SelectionButton(text: languages.isEnglish ? "Channels" : languages.traductions["Channels"] ?? "", index: 2, selection: selection, action: () => selection = 2)
                               ],
                             ),
                             Row( 
@@ -201,7 +203,7 @@ class PreferencesScreenState extends State<PreferencesScreen>{
                   ),
                 ),
                 if(!appModel.matrixAvailable && pageIndex != 1)
-                  deviceUnavailable("Matrix", 235),
+                  deviceUnavailable(languages.isEnglish ? "Matrix" : languages.traductions["Matrix"] ?? "", 235),
                 if(!appModel.cameraAvailable && pageIndex == 1 )
                   deviceUnavailable("Camera", 245),
               ],
@@ -225,9 +227,9 @@ class PreferencesScreenState extends State<PreferencesScreen>{
             ),
             iconData: LucideIcons.clock,
             iconColor: Colors.yellow,
-            title: Text('$device Unavailable', style: TextStyle(color: Colors.yellow, fontSize: 18)),
+            title: Text('$device ${languages.isEnglish ? "Unavailable" : "non disponibile"}', style: TextStyle(color: Colors.yellow, fontSize: 18)),
             description:
-                Text('Please wait...', style: TextStyle(color: Colors.yellow, fontSize: 17),),
+                Text(languages.isEnglish ? 'Please wait...' : "Attendi...", style: TextStyle(color: Colors.yellow, fontSize: 17),),
           ),
         )
       ),

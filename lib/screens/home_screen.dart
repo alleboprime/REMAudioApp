@@ -3,6 +3,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/logScreen/log_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/languages.dart';
 import 'package:rem_app/models/home_nav_bar_model.dart';
 import 'package:rem_app/components/homeNavBar/home_nav_bar.dart';
 import 'package:rem_app/models/application_model.dart';
@@ -24,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   final dimensions = Dimensions();
+  final languages = Languages();
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -51,7 +53,7 @@ class HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                       if(!appModel.matrixAvailable && (navBarModel.selectedPage != 2 && navBarModel.selectedPage != 3 && navBarModel.selectedPage != 4))
-                        deviceUnavailable("Matrix", 235),
+                        deviceUnavailable(languages.isEnglish ? "Matrix" : languages.traductions["Matrix"] ?? "", 235),
                       if(!appModel.cameraAvailable && navBarModel.selectedPage == 2 )
                         deviceUnavailable("Camera", 245),
                       if(!(appModel.matrixConnected || appModel.cameraConnected))
@@ -113,9 +115,9 @@ class HomeScreenState extends State<HomeScreen> {
             ),
             iconData: LucideIcons.clock,
             iconColor: Colors.yellow,
-            title: Text('$device Unavailable', style: TextStyle(color: Colors.yellow, fontSize: 18)),
+            title: Text('$device ${languages.isEnglish ? "Unavailable" : "non disponibile"}', style: TextStyle(color: Colors.yellow, fontSize: 18)),
             description:
-                Text('Please wait...', style: TextStyle(color: Colors.yellow, fontSize: 17),),
+                Text(languages.isEnglish ? 'Please wait...' : "Attendi...", style: TextStyle(color: Colors.yellow, fontSize: 17),),
           ),
         )
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rem_app/components/logScreen/log_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/languages.dart';
 
 class ServerIpPage extends StatefulWidget {
   const ServerIpPage({super.key, required this.serverIpController});
@@ -16,6 +17,7 @@ class ServerIpPageState extends State<ServerIpPage> {
   @override
   Widget build(BuildContext context) {
     final dimensions = Dimensions();
+    final languages = Languages();
 
     return Container(
       alignment: Alignment.center,
@@ -29,7 +31,7 @@ class ServerIpPageState extends State<ServerIpPage> {
               SizedBox(
                 height: dimensions.logScreenTextBoxHeight,
                 child: LogScreenTextBox(
-                  placeholder_: "Server Ip Address", controller_: widget.serverIpController),
+                  placeholder_: languages.isEnglish ? "Server Ip Address" : languages.traductions["Server Ip Address"] ?? "", controller_: widget.serverIpController),
               )
             ],
           ),

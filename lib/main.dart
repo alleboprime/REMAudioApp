@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/colors.dart';
 import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/languages.dart';
 import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/common_interface.dart';
 import 'package:rem_app/models/home_nav_bar_model.dart';
@@ -22,6 +23,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => ApplicationModel()),
       ChangeNotifierProvider(create: (context) => CommonInterface()),
       ChangeNotifierProvider(create: (context) => HomeNavBarModel()),
+      ChangeNotifierProvider(create: (context) => Languages()),
     ],
     child: REMApp(),
   ));

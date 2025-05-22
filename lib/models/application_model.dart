@@ -75,6 +75,7 @@ class ApplicationModel extends ChangeNotifier {
 
   void updateMatrixData(Map<String, dynamic> receivedData) {
     matrixConnected = true;
+    print(receivedData);
 
     inputMute = (receivedData["i_mute"] as Map<String, dynamic>)
       .map((key, value) => MapEntry(key, value as bool));

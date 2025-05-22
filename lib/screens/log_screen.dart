@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rem_app/components/logScreen/log_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/languages.dart';
 import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/common_interface.dart';
 import 'package:rem_app/models/user_model.dart';
@@ -42,6 +43,7 @@ class LoginScreenState extends State<LoginScreen> {
   final FocusNode _focusNode = FocusNode();
 
   UserModel model = UserModel();
+  final languages = Languages();
   CommonInterface commonInterface = CommonInterface();
 
   void checkKeyPressed(KeyEvent keyPressed){
@@ -60,9 +62,9 @@ class LoginScreenState extends State<LoginScreen> {
     });
     List<dynamic> loginConnectionResult = await model.login(usernameController.text, passwordController.text);
     String reason = loginConnectionResult[1];
-
     if (loginConnectionResult[0]) {
       final matrixModel = ApplicationModel();
+      
       bool result = await matrixModel.getInitialToken();
       if(result){
         result = await matrixModel.checkForMatrixConnections();
@@ -72,7 +74,7 @@ class LoginScreenState extends State<LoginScreen> {
             if(result){
               if(mounted){Navigator.pushNamed(context, "/home");}
             }else{
-              reason = "Failed establishing websocket connection";
+              reason = languages.isEnglish ? "Failed establishing websocket connection" : languages.traductions["Failed establishing websocket connection"] ?? "";
             }
           }else if(model.isAdmin && matrixModel.sessionAvailable){
             if(mounted){Navigator.pushNamed(context, "/matrix_connection");}
@@ -80,10 +82,10 @@ class LoginScreenState extends State<LoginScreen> {
             if(mounted){Navigator.pushNamed(context, "/new_matrix_connection");}
           }
         }else{
-          reason = "Failed retrieving matrix connections";
+          reason = languages.isEnglish ? "Failed retrieving sessions" : languages.traductions["Failed retrieving sessions"] ?? "";
         }
       }else{
-        reason = "Failed retrieving initial token";
+        reason = languages.isEnglish ? "Failed retrieving initial token" : languages.traductions["Failed retrieving initial token"] ?? "";
       }
     } 
     setState(() {
@@ -106,7 +108,7 @@ class LoginScreenState extends State<LoginScreen> {
     }else{
       setState(() {
         commonInterface.isLoading = false;
-        commonInterface.failingReason = "Connection test failed";
+        commonInterface.failingReason = languages.isEnglish ? "Connection test failed" : languages.traductions["Connection test failed"] ?? "";
       });
     }
   }
@@ -123,8 +125,8 @@ class LoginScreenState extends State<LoginScreen> {
           onTap: () {
             FocusScope.of(context).unfocus();
           },
-          child: Consumer<UserModel>(
-              builder: (context, model, child) {
+          child: Consumer2<UserModel, Languages>(
+              builder: (context, model, languages, child) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (!model.isLogging) {
                     loginScreenPageController.animateToPage(
@@ -187,14 +189,14 @@ class LoginScreenState extends State<LoginScreen> {
                                 LogScreenButton(
                                   width_: dimensions.logScreenButtonWidht,
                                   height_: dimensions.logScreenButtonHeight,
-                                  text: model.isLogging ? "Log In" : "Submit",
+                                  text: model.isLogging ? (languages.isEnglish ? "Log In" : languages.traductions["Log In"] ?? "") : (languages.isEnglish ? "Submit" : languages.traductions["Submit"] ?? ""),
                                   action: model.isLogging ? login : submitIp,
                                 ),
                                 if(model.isLogging)
                                   SizedBox(height: 5,),
                                 if(model.isLogging)
                                   LogScreenText(
-                                    text: "Go Back"
+                                    text: languages.isEnglish ? "Back" : languages.traductions["Back"] ?? ""
                                   ),
                               ],
                             ),
