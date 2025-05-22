@@ -5,6 +5,7 @@ import 'package:rem_app/components/homeScreen/home_screen_components.dart';
 import 'package:rem_app/components/scrolling_label.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/application_model.dart';
+import 'package:rem_app/models/user_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,6 +18,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage>{
   final colors = AppColors();
   final dimensions = Dimensions();
+  final userModel = UserModel();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,8 @@ class HomePageState extends State<HomePage>{
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           PresetButton(matrixPreset: true, height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
-                          MatrixMapButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: "Matrix Map")
+                          if(userModel.isAdmin)
+                            MatrixMapButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: "Matrix Map")
                         ],
                       )
                     ),
@@ -54,7 +57,8 @@ class HomePageState extends State<HomePage>{
                       spacing: 20,
                       children: [
                         PresetButton(matrixPreset: true, height: 30, fontSize: 13, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
-                        MatrixMapButton(height: 30, fontSize: 13, previousPage: 0, text: "Matrix Map"),
+                        if(userModel.isAdmin)
+                          MatrixMapButton(height: 30, fontSize: 13, previousPage: 0, text: "Matrix Map"),
                         MuteAllButton(height: 30, fontSize: 13, action: appModel.toggleAllMuteChannel,),
                       ],
                     )

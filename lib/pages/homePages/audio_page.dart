@@ -4,6 +4,7 @@ import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/homeScreen/home_screen_components.dart';
 import 'package:rem_app/dimensions.dart';
 import 'package:rem_app/models/application_model.dart';
+import 'package:rem_app/models/user_model.dart';
 
 class AudioPage extends StatefulWidget{
   const AudioPage({super.key});
@@ -22,6 +23,7 @@ class AudioPageState extends State<AudioPage> {
   Widget build(BuildContext context) {
     final colors = AppColors();
     final dimensions = Dimensions();
+    final userModel = UserModel();
 
     return SafeArea(
       child: Consumer<ApplicationModel>(
@@ -37,7 +39,8 @@ class AudioPageState extends State<AudioPage> {
                     spacing: 30,
                     children: [
                       PresetButton(matrixPreset: true, height: 50, fontSize: 22, previousPage: 1, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
-                      MatrixMapButton(height: 50, fontSize: 22, previousPage: 1, text: "Matrix Map"),
+                      if(userModel.isAdmin)
+                        MatrixMapButton(height: 50, fontSize: 22, previousPage: 1, text: "Matrix Map"),
                       Container(
                         width: 150,
                         height: 600,
@@ -174,11 +177,11 @@ class AudioPageState extends State<AudioPage> {
                   children: [
                     if(!dimensions.extremeNarrow)
                       PresetButton(matrixPreset: true, height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
-                    if(!dimensions.extremeNarrow)
+                    if(!dimensions.extremeNarrow && userModel.isAdmin)
                       MatrixMapButton(height: 50, fontSize: dimensions.isPc ? 22 : 18, previousPage: 0, text: "Matrix Map"),
                     if(dimensions.extremeNarrow)
                       PresetButton(matrixPreset: true, height: 30, fontSize: 10, previousPage: 0, text: appModel.matrixPresetLabels["${appModel.currentMatrixPreset}"] ?? "Preset"),
-                    if(dimensions.extremeNarrow)
+                    if(dimensions.extremeNarrow && userModel.isAdmin)
                       MatrixMapButton(height: 30, fontSize: 10, previousPage: 0, text: "Matrix Map"),
                   ]
                 ),
