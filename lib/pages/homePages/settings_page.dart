@@ -9,9 +9,15 @@ import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/user_model.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget{
   const SettingsPage({super.key});
 
+  @override
+  SettingsPageState createState() => SettingsPageState();
+}
+
+class SettingsPageState extends State<SettingsPage> {
+  
   @override
   Widget build(BuildContext context) {
     final dimensions = Dimensions();
@@ -45,7 +51,7 @@ class SettingsPage extends StatelessWidget {
                     width: dimensions.isPc ? 400 : 300,
                     child: ListView(
                       children: [
-                        SettingsTile(title: languages.isEnglish ? "Change Language" : languages.traductions["Change Language"] ?? "", iconOrigin: PhosphorIcons.translate(), action: (_)=> languages.isEnglish = !languages.isEnglish),
+                        SettingsTile(title: languages.isEnglish ? "Change Language" : languages.traductions["Change Language"] ?? "", iconOrigin: PhosphorIcons.translate(), action: (_) => setState(() {languages.isEnglish = !languages.isEnglish;})),
                         Divider(thickness: 4, color: colors.primaryColor, height: 4,),
                         if(userModel.isAdmin)
                           SettingsTile(

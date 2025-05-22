@@ -53,6 +53,7 @@ class Languages extends ChangeNotifier{
     "Failed establishing websocket connection": "Connessione websocket fallita",
     "Failed retrieving sessions": "Sessioni irraggiungibili",
     "Failed retrieving initial token": "Token di connessione mancante",
+    "Failed setting preset": "Settaggio preset fallito",
 
     "Request timed out": "Richiesta interrotta",
     "Something went wrong": "Errore",

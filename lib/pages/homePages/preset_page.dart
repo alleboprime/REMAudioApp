@@ -5,6 +5,7 @@ import 'package:rem_app/colors.dart';
 import 'package:rem_app/components/matrixScreen/matrix_screen_components.dart';
 import 'package:rem_app/components/scrolling_label.dart';
 import 'package:rem_app/dimensions.dart';
+import 'package:rem_app/languages.dart';
 import 'package:rem_app/models/application_model.dart';
 import 'package:rem_app/models/common_interface.dart';
 import 'package:rem_app/models/home_nav_bar_model.dart';
@@ -20,6 +21,7 @@ class PresetPage extends StatefulWidget{
 class PresetPageState extends State<PresetPage>{
   final dimensions = Dimensions();
   final colors = AppColors();
+  final languages = Languages();
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +93,7 @@ class PresetPageState extends State<PresetPage>{
                                                 bool result = await appModel.setPreset(navBarModel.matrixPreset, rowIndex * 2 + colIndex + offset);
                                                 commonInterface.isLoading = false;
                                                 if(!result){
-                                                  commonInterface.failingReason = "Failed setting preset";
+                                                  commonInterface.failingReason = languages.isEnglish ? "Failed setting preset" : languages.traductions["Failed setting preset"] ?? "";
                                                 }
                                                 navBarModel.selectedPage = navBarModel.previousPage;
                                               },
