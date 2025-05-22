@@ -69,12 +69,12 @@ class HomeScreenState extends State<HomeScreen> {
                                 ),
                                 iconData: LucideIcons.clock,
                                 iconColor: colors.logScreenToastColor,
-                                title: Text('Connection Lost', style: TextStyle(color: colors.logScreenToastColor, fontSize: 18)),
+                                title: Text(languages.isEnglish ? 'Connection Lost' : "Connessione Persa", style: TextStyle(color: colors.logScreenToastColor, fontSize: 18)),
                                 description: Column(
                                   spacing: 10,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text('Something went wrong', style: TextStyle(color: colors.logScreenToastColor, fontSize: 17),),
+                                    Text(languages.isEnglish ?'Something went wrong' : "Dispositivi non raggiungibili", style: TextStyle(color: colors.logScreenToastColor, fontSize: 17),),
                                     ShadButton.outline(
                                       hoverBackgroundColor: Colors.black,
                                       onTapUp: (value){
@@ -82,7 +82,7 @@ class HomeScreenState extends State<HomeScreen> {
                                       }, 
                                       decoration: ShadDecoration(border: ShadBorder.all(color: colors.logScreenToastColor)), 
                                       icon: Icon(PhosphorIcons.signOut(), color: colors.logScreenToastColor, size: 20,), 
-                                      child: Text("Exit", style: TextStyle(color: colors.logScreenToastColor),),
+                                      child: Text(languages.isEnglish ? "Exit" : "Esci", style: TextStyle(color: colors.logScreenToastColor),),
                                     ),
                                   ],
                                 )
