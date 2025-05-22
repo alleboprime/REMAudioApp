@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-//TODO check if setState is useful or can be removed for setting reason or loading values in other pages
-
 class CommonInterface extends ChangeNotifier{
   static final CommonInterface _instance = CommonInterface._internal();
 

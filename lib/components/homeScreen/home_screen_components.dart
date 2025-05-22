@@ -160,7 +160,7 @@ class PresetButtonState extends State<PresetButton>{
                     ),
                   ),
                 ),
-                padding: EdgeInsets.only(bottom: 1), //TODO verify this line
+                padding: EdgeInsets.only(bottom: 1),
                 child: ScrollingLabel(text: widget.text, color: colors.selectionColor, maxCharCount: 7, fontSize : widget.fontSize, width: 80,)
               ),
             );
@@ -242,7 +242,7 @@ class MatrixMapButtonState extends State<MatrixMapButton>{
                     ),
                   ),
                 ),
-                padding: EdgeInsets.only(bottom: 1), //TODO verify this line
+                padding: EdgeInsets.only(bottom: 1),
                 child: ScrollingLabel(text: widget.text, color: colors.selectionColor, maxCharCount: 7, fontSize : widget.fontSize, width: 80,)
               ),
             );

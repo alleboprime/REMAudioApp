@@ -52,10 +52,6 @@ class LoginScreenState extends State<LoginScreen> {
     }
   }
 
-//TODO check if pushNamed instead of restorablePushNamed generate errors.
-//try on phone going back
-//TODO make the switching page transition better looking
-
   void login() async {
     setState(() {
       commonInterface.isLoading = true;

@@ -75,7 +75,6 @@ class ApplicationModel extends ChangeNotifier {
 
   void updateMatrixData(Map<String, dynamic> receivedData) {
     matrixConnected = true;
-    print(receivedData);
 
     inputMute = (receivedData["i_mute"] as Map<String, dynamic>)
       .map((key, value) => MapEntry(key, value as bool));
@@ -308,7 +307,7 @@ class ApplicationModel extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> setPreset(bool isMatrix, int index) async {
+  Future<bool> setPreset(bool isMatrix, int index) async { //TODO remove timeout
     Map<String, String> command = {
       "section": "${isMatrix?"matrix":"camera"}_preset",
       "value" : "$index"

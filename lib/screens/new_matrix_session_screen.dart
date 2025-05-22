@@ -66,6 +66,7 @@ class NewMatrixSessionScreenState extends State<NewMatrixSessionScreen> {
                       "socket": "${deviceIpController.text}:${devicePortController.text}",
                       "device_type": _deviceTypeSelectionValue
                     };
+                    appModel.socket?.close();
                     bool result = await appModel.setSocket(socket: socket);
                     if(!result){
                       setState(() {
