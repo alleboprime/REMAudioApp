@@ -56,7 +56,6 @@ class VideoPageState extends State<VideoPage>{
                             return SizedBox.shrink();
                           },
                           timeout: Duration(seconds: 5),
-                          //TODO change remoteServerIP with camera Ip
                           uri: 'http://${userModel.remoteServerIp}/stream?a=${appModel.rtspURLFragment}',
                         ),
                     )
@@ -123,9 +122,8 @@ class VideoPageState extends State<VideoPage>{
           height: 40,
           icon: Icon(PhosphorIcons.check(), size: 28,),
           onTapUp: (value) {
-            //TODO update this line
-            //String encodedSocket = base64Url.encode(utf8.encode("${appModel.matrixSocket.split(":")[0]}:${rtspController.text}")).replaceAll("=", "");
-            String encodedSocket = base64Url.encode(utf8.encode("192.168.88.213:${rtspController.text}")).replaceAll("=", "");
+            print(appModel.cameraSocket.split(":")[0]);
+            String encodedSocket = base64Url.encode(utf8.encode("${appModel.cameraSocket.split(":")[0]}:${rtspController.text}")).replaceAll("=", "");
             setState(() {
               appModel.rtspURLFragment = encodedSocket;
             });

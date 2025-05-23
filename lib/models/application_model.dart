@@ -141,8 +141,16 @@ class ApplicationModel extends ChangeNotifier {
 
   void manageReasons(String reason){
     if(reason.contains("matrix")){
+      if(waitingForMatrixUpdate != null && !waitingForMatrixUpdate!.isCompleted){
+        waitingForMatrixUpdate!.complete(false);
+        waitingForMatrixUpdate = null;
+      }
       matrixConnected = false;
     }else if(reason.contains("camera")){
+      if(waitingForCameraUpdate != null && !waitingForCameraUpdate!.isCompleted){
+        waitingForCameraUpdate!.complete(false);
+        waitingForCameraUpdate = null;
+      }
       cameraConnected = false;
     }
   }
@@ -307,7 +315,7 @@ class ApplicationModel extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> setPreset(bool isMatrix, int index) async { //TODO remove timeout
+  Future<bool> setPreset(bool isMatrix, int index) async {
     Map<String, String> command = {
       "section": "${isMatrix?"matrix":"camera"}_preset",
       "value" : "$index"
@@ -315,22 +323,10 @@ class ApplicationModel extends ChangeNotifier {
     socket?.add(jsonEncode(command));
     if(isMatrix){
       waitingForMatrixUpdate = Completer<bool>();
-      return waitingForMatrixUpdate!.future.timeout(
-        Duration(seconds: 10),
-        onTimeout: () {
-          waitingForMatrixUpdate = null;
-          return false;
-        },
-      );
+      return waitingForMatrixUpdate!.future;
     }else{
       waitingForCameraUpdate = Completer<bool>();
-      return waitingForCameraUpdate!.future.timeout(
-        Duration(seconds: 10),
-        onTimeout: () {
-          waitingForCameraUpdate = null;
-          return false;
-        },
-      );
+      return waitingForCameraUpdate!.future;
     }
   }
 
