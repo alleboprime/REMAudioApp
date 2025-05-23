@@ -122,7 +122,6 @@ class VideoPageState extends State<VideoPage>{
           height: 40,
           icon: Icon(PhosphorIcons.check(), size: 28,),
           onTapUp: (value) {
-            print(appModel.cameraSocket.split(":")[0]);
             String encodedSocket = base64Url.encode(utf8.encode("${appModel.cameraSocket.split(":")[0]}:${rtspController.text}")).replaceAll("=", "");
             setState(() {
               appModel.rtspURLFragment = encodedSocket;
