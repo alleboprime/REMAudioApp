@@ -25,7 +25,7 @@ It currently supports connections to **audio matrix** (MDM-D8 via Dateq protocol
 
 ## 📦 Downloads
 
-You can find and download the full release version for Windows, Linux and Android in this repository's page on GitHub "release" section, or following this [link]().
+You can find and download the full release version for Windows, Linux and Android in this repository's page on GitHub "release" section, or following this [link](https://github.com/alleboprime/REMAudioApp/releases/tag/v1.0.0).
 
 
 ---
